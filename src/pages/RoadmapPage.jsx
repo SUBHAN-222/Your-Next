@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRecommendation } from "@hooks/useRecommendation";
 import LoadingScreen from "@components/LoadingScreen";
 import RecommendationCard from "@components/RecommendationCard";
@@ -6,7 +6,7 @@ import SkillsSection from "@components/SkillsSection";
 import EarningSection from "@components/EarningSection";
 
 function RoadmapPage({ answers, onRestart }) {
-  const { recommendation, isReady, isLoading } = useRecommendation(answers);
+  const { recommendation, isReady } = useRecommendation(answers);
   const [showLoading, setShowLoading] = useState(true);
   const [loadingStep, setLoadingStep] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
@@ -75,20 +75,30 @@ function RoadmapPage({ answers, onRestart }) {
       </div>
 
       <div className="roadmap-container recommendation-container">
-        {/* Primary Recommendation Card */}
-        <RecommendationCard recommendation={recommendation} />
-
-        {/* Alternative Careers */}
-        {alternativeCareers && alternativeCareers.length > 0 && (
-          <div className="alternative-careers">
-            <h3 className="section-title">Other Great Fits</h3>
-            <div className="alternative-grid">
-              {alternativeCareers.map(career => (
-                <div key={career.id} className="alternative-card">
-                  <span className="alt-icon">{career.icon}</span>
-                  <div className="alt-info">
-                    <h4>{career.name}</h4>
-                    <span className="alt-confidence">{career.confidence}% match</span>
+        {/* ── 1. BIG PICTURE: Full Roadmap Overview ── */}
+        {primaryCareer.roadmap && primaryCareer.roadmap.length > 0 && (
+          <div className="full-roadmap-section">
+            <h3 className="section-title">Your Complete Roadmap</h3>
+            <p className="roadmap-level">
+              Level: <strong>{primaryCareer.experienceLevel}</strong>
+            </p>
+            <div className="roadmap-steps">
+              {primaryCareer.roadmap.map((step, index) => (
+                <div key={index} className="roadmap-step">
+                  <div className="step-indicator">
+                    <div className="step-dot"></div>
+                    {index < primaryCareer.roadmap.length - 1 && <div className="step-line"></div>}
+                  </div>
+                  <div className="step-details">
+                    <h4>{step.name}</h4>
+                    <p>{step.why}</p>
+                    <div className="step-info">
+                      <span className="time">⏱️ {step.time}</span>
+                      <span className="resource">📚 {step.resource}</span>
+                    </div>
+                    <div className="step-task">
+                      <strong>Task:</strong> {step.task}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -96,10 +106,11 @@ function RoadmapPage({ answers, onRestart }) {
           </div>
         )}
 
-        {/* Next Steps */}
+        {/* ── 2. IMMEDIATE ACTION: First 3 Steps ── */}
         {nextSteps && nextSteps.length > 0 && (
           <div className="next-steps-section">
-            <h3 className="section-title">🚀 Your First 3 Steps</h3>
+            <h3 className="section-title">Your First 3 Steps</h3>
+            <p className="section-subtitle">Start here right now — momentum is everything.</p>
             <div className="next-steps-grid">
               {nextSteps.map((step, index) => (
                 <div key={index} className="next-step-card">
@@ -130,36 +141,26 @@ function RoadmapPage({ answers, onRestart }) {
           </div>
         )}
 
-        {/* Skills Section */}
-        <SkillsSection skills={skills} tools={tools} />
+        {/* ── 3. SKILLS: What You'll Build ── */}
+        <SkillsSection skills={skills} tools={tools} title="Skills to Learn" />
 
-        {/* Earning Section */}
+        {/* ── 4. EARNING: Where This Leads ── */}
         <EarningSection earningMethods={earningMethods} />
 
-        {/* Full Roadmap */}
-        {primaryCareer.roadmap && primaryCareer.roadmap.length > 0 && (
-          <div className="full-roadmap-section">
-            <h3 className="section-title">📋 Your Complete Roadmap</h3>
-            <p className="roadmap-level">
-              Level: <strong>{primaryCareer.experienceLevel}</strong>
-            </p>
-            <div className="roadmap-steps">
-              {primaryCareer.roadmap.map((step, index) => (
-                <div key={index} className="roadmap-step">
-                  <div className="step-indicator">
-                    <div className="step-dot"></div>
-                    {index < primaryCareer.roadmap.length - 1 && <div className="step-line"></div>}
-                  </div>
-                  <div className="step-details">
-                    <h4>{step.name}</h4>
-                    <p>{step.why}</p>
-                    <div className="step-info">
-                      <span className="time">⏱️ {step.time}</span>
-                      <span className="resource">📚 {step.resource}</span>
-                    </div>
-                    <div className="step-task">
-                      <strong>Task:</strong> {step.task}
-                    </div>
+        {/* Primary Recommendation Card */}
+        <RecommendationCard recommendation={recommendation} />
+
+        {/* Alternative Careers */}
+        {alternativeCareers && alternativeCareers.length > 0 && (
+          <div className="alternative-careers">
+            <h3 className="section-title">Other Great Fits</h3>
+            <div className="alternative-grid">
+              {alternativeCareers.map(career => (
+                <div key={career.id} className="alternative-card">
+                  <span className="alt-icon">{career.icon}</span>
+                  <div className="alt-info">
+                    <h4>{career.name}</h4>
+                    <span className="alt-confidence">{career.confidence}% match</span>
                   </div>
                 </div>
               ))}

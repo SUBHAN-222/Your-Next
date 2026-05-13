@@ -43,7 +43,7 @@ function EarningSection({ earningMethods }) {
 
   return (
     <div className="earning-section">
-      <h3 className="earning-title">💰 Earning Opportunities</h3>
+      <h3 className="earning-title">Earning Opportunities</h3>
       
       <div className="earning-grid">
         {earningMethods.map((method, index) => (
