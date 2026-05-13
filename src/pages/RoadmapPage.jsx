@@ -5,6 +5,25 @@ import RecommendationCard from "@components/RecommendationCard";
 import SkillsSection from "@components/SkillsSection";
 import EarningSection from "@components/EarningSection";
 
+const beginnerResources = {
+  "Python": "https://docs.python.org/3/tutorial/",
+  "Machine Learning": "https://developers.google.com/machine-learning/crash-course",
+  "Deep Learning": "https://course.fast.ai",
+  "Mathematics": "https://www.youtube.com/c/3blue1brown",
+  "Linear Algebra": "https://www.youtube.com/c/3blue1brown",
+  "Statistics": "https://www.khanacademy.org/math/statistics-probability",
+  "Neural Networks": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+  "Data Science": "https://www.kaggle.com/learn",
+  "NLP": "https://huggingface.co/learn/nlp-course",
+  "Computer Vision": "https://cs231n.github.io",
+  "AI Tools": "https://learnprompting.org",
+  "Prompt Engineering": "https://learnprompting.org",
+  "Git": "https://git-scm.com/book/en/v2",
+  "Version Control": "https://git-scm.com/book/en/v2",
+  "SQL": "https://sqlzoo.net",
+  "Databases": "https://sqlzoo.net"
+};
+
 function RoadmapPage({ answers, onRestart }) {
   const { recommendation, isReady } = useRecommendation(answers);
   const [showLoading, setShowLoading] = useState(true);
@@ -54,6 +73,15 @@ function RoadmapPage({ answers, onRestart }) {
 
   const { primaryCareer, alternativeCareers, skills, tools, earningMethods, nextSteps } = recommendation;
 
+  const getBeginnerResource = (text) => {
+    for (const [keyword, url] of Object.entries(beginnerResources)) {
+      if (text.toLowerCase().includes(keyword.toLowerCase())) {
+        return url;
+      }
+    }
+    return null;
+  };
+
   return (
     <section className="screen active roadmap-screen" id="s-res">
       {/* Fixed Navigation */}
@@ -75,38 +103,10 @@ function RoadmapPage({ answers, onRestart }) {
       </div>
 
       <div className="roadmap-container recommendation-container">
-        {/* ── 1. BIG PICTURE: Full Roadmap Overview ── */}
-        {primaryCareer.roadmap && primaryCareer.roadmap.length > 0 && (
-          <div className="full-roadmap-section">
-            <h3 className="section-title">Your Complete Roadmap</h3>
-            <p className="roadmap-level">
-              Level: <strong>{primaryCareer.experienceLevel}</strong>
-            </p>
-            <div className="roadmap-steps">
-              {primaryCareer.roadmap.map((step, index) => (
-                <div key={index} className="roadmap-step">
-                  <div className="step-indicator">
-                    <div className="step-dot"></div>
-                    {index < primaryCareer.roadmap.length - 1 && <div className="step-line"></div>}
-                  </div>
-                  <div className="step-details">
-                    <h4>{step.name}</h4>
-                    <p>{step.why}</p>
-                    <div className="step-info">
-                      <span className="time">⏱️ {step.time}</span>
-                      <span className="resource">📚 {step.resource}</span>
-                    </div>
-                    <div className="step-task">
-                      <strong>Task:</strong> {step.task}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* First: AI & Machine Learning (Recommendation Card) */}
+        <RecommendationCard recommendation={recommendation} />
 
-        {/* ── 2. IMMEDIATE ACTION: First 3 Steps ── */}
+        {/* Second: Your First 3 Steps */}
         {nextSteps && nextSteps.length > 0 && (
           <div className="next-steps-section">
             <h3 className="section-title">Your First 3 Steps</h3>
@@ -141,14 +141,57 @@ function RoadmapPage({ answers, onRestart }) {
           </div>
         )}
 
+        {/* Third: Your Complete Roadmap */}
+        {primaryCareer.roadmap && primaryCareer.roadmap.length > 0 && (
+          <div className="full-roadmap-section">
+            <h3 className="section-title">Your Complete Roadmap</h3>
+            <p className="roadmap-level">
+              Level: <strong>{primaryCareer.experienceLevel}</strong>
+            </p>
+            <div className="roadmap-steps">
+              {primaryCareer.roadmap.map((step, index) => {
+                const resourceUrl = getBeginnerResource(step.name);
+                return (
+                  <div key={index} className="roadmap-step">
+                    <div className="step-indicator">
+                      <div className="step-dot"></div>
+                      {index < primaryCareer.roadmap.length - 1 && <div className="step-line"></div>}
+                    </div>
+                    <div className="step-details">
+                      <h4>{step.name}</h4>
+                      <p>{step.why}</p>
+                      <div className="step-info">
+                        <span className="time">⏱️ {step.time}</span>
+                        <span className="resource">📚 {step.resource}</span>
+                      </div>
+                      <div className="step-task">
+                        <strong>Task:</strong> {step.task}
+                      </div>
+                      {resourceUrl && (
+                        <div className="step-beginner-resource">
+                          <a 
+                            href={resourceUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="beginner-link"
+                          >
+                            Start here →
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* ── 3. SKILLS: What You'll Build ── */}
         <SkillsSection skills={skills} tools={tools} title="Skills to Learn" />
 
         {/* ── 4. EARNING: Where This Leads ── */}
         <EarningSection earningMethods={earningMethods} />
-
-        {/* Primary Recommendation Card */}
-        <RecommendationCard recommendation={recommendation} />
 
         {/* Alternative Careers */}
         {alternativeCareers && alternativeCareers.length > 0 && (
