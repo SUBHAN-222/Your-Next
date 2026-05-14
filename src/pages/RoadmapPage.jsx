@@ -6,22 +6,26 @@ import SkillsSection from "@components/SkillsSection";
 import EarningSection from "@components/EarningSection";
 
 const beginnerResources = {
-  "Python": "https://docs.python.org/3/tutorial/",
+  "Python": "https://www.learnpython.org",
   "Machine Learning": "https://developers.google.com/machine-learning/crash-course",
+  "Andrew Ng": "https://www.coursera.org/learn/machine-learning",
   "Deep Learning": "https://course.fast.ai",
-  "Mathematics": "https://www.youtube.com/c/3blue1brown",
-  "Linear Algebra": "https://www.youtube.com/c/3blue1brown",
+  "Mathematics": "https://www.khanacademy.org/math",
+  "Linear Algebra": "https://www.khanacademy.org/math",
   "Statistics": "https://www.khanacademy.org/math/statistics-probability",
-  "Neural Networks": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+  "Neural Networks": "https://www.youtube.com/@3blue1brown",
   "Data Science": "https://www.kaggle.com/learn",
-  "NLP": "https://huggingface.co/learn/nlp-course",
-  "Computer Vision": "https://cs231n.github.io",
-  "AI Tools": "https://learnprompting.org",
-  "Prompt Engineering": "https://learnprompting.org",
-  "Git": "https://git-scm.com/book/en/v2",
-  "Version Control": "https://git-scm.com/book/en/v2",
-  "SQL": "https://sqlzoo.net",
-  "Databases": "https://sqlzoo.net"
+  "NLP": "https://huggingface.co/learn/nlp-course/chapter1/1",
+  "Computer Vision": "https://www.youtube.com/watch?v=OXN3wuHUBP0",
+  "AI Tools": "https://learnprompting.org/docs/intro",
+  "Prompt Engineering": "https://learnprompting.org/docs/intro",
+  "Git": "https://learngitbranching.js.org",
+  "Version Control": "https://learngitbranching.js.org",
+  "SQL": "https://www.w3schools.com/sql",
+  "Databases": "https://www.w3schools.com/sql",
+  "Kaggle": "https://www.kaggle.com",
+  "Colab": "https://colab.research.google.com",
+  "HackerRank": "https://www.hackerrank.com/domains/python"
 };
 
 function RoadmapPage({ answers, onRestart }) {

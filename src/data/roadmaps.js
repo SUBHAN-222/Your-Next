@@ -37,7 +37,7 @@ export function generateRoadmapData(answers) {
             "You don't need to be a math genius. Python reads almost like English. Once you can write 5 lines of code, you're officially a programmer.",
           time: '⏱️ 45 mins',
           resourceTitle: 'Kaggle Python for Beginners',
-          resourceUrl: 'https://www.kaggle.com/learn/python',
+          resourceUrl: 'https://www.learnpython.org',
           task:
             "Create a variable with your name and print it. If it shows up on the screen, you've just successfully communicated with a machine."
         },
@@ -70,7 +70,7 @@ export function generateRoadmapData(answers) {
             'You are now talking to a digital brain. Learning how to ask the right questions is a superpower. You just made AI respond for the first time!',
           time: '⏱️ 45 mins',
           resourceTitle: 'OpenAI Prompting Guide',
-          resourceUrl: 'https://platform.openai.com/docs/guides/prompt-engineering',
+          resourceUrl: 'https://learnprompting.org/docs/intro',
           task:
             'Ask ChatGPT to explain a complex topic using only emojis. Notice how changing your prompt changes the AI personality.'
         },
@@ -299,7 +299,7 @@ export function generateRoadmapData(answers) {
             "Do not be intimidated by 'code.' It's just a way to talk to the computer. Python is the world's most popular language for data for a reason.",
           time: '⏱️ 45 mins',
           resourceTitle: 'Python for Data Science (Kaggle)',
-          resourceUrl: 'https://www.kaggle.com/learn/python',
+          resourceUrl: 'https://www.learnpython.org',
           task:
             "Write a 1-line script: print('My first data script is running!'). If you see that text, you have just unlocked automation."
         },
