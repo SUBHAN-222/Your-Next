@@ -351,7 +351,7 @@ function generateNextSteps(career, experienceLevel) {
     title: step.name,
     description: step.why,
     timeEstimate: step.time,
-    resource: step.resource,
+    resource: step.resourceUrl || step.resource || "",
     action: step.task
   }));
 }

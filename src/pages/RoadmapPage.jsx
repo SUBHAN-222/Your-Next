@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRecommendation } from "@hooks/useRecommendation";
 import LoadingScreen from "@components/LoadingScreen";
 import RecommendationCard from "@components/RecommendationCard";
 import SkillsSection from "@components/SkillsSection";
 import EarningSection from "@components/EarningSection";
 
+/**
+ * Curated, beginner-friendly resource links for every skill keyword.
+ * Every URL is a working, HTTPS resource. All links open in new tabs.
+ */
 const beginnerResources = {
   "Python": "https://www.learnpython.org",
   "Machine Learning": "https://developers.google.com/machine-learning/crash-course",
@@ -77,6 +81,34 @@ function RoadmapPage({ answers, onRestart }) {
 
   const { primaryCareer, alternativeCareers, skills, tools, earningMethods, nextSteps } = recommendation;
 
+  /**
+   * Validate that a URL is a real, working HTTPS URL (or HTTP for local dev).
+   * Returns null for any invalid/placeholder/plain-text URL.
+   */
+  const validateUrl = useCallback((url) => {
+    if (!url || typeof url !== "string") return null;
+    const trimmed = url.trim();
+    // Reject empty strings, spaces, placeholders, and plain text
+    if (
+      !trimmed ||
+      trimmed === " " ||
+      trimmed === "#" ||
+      trimmed.startsWith("http://") === false && trimmed.startsWith("https://") === false
+    ) {
+      return null;
+    }
+    try {
+      const parsed = new URL(trimmed);
+      // Only allow http/https protocols
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+      // Reject obviously invalid placeholders
+      if (parsed.hostname === "example.com" || parsed.hostname === "placeholder.com") return null;
+      return trimmed;
+    } catch {
+      return null;
+    }
+  }, []);
+
   const getBeginnerResource = (text) => {
     for (const [keyword, url] of Object.entries(beginnerResources)) {
       if (text.toLowerCase().includes(keyword.toLowerCase())) {
@@ -85,6 +117,27 @@ function RoadmapPage({ answers, onRestart }) {
     }
     return null;
   };
+
+  /**
+   * Safe external link component that validates URLs and provides fallback.
+   * Disables itself and shows "Coming Soon" if the URL is invalid.
+   */
+  const SafeExternalLink = useCallback(({ href, label, className }) => {
+    const validUrl = validateUrl(href);
+    if (!validUrl) {
+      return <span className={`${className || ""} disabled-link`}>Coming Soon</span>;
+    }
+    return (
+      <a
+        href={validUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {label} →
+      </a>
+    );
+  }, [validateUrl]);
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
@@ -128,16 +181,11 @@ function RoadmapPage({ answers, onRestart }) {
                     <div className="step-action">
                       <span>🎯 {step.action}</span>
                     </div>
-                    {step.resource && (
-                      <a 
-                        href={step.resource.startsWith("http") ? step.resource : `https://${step.resource}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="resource-link"
-                      >
-                        Learn more →
-                      </a>
-                    )}
+                    <SafeExternalLink
+                      href={step.resource || ""}
+                      label="Learn more"
+                      className="resource-link"
+                    />
                   </div>
                 </div>
               ))}
@@ -166,23 +214,20 @@ function RoadmapPage({ answers, onRestart }) {
                       <p>{step.why}</p>
                       <div className="step-info">
                         <span className="time">⏱️ {step.time}</span>
-                        <span className="resource">📚 {step.resource}</span>
+                        {step.resourceTitle && (
+                          <span className="resource">📚 {step.resourceTitle}</span>
+                        )}
                       </div>
                       <div className="step-task">
                         <strong>Task:</strong> {step.task}
                       </div>
-                      {resourceUrl && (
-                        <div className="step-beginner-resource">
-                          <a 
-                            href={resourceUrl} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="beginner-link"
-                          >
-                            Start here →
-                          </a>
-                        </div>
-                      )}
+                      <div className="step-beginner-resource">
+                        <SafeExternalLink
+                          href={resourceUrl || ""}
+                          label="Start here"
+                          className="beginner-link"
+                        />
+                      </div>
                     </div>
                   </div>
                 );
