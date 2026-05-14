@@ -352,6 +352,7 @@ function generateNextSteps(career, experienceLevel) {
     description: step.why,
     timeEstimate: step.time,
     resource: step.resourceUrl || step.resource || "",
+    resourceTitle: step.resource || "",
     action: step.task
   }));
 }

@@ -202,7 +202,8 @@ function RoadmapPage({ answers, onRestart }) {
             </p>
             <div className="roadmap-steps">
               {primaryCareer.roadmap.map((step, index) => {
-                const resourceUrl = getBeginnerResource(step.name);
+                // Use resourceUrl from careerPaths.js first, fall back to keyword-based lookup
+                const resourceUrl = step.resourceUrl || getBeginnerResource(step.name) || "";
                 return (
                   <div key={index} className="roadmap-step">
                     <div className="step-indicator">
@@ -214,8 +215,8 @@ function RoadmapPage({ answers, onRestart }) {
                       <p>{step.why}</p>
                       <div className="step-info">
                         <span className="time">⏱️ {step.time}</span>
-                        {step.resourceTitle && (
-                          <span className="resource">📚 {step.resourceTitle}</span>
+                        {step.resource && (
+                          <span className="resource">📚 {step.resource}</span>
                         )}
                       </div>
                       <div className="step-task">
@@ -223,7 +224,7 @@ function RoadmapPage({ answers, onRestart }) {
                       </div>
                       <div className="step-beginner-resource">
                         <SafeExternalLink
-                          href={resourceUrl || ""}
+                          href={resourceUrl}
                           label="Start here"
                           className="beginner-link"
                         />

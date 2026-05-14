@@ -2,6 +2,10 @@
  * Career Paths Database
  * Each career path contains detailed information for generating personalized roadmaps
  * This structure allows easy addition of new career tracks without rewriting logic
+ *
+ * IMPORTANT: Every roadmap step must have BOTH:
+ *   - resource:  Display title of the resource (e.g. "MDN HTML Basics")
+ *   - resourceUrl:  Real working HTTPS URL (e.g. "https://developer.mozilla.org/...")
  */
 
 export const CAREER_PATHS = {
@@ -47,24 +51,24 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "HTML Foundations", why: "The skeleton of every website", time: "2-3 hours", resource: "MDN HTML Basics", task: "Create a personal page with headings, paragraphs, and links" },
-        { name: "CSS Styling", why: "Make your websites visually appealing", time: "4-6 hours", resource: "CSS Tricks Guide", task: "Style your page with colors, fonts, and layouts" },
-        { name: "JavaScript Basics", why: "Add interactivity to your pages", time: "8-10 hours", resource: "JavaScript.info", task: "Build a button that changes the page color" },
-        { name: "Git & GitHub", why: "Version control is essential for collaboration", time: "3-4 hours", resource: "GitHub Learning Lab", task: "Push your project to GitHub" },
-        { name: "React Fundamentals", why: "The most popular frontend framework", time: "15-20 hours", resource: "React Official Docs", task: "Convert your page to React components" }
+        { name: "HTML Foundations", why: "The skeleton of every website", time: "2-3 hours", resource: "MDN HTML Basics", resourceUrl: "https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML", task: "Create a personal page with headings, paragraphs, and links" },
+        { name: "CSS Styling", why: "Make your websites visually appealing", time: "4-6 hours", resource: "CSS Tricks Guide", resourceUrl: "https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps", task: "Style your page with colors, fonts, and layouts" },
+        { name: "JavaScript Basics", why: "Add interactivity to your pages", time: "8-10 hours", resource: "JavaScript.info", resourceUrl: "https://javascript.info/", task: "Build a button that changes the page color" },
+        { name: "Git & GitHub", why: "Version control is essential for collaboration", time: "3-4 hours", resource: "GitHub Learning Lab", resourceUrl: "https://learngitbranching.js.org/", task: "Push your project to GitHub" },
+        { name: "React Fundamentals", why: "The most popular frontend framework", time: "15-20 hours", resource: "React Official Docs", resourceUrl: "https://react.dev/learn", task: "Convert your page to React components" }
       ],
       intermediate: [
-        { name: "Advanced React Patterns", why: "Write cleaner, more maintainable code", time: "10-15 hours", resource: "Epic React", task: "Refactor with custom hooks" },
-        { name: "TypeScript", why: "Catch errors before they happen", time: "8-12 hours", resource: "TypeScript Handbook", task: "Add types to your React project" },
-        { name: "Backend with Node.js", why: "Build your own APIs", time: "15-20 hours", resource: "Node.js Docs", task: "Create a REST API with Express" },
-        { name: "Database Fundamentals", why: "Store and retrieve data efficiently", time: "10-15 hours", resource: "SQLBolt", task: "Design and query a database" },
-        { name: "Deployment & DevOps", why: "Ship your applications to the world", time: "5-8 hours", resource: "Vercel/Netlify Docs", task: "Deploy a full-stack app" }
+        { name: "Advanced React Patterns", why: "Write cleaner, more maintainable code", time: "10-15 hours", resource: "Epic React", resourceUrl: "https://react.dev/reference/react/hooks", task: "Refactor with custom hooks" },
+        { name: "TypeScript", why: "Catch errors before they happen", time: "8-12 hours", resource: "TypeScript Handbook", resourceUrl: "https://www.typescriptlang.org/docs/handbook/intro.html", task: "Add types to your React project" },
+        { name: "Backend with Node.js", why: "Build your own APIs", time: "15-20 hours", resource: "Node.js Docs", resourceUrl: "https://nodejs.org/en/learn/", task: "Create a REST API with Express" },
+        { name: "Database Fundamentals", why: "Store and retrieve data efficiently", time: "10-15 hours", resource: "SQLBolt", resourceUrl: "https://sqlbolt.com/", task: "Design and query a database" },
+        { name: "Deployment & DevOps", why: "Ship your applications to the world", time: "5-8 hours", resource: "Vercel/Netlify Docs", resourceUrl: "https://vercel.com/docs", task: "Deploy a full-stack app" }
       ],
       advanced: [
-        { name: "System Design", why: "Architect scalable applications", time: "20-30 hours", resource: "System Design Primer", task: "Design a Twitter clone" },
-        { name: "Performance Optimization", why: "Make your apps lightning fast", time: "10-15 hours", resource: "Web.dev", task: "Achieve 90+ Lighthouse score" },
-        { name: "Testing Strategies", why: "Ship with confidence", time: "10-15 hours", resource: "Testing Library", task: "Write tests for your app" },
-        { name: "Cloud Architecture", why: "Scale to millions of users", time: "20-30 hours", resource: "AWS Certified Developer", task: "Deploy with CI/CD pipeline" }
+        { name: "System Design", why: "Architect scalable applications", time: "20-30 hours", resource: "System Design Primer", resourceUrl: "https://github.com/donnemartin/system-design-primer", task: "Design a Twitter clone" },
+        { name: "Performance Optimization", why: "Make your apps lightning fast", time: "10-15 hours", resource: "Web.dev", resourceUrl: "https://web.dev/learn/", task: "Achieve 90+ Lighthouse score" },
+        { name: "Testing Strategies", why: "Ship with confidence", time: "10-15 hours", resource: "Testing Library", resourceUrl: "https://testing-library.com/docs/", task: "Write tests for your app" },
+        { name: "Cloud Architecture", why: "Scale to millions of users", time: "20-30 hours", resource: "AWS Certified Developer", resourceUrl: "https://aws.amazon.com/getting-started/hands-on/", task: "Deploy with CI/CD pipeline" }
       ]
     }
   },
@@ -110,23 +114,23 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "Python Programming", why: "The language of AI", time: "10-15 hours", resource: "Python.org", task: "Write a program that processes data" },
-        { name: "Mathematics Basics", why: "AI is built on math", time: "15-20 hours", resource: "Khan Academy", task: "Understand linear algebra basics" },
-        { name: "Data Analysis with Pandas", why: "Work with real-world data", time: "8-12 hours", resource: "Pandas Documentation", task: "Analyze a dataset" },
-        { name: "Machine Learning Concepts", why: "Understand how ML works", time: "15-20 hours", resource: "Coursera ML Course", task: "Build your first ML model" },
-        { name: "Neural Networks Intro", why: "The foundation of deep learning", time: "10-15 hours", resource: "3Blue1Brown", task: "Create a simple neural network" }
+        { name: "Python Programming", why: "The language of AI", time: "10-15 hours", resource: "Python.org", resourceUrl: "https://www.learnpython.org/", task: "Write a program that processes data" },
+        { name: "Mathematics Basics", why: "AI is built on math", time: "15-20 hours", resource: "Khan Academy", resourceUrl: "https://www.khanacademy.org/math", task: "Understand linear algebra basics" },
+        { name: "Data Analysis with Pandas", why: "Work with real-world data", time: "8-12 hours", resource: "Pandas Documentation", resourceUrl: "https://pandas.pydata.org/docs/getting_started/index.html", task: "Analyze a dataset" },
+        { name: "Machine Learning Concepts", why: "Understand how ML works", time: "15-20 hours", resource: "Coursera ML Course", resourceUrl: "https://www.coursera.org/learn/machine-learning", task: "Build your first ML model" },
+        { name: "Neural Networks Intro", why: "The foundation of deep learning", time: "10-15 hours", resource: "3Blue1Brown", resourceUrl: "https://www.youtube.com/@3blue1brown", task: "Create a simple neural network" }
       ],
       intermediate: [
-        { name: "Deep Learning Specialization", why: "Master neural networks", time: "40-60 hours", resource: "DeepLearning.AI", task: "Build image classifier" },
-        { name: "NLP Fundamentals", why: "Work with text and language", time: "20-30 hours", resource: "Hugging Face Course", task: "Build a sentiment analyzer" },
-        { name: "Computer Vision", why: "Teach machines to see", time: "20-30 hours", resource: "OpenCV Docs", task: "Face detection project" },
-        { name: "MLOps Basics", why: "Deploy models to production", time: "15-20 hours", resource: "Made With ML", task: "Deploy a model with FastAPI" }
+        { name: "Deep Learning Specialization", why: "Master neural networks", time: "40-60 hours", resource: "DeepLearning.AI", resourceUrl: "https://course.fast.ai/", task: "Build image classifier" },
+        { name: "NLP Fundamentals", why: "Work with text and language", time: "20-30 hours", resource: "Hugging Face Course", resourceUrl: "https://huggingface.co/learn/nlp-course/chapter1/1", task: "Build a sentiment analyzer" },
+        { name: "Computer Vision", why: "Teach machines to see", time: "20-30 hours", resource: "OpenCV Docs", resourceUrl: "https://www.youtube.com/watch?v=OXN3wuHUBP0", task: "Face detection project" },
+        { name: "MLOps Basics", why: "Deploy models to production", time: "15-20 hours", resource: "Made With ML", resourceUrl: "https://madewithml.com/", task: "Deploy a model with FastAPI" }
       ],
       advanced: [
-        { name: "Transformer Architecture", why: "The backbone of modern AI", time: "30-40 hours", resource: "Attention Is All You Need", task: "Implement a transformer" },
-        { name: "Large Language Models", why: "Work with state-of-the-art AI", time: "20-30 hours", resource: "LLM Course", task: "Fine-tune a language model" },
-        { name: "Reinforcement Learning", why: "AI that learns from experience", time: "30-40 hours", resource: "Spinning Up", task: "Train an RL agent" },
-        { name: "AI Research Methods", why: "Contribute to the field", time: "Ongoing", resource: "Papers With Code", task: "Reproduce a research paper" }
+        { name: "Transformer Architecture", why: "The backbone of modern AI", time: "30-40 hours", resource: "Attention Is All You Need", resourceUrl: "https://arxiv.org/abs/1706.03762", task: "Implement a transformer" },
+        { name: "Large Language Models", why: "Work with state-of-the-art AI", time: "20-30 hours", resource: "LLM Course", resourceUrl: "https://learnprompting.org/docs/intro", task: "Fine-tune a language model" },
+        { name: "Reinforcement Learning", why: "AI that learns from experience", time: "30-40 hours", resource: "Spinning Up", resourceUrl: "https://spinningup.openai.com/en/latest/", task: "Train an RL agent" },
+        { name: "AI Research Methods", why: "Contribute to the field", time: "Ongoing", resource: "Papers With Code", resourceUrl: "https://paperswithcode.com/", task: "Reproduce a research paper" }
       ]
     }
   },
@@ -173,23 +177,23 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "Excel Mastery", why: "The most accessible data tool", time: "8-12 hours", resource: "Excel Easy", task: "Create pivot tables and charts" },
-        { name: "SQL Fundamentals", why: "Query any database", time: "10-15 hours", resource: "SQLZoo", task: "Query a sample database" },
-        { name: "Statistics Basics", why: "Understand data distributions", time: "15-20 hours", resource: "Khan Academy Stats", task: "Analyze a dataset statistically" },
-        { name: "Python for Data Science", why: "Automate your analysis", time: "15-20 hours", resource: "DataCamp", task: "Analyze data with Pandas" },
-        { name: "Data Visualization", why: "Tell stories with data", time: "10-15 hours", resource: "Tableau Public", task: "Create an interactive dashboard" }
+        { name: "Excel Mastery", why: "The most accessible data tool", time: "8-12 hours", resource: "Excel Easy", resourceUrl: "https://www.kaggle.com/learn", task: "Create pivot tables and charts" },
+        { name: "SQL Fundamentals", why: "Query any database", time: "10-15 hours", resource: "SQLZoo", resourceUrl: "https://www.w3schools.com/sql/", task: "Query a sample database" },
+        { name: "Statistics Basics", why: "Understand data distributions", time: "15-20 hours", resource: "Khan Academy Stats", resourceUrl: "https://www.khanacademy.org/math/statistics-probability", task: "Analyze a dataset statistically" },
+        { name: "Python for Data Science", why: "Automate your analysis", time: "15-20 hours", resource: "DataCamp", resourceUrl: "https://www.learnpython.org/", task: "Analyze data with Pandas" },
+        { name: "Data Visualization", why: "Tell stories with data", time: "10-15 hours", resource: "Tableau Public", resourceUrl: "https://www.kaggle.com/learn/data-visualization", task: "Create an interactive dashboard" }
       ],
       intermediate: [
-        { name: "Advanced SQL", why: "Handle complex queries", time: "15-20 hours", resource: "LeetCode SQL", task: "Solve 50 SQL challenges" },
-        { name: "Machine Learning", why: "Predict future outcomes", time: "30-40 hours", resource: "Coursera ML", task: "Build a prediction model" },
-        { name: "Big Data Basics", why: "Work with massive datasets", time: "15-20 hours", resource: "Spark Docs", task: "Process data with PySpark" },
-        { name: "A/B Testing", why: "Make data-driven decisions", time: "10-15 hours", resource: "Udacity A/B Testing", task: "Design and analyze an experiment" }
+        { name: "Advanced SQL", why: "Handle complex queries", time: "15-20 hours", resource: "LeetCode SQL", resourceUrl: "https://www.w3schools.com/sql/", task: "Solve 50 SQL challenges" },
+        { name: "Machine Learning", why: "Predict future outcomes", time: "30-40 hours", resource: "Coursera ML", resourceUrl: "https://www.coursera.org/learn/machine-learning", task: "Build a prediction model" },
+        { name: "Big Data Basics", why: "Work with massive datasets", time: "15-20 hours", resource: "Spark Docs", resourceUrl: "https://spark.apache.org/docs/latest/", task: "Process data with PySpark" },
+        { name: "A/B Testing", why: "Make data-driven decisions", time: "10-15 hours", resource: "Udacity A/B Testing", resourceUrl: "https://www.kaggle.com/learn", task: "Design and analyze an experiment" }
       ],
       advanced: [
-        { name: "Deep Learning for Data", why: "Handle unstructured data", time: "30-40 hours", resource: "Fast.ai", task: "Build an image classifier" },
-        { name: "MLOps", why: "Deploy models at scale", time: "20-30 hours", resource: "MLOps Zoomcamp", task: "Deploy a model pipeline" },
-        { name: "Cloud Data Platforms", why: "Enterprise-grade solutions", time: "20-30 hours", resource: "AWS Data Analytics", task: "Build a data lake" },
-        { name: "Advanced Analytics", why: "Solve complex business problems", time: "Ongoing", resource: "Towards Data Science", task: "End-to-end analytics project" }
+        { name: "Deep Learning for Data", why: "Handle unstructured data", time: "30-40 hours", resource: "Fast.ai", resourceUrl: "https://course.fast.ai/", task: "Build an image classifier" },
+        { name: "MLOps", why: "Deploy models at scale", time: "20-30 hours", resource: "MLOps Zoomcamp", resourceUrl: "https://madewithml.com/", task: "Deploy a model pipeline" },
+        { name: "Cloud Data Platforms", why: "Enterprise-grade solutions", time: "20-30 hours", resource: "AWS Data Analytics", resourceUrl: "https://aws.amazon.com/getting-started/hands-on/", task: "Build a data lake" },
+        { name: "Advanced Analytics", why: "Solve complex business problems", time: "Ongoing", resource: "Towards Data Science", resourceUrl: "https://www.kaggle.com/learn", task: "End-to-end analytics project" }
       ]
     }
   },
@@ -234,23 +238,23 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "Networking Fundamentals", why: "Understand how data moves", time: "15-20 hours", resource: "NetworkChuck", task: "Set up a home lab network" },
-        { name: "Linux Basics", why: "Most security tools run on Linux", time: "10-15 hours", resource: "Linux Journey", task: "Navigate and manage files via terminal" },
-        { name: "Security Fundamentals", why: "Learn the core concepts", time: "15-20 hours", resource: "CompTIA Security+", task: "Document common threats" },
-        { name: "Web Technologies", why: "Understand what you're protecting", time: "10-15 hours", resource: "OWASP Top 10", task: "Identify vulnerabilities in a demo app" },
-        { name: "Python for Security", why: "Automate security tasks", time: "10-15 hours", resource: "Black Hat Python", task: "Write a port scanner" }
+        { name: "Networking Fundamentals", why: "Understand how data moves", time: "15-20 hours", resource: "NetworkChuck", resourceUrl: "https://tryhackme.com/path/outline/presecurity", task: "Set up a home lab network" },
+        { name: "Linux Basics", why: "Most security tools run on Linux", time: "10-15 hours", resource: "Linux Journey", resourceUrl: "https://linuxjourney.com/", task: "Navigate and manage files via terminal" },
+        { name: "Security Fundamentals", why: "Learn the core concepts", time: "15-20 hours", resource: "CompTIA Security+", resourceUrl: "https://tryhackme.com/room/startingoutincybersec", task: "Document common threats" },
+        { name: "Web Technologies", why: "Understand what you're protecting", time: "10-15 hours", resource: "OWASP Top 10", resourceUrl: "https://owasp.org/www-project-top-ten/", task: "Identify vulnerabilities in a demo app" },
+        { name: "Python for Security", why: "Automate security tasks", time: "10-15 hours", resource: "Black Hat Python", resourceUrl: "https://www.learnpython.org/", task: "Write a port scanner" }
       ],
       intermediate: [
-        { name: "Penetration Testing", why: "Learn to think like an attacker", time: "30-40 hours", resource: "eJPT Course", task: "Complete a pentest lab" },
-        { name: "Web Application Security", why: "Protect the most common attack surface", time: "20-30 hours", resource: "OWASP Web Security", task: "Exploit and fix OWASP Top 10" },
-        { name: "Network Security", why: "Secure the infrastructure", time: "20-30 hours", resource: "Network Security Courses", task: "Configure firewalls and IDS" },
-        { name: "Incident Response", why: "Handle security breaches", time: "15-20 hours", resource: "SANS Incident Response", task: "Simulate an incident response" }
+        { name: "Penetration Testing", why: "Learn to think like an attacker", time: "30-40 hours", resource: "eJPT Course", resourceUrl: "https://tryhackme.com/room/startingoutincybersec", task: "Complete a pentest lab" },
+        { name: "Web Application Security", why: "Protect the most common attack surface", time: "20-30 hours", resource: "OWASP Web Security", resourceUrl: "https://owasp.org/www-project-top-ten/", task: "Exploit and fix OWASP Top 10" },
+        { name: "Network Security", why: "Secure the infrastructure", time: "20-30 hours", resource: "Network Security Courses", resourceUrl: "https://tryhackme.com/path/outline/presecurity", task: "Configure firewalls and IDS" },
+        { name: "Incident Response", why: "Handle security breaches", time: "15-20 hours", resource: "SANS Incident Response", resourceUrl: "https://www.sans.org/cyber-security-courses/", task: "Simulate an incident response" }
       ],
       advanced: [
-        { name: "Advanced Exploitation", why: "Master complex attacks", time: "40-60 hours", resource: "OSEP Course", task: "Bypass modern defenses" },
-        { name: "Cloud Security", why: "Secure cloud infrastructure", time: "20-30 hours", resource: "CCSP Certification", task: "Secure a cloud environment" },
-        { name: "Reverse Engineering", why: "Understand malware and exploits", time: "30-40 hours", resource: "Malware Analysis", task: "Analyze a malware sample" },
-        { name: "Security Architecture", why: "Design secure systems", time: "Ongoing", resource: "CISSP", task: "Design enterprise security" }
+        { name: "Advanced Exploitation", why: "Master complex attacks", time: "40-60 hours", resource: "OSEP Course", resourceUrl: "https://www.offsec.com/courses/pen-300/", task: "Bypass modern defenses" },
+        { name: "Cloud Security", why: "Secure cloud infrastructure", time: "20-30 hours", resource: "CCSP Certification", resourceUrl: "https://aws.amazon.com/training/", task: "Secure a cloud environment" },
+        { name: "Reverse Engineering", why: "Understand malware and exploits", time: "30-40 hours", resource: "Malware Analysis", resourceUrl: "https://tryhackme.com/room/startingoutincybersec", task: "Analyze a malware sample" },
+        { name: "Security Architecture", why: "Design secure systems", time: "Ongoing", resource: "CISSP", resourceUrl: "https://www.sans.org/cyber-security-courses/", task: "Design enterprise security" }
       ]
     }
   },
@@ -297,23 +301,23 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "Programming Fundamentals", why: "Foundation for all development", time: "15-20 hours", resource: "freeCodeCamp", task: "Build a calculator app" },
-        { name: "UI/UX Basics", why: "Create user-friendly interfaces", time: "8-12 hours", resource: "Material Design", task: "Design app screens in Figma" },
-        { name: "React Native Basics", why: "Cross-platform development", time: "20-30 hours", resource: "React Native Docs", task: "Build a todo app" },
-        { name: "State Management", why: "Handle app data efficiently", time: "10-15 hours", resource: "Redux Toolkit", task: "Add state management to your app" },
-        { name: "Publishing", why: "Get your app to users", time: "5-8 hours", resource: "App Store Guidelines", task: "Publish to TestFlight or Play Console" }
+        { name: "Programming Fundamentals", why: "Foundation for all development", time: "15-20 hours", resource: "freeCodeCamp", resourceUrl: "https://www.freecodecamp.org/", task: "Build a calculator app" },
+        { name: "UI/UX Basics", why: "Create user-friendly interfaces", time: "8-12 hours", resource: "Material Design", resourceUrl: "https://www.figma.com/resource-library/design-basics/", task: "Design app screens in Figma" },
+        { name: "React Native Basics", why: "Cross-platform development", time: "20-30 hours", resource: "React Native Docs", resourceUrl: "https://reactnative.dev/docs/getting-started", task: "Build a todo app" },
+        { name: "State Management", why: "Handle app data efficiently", time: "10-15 hours", resource: "Redux Toolkit", resourceUrl: "https://redux-toolkit.js.org/", task: "Add state management to your app" },
+        { name: "Publishing", why: "Get your app to users", time: "5-8 hours", resource: "App Store Guidelines", resourceUrl: "https://reactnative.dev/docs/publishing-to-app-store", task: "Publish to TestFlight or Play Console" }
       ],
       intermediate: [
-        { name: "Native Modules", why: "Access device features", time: "15-20 hours", resource: "React Native Native", task: "Integrate camera and location" },
-        { name: "Performance Optimization", why: "Make apps smooth and fast", time: "10-15 hours", resource: "React Native Performance", task: "Optimize app startup time" },
-        { name: "Testing", why: "Ensure app quality", time: "10-15 hours", resource: "React Native Testing", task: "Write unit and integration tests" },
-        { name: "Backend Integration", why: "Connect to servers and APIs", time: "15-20 hours", resource: "Firebase Docs", task: "Add authentication and database" }
+        { name: "Native Modules", why: "Access device features", time: "15-20 hours", resource: "React Native Native", resourceUrl: "https://reactnative.dev/docs/native-modules-setup", task: "Integrate camera and location" },
+        { name: "Performance Optimization", why: "Make apps smooth and fast", time: "10-15 hours", resource: "React Native Performance", resourceUrl: "https://reactnative.dev/docs/performance", task: "Optimize app startup time" },
+        { name: "Testing", why: "Ensure app quality", time: "10-15 hours", resource: "React Native Testing", resourceUrl: "https://reactnative.dev/docs/testing-overview", task: "Write unit and integration tests" },
+        { name: "Backend Integration", why: "Connect to servers and APIs", time: "15-20 hours", resource: "Firebase Docs", resourceUrl: "https://firebase.google.com/docs", task: "Add authentication and database" }
       ],
       advanced: [
-        { name: "Advanced Animations", why: "Create polished experiences", time: "15-20 hours", resource: "Reanimated", task: "Build complex animations" },
-        { name: "Offline-First Architecture", why: "Apps that work without internet", time: "15-20 hours", resource: "WatermelonDB", task: "Implement offline sync" },
-        { name: "CI/CD for Mobile", why: "Automate builds and releases", time: "10-15 hours", resource: "Fastlane", task: "Set up automated deployments" },
-        { name: "Monetization", why: "Earn from your apps", time: "Ongoing", resource: "RevenueCat", task: "Implement in-app purchases" }
+        { name: "Advanced Animations", why: "Create polished experiences", time: "15-20 hours", resource: "Reanimated", resourceUrl: "https://docs.swmansion.com/react-native-reanimated/", task: "Build complex animations" },
+        { name: "Offline-First Architecture", why: "Apps that work without internet", time: "15-20 hours", resource: "WatermelonDB", resourceUrl: "https://watermelondb.dev/", task: "Implement offline sync" },
+        { name: "CI/CD for Mobile", why: "Automate builds and releases", time: "10-15 hours", resource: "Fastlane", resourceUrl: "https://fastlane.tools/", task: "Set up automated deployments" },
+        { name: "Monetization", why: "Earn from your apps", time: "Ongoing", resource: "RevenueCat", resourceUrl: "https://www.revenuecat.com/docs/", task: "Implement in-app purchases" }
       ]
     }
   },
@@ -360,23 +364,23 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "Design Fundamentals", why: "Understand the basics of visual design", time: "10-15 hours", resource: "Refactoring UI", task: "Redesign a bad interface" },
-        { name: "Figma Mastery", why: "The industry standard tool", time: "15-20 hours", resource: "Figma Tutorial", task: "Design a mobile app screen" },
-        { name: "UX Principles", why: "Design for users, not yourself", time: "15-20 hours", resource: "Don't Make Me Think", task: "Conduct a usability review" },
-        { name: "Design Systems", why: "Create consistent experiences", time: "10-15 hours", resource: "Material Design", task: "Build a component library" },
-        { name: "Portfolio Building", why: "Showcase your work", time: "20-30 hours", resource: "Design Buddies", task: "Create 3 case studies" }
+        { name: "Design Fundamentals", why: "Understand the basics of visual design", time: "10-15 hours", resource: "Refactoring UI", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Redesign a bad interface" },
+        { name: "Figma Mastery", why: "The industry standard tool", time: "15-20 hours", resource: "Figma Tutorial", resourceUrl: "https://www.figma.com/resource-library/design-basics/", task: "Design a mobile app screen" },
+        { name: "UX Principles", why: "Design for users, not yourself", time: "15-20 hours", resource: "Don't Make Me Think", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Conduct a usability review" },
+        { name: "Design Systems", why: "Create consistent experiences", time: "10-15 hours", resource: "Material Design", resourceUrl: "https://www.figma.com/resource-library/design-basics/", task: "Build a component library" },
+        { name: "Portfolio Building", why: "Showcase your work", time: "20-30 hours", resource: "Design Buddies", resourceUrl: "https://www.figma.com/resource-library/design-basics/", task: "Create 3 case studies" }
       ],
       intermediate: [
-        { name: "Advanced Prototyping", why: "Bring designs to life", time: "15-20 hours", resource: "ProtoPie", task: "Create an interactive prototype" },
-        { name: "User Research", why: "Base decisions on data", time: "15-20 hours", resource: "User Research Guide", task: "Conduct user interviews" },
-        { name: "Accessibility", why: "Design for everyone", time: "10-15 hours", resource: "WCAG Guidelines", task: "Audit a design for accessibility" },
-        { name: "Design to Development", why: "Bridge the gap", time: "10-15 hours", resource: "Handoff Guide", task: "Create developer-ready specs" }
+        { name: "Advanced Prototyping", why: "Bring designs to life", time: "15-20 hours", resource: "ProtoPie", resourceUrl: "https://www.figma.com/resource-library/design-basics/", task: "Create an interactive prototype" },
+        { name: "User Research", why: "Base decisions on data", time: "15-20 hours", resource: "User Research Guide", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Conduct user interviews" },
+        { name: "Accessibility", why: "Design for everyone", time: "10-15 hours", resource: "WCAG Guidelines", resourceUrl: "https://www.w3.org/WAI/standards-guidelines/wcag/", task: "Audit a design for accessibility" },
+        { name: "Design to Development", why: "Bridge the gap", time: "10-15 hours", resource: "Handoff Guide", resourceUrl: "https://www.figma.com/resource-library/design-basics/", task: "Create developer-ready specs" }
       ],
       advanced: [
-        { name: "Product Strategy", why: "Think beyond pixels", time: "20-30 hours", resource: "Inspired by Marty Cagan", task: "Define a product roadmap" },
-        { name: "Design Leadership", why: "Lead design teams", time: "Ongoing", resource: "Design Leadership Forum", task: "Mentor junior designers" },
-        { name: "Data-Driven Design", why: "Measure design impact", time: "15-20 hours", resource: "Lean UX", task: "Run A/B tests on designs" },
-        { name: "Specialization", why: "Become an expert", time: "Ongoing", resource: "Industry Conferences", task: "Speak at a design event" }
+        { name: "Product Strategy", why: "Think beyond pixels", time: "20-30 hours", resource: "Inspired by Marty Cagan", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Define a product roadmap" },
+        { name: "Design Leadership", why: "Lead design teams", time: "Ongoing", resource: "Design Leadership Forum", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Mentor junior designers" },
+        { name: "Data-Driven Design", why: "Measure design impact", time: "15-20 hours", resource: "Lean UX", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Run A/B tests on designs" },
+        { name: "Specialization", why: "Become an expert", time: "Ongoing", resource: "Industry Conferences", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Speak at a design event" }
       ]
     }
   },
@@ -421,23 +425,23 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "Choose Your Niche", why: "Specialization leads to higher rates", time: "5-8 hours", resource: "Niche Selection Guide", task: "Define your service offering" },
-        { name: "Build a Portfolio", why: "Show, don't tell", time: "15-20 hours", resource: "Portfolio Guide", task: "Create 3 portfolio pieces" },
-        { name: "Set Up Profiles", why: "Get visible to clients", time: "5-8 hours", resource: "Upwork Guide", task: "Complete Upwork and LinkedIn profiles" },
-        { name: "Learn to Pitch", why: "Win your first clients", time: "8-12 hours", resource: "Proposal Writing", task: "Write 10 practice proposals" },
-        { name: "Deliver Excellence", why: "Build your reputation", time: "Ongoing", resource: "Client Management", task: "Complete your first project" }
+        { name: "Choose Your Niche", why: "Specialization leads to higher rates", time: "5-8 hours", resource: "Niche Selection Guide", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Define your service offering" },
+        { name: "Build a Portfolio", why: "Show, don't tell", time: "15-20 hours", resource: "Portfolio Guide", resourceUrl: "https://www.upwork.com/resources/how-to-create-a-profile-that-stands-out", task: "Create 3 portfolio pieces" },
+        { name: "Set Up Profiles", why: "Get visible to clients", time: "5-8 hours", resource: "Upwork Guide", resourceUrl: "https://www.upwork.com/resources/how-to-create-a-profile-that-stands-out", task: "Complete Upwork and LinkedIn profiles" },
+        { name: "Learn to Pitch", why: "Win your first clients", time: "8-12 hours", resource: "Proposal Writing", resourceUrl: "https://www.upwork.com/resources/how-to-write-a-cover-letter", task: "Write 10 practice proposals" },
+        { name: "Deliver Excellence", why: "Build your reputation", time: "Ongoing", resource: "Client Management", resourceUrl: "https://www.upwork.com/resources/how-to-write-a-cover-letter", task: "Complete your first project" }
       ],
       intermediate: [
-        { name: "Raise Your Rates", why: "Earn what you're worth", time: "5-8 hours", resource: "Pricing Strategy", task: "Increase rates by 25%" },
-        { name: "Build Systems", why: "Work more efficiently", time: "10-15 hours", resource: "Freelance Systems", task: "Create templates and workflows" },
-        { name: "Passive Income", why: "Earn while you sleep", time: "20-30 hours", resource: "Digital Products", task: "Launch a digital product" },
-        { name: "Network Building", why: "Get referrals and opportunities", time: "Ongoing", resource: "Networking Guide", task: "Attend 3 industry events" }
+        { name: "Raise Your Rates", why: "Earn what you're worth", time: "5-8 hours", resource: "Pricing Strategy", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Increase rates by 25%" },
+        { name: "Build Systems", why: "Work more efficiently", time: "10-15 hours", resource: "Freelance Systems", resourceUrl: "https://www.upwork.com/resources/how-to-create-a-profile-that-stands-out", task: "Create templates and workflows" },
+        { name: "Passive Income", why: "Earn while you sleep", time: "20-30 hours", resource: "Digital Products", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Launch a digital product" },
+        { name: "Network Building", why: "Get referrals and opportunities", time: "Ongoing", resource: "Networking Guide", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Attend 3 industry events" }
       ],
       advanced: [
-        { name: "Scale with Team", why: "Take on bigger projects", time: "20-30 hours", resource: "Hiring Guide", task: "Hire your first contractor" },
-        { name: "Productize Services", why: "Predictable revenue", time: "15-20 hours", resource: "Productized Service", task: "Create a service package" },
-        { name: "Personal Brand", why: "Attract inbound leads", time: "Ongoing", resource: "Personal Branding", task: "Publish weekly content" },
-        { name: "Exit Strategy", why: "Build something sellable", time: "Ongoing", resource: "Business Exit", task: "Document all processes" }
+        { name: "Scale with Team", why: "Take on bigger projects", time: "20-30 hours", resource: "Hiring Guide", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Hire your first contractor" },
+        { name: "Productize Services", why: "Predictable revenue", time: "15-20 hours", resource: "Productized Service", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Create a service package" },
+        { name: "Personal Brand", why: "Attract inbound leads", time: "Ongoing", resource: "Personal Branding", resourceUrl: "https://www.upwork.com/resources/how-to-create-a-profile-that-stands-out", task: "Publish weekly content" },
+        { name: "Exit Strategy", why: "Build something sellable", time: "Ongoing", resource: "Business Exit", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Document all processes" }
       ]
     }
   },
@@ -472,23 +476,23 @@ export const CAREER_PATHS = {
     },
     roadmaps: {
       beginner: [
-        { name: "Programming Fundamentals", why: "The foundation of everything", time: "20-30 hours", resource: "CS50", task: "Complete all problem sets" },
-        { name: "Data Structures", why: "Write efficient code", time: "30-40 hours", resource: "Visualgo", task: "Implement all basic data structures" },
-        { name: "Algorithms", why: "Solve problems efficiently", time: "40-50 hours", resource: "Algorithms Specialization", task: "Solve 100 LeetCode problems" },
-        { name: "Version Control", why: "Collaborate like a pro", time: "5-8 hours", resource: "GitHub Learning", task: "Contribute to open source" },
-        { name: "Build Projects", why: "Apply what you learn", time: "Ongoing", resource: "Build Your Own X", task: "Create a portfolio project" }
+        { name: "Programming Fundamentals", why: "The foundation of everything", time: "20-30 hours", resource: "CS50", resourceUrl: "https://cs50.harvard.edu/x/", task: "Complete all problem sets" },
+        { name: "Data Structures", why: "Write efficient code", time: "30-40 hours", resource: "Visualgo", resourceUrl: "https://visualgo.net/en", task: "Implement all basic data structures" },
+        { name: "Algorithms", why: "Solve problems efficiently", time: "40-50 hours", resource: "Algorithms Specialization", resourceUrl: "https://visualgo.net/en", task: "Solve 100 LeetCode problems" },
+        { name: "Version Control", why: "Collaborate like a pro", time: "5-8 hours", resource: "GitHub Learning", resourceUrl: "https://learngitbranching.js.org/", task: "Contribute to open source" },
+        { name: "Build Projects", why: "Apply what you learn", time: "Ongoing", resource: "Build Your Own X", resourceUrl: "https://www.freecodecamp.org/", task: "Create a portfolio project" }
       ],
       intermediate: [
-        { name: "System Design", why: "Design scalable systems", time: "30-40 hours", resource: "System Design Primer", task: "Design Twitter" },
-        { name: "Advanced Algorithms", why: "Ace technical interviews", time: "40-60 hours", resource: "CLRS", task: "Solve 200+ LeetCode problems" },
-        { name: "Open Source", why: "Learn from real codebases", time: "Ongoing", resource: "First Timers Only", task: "Make 5 open source contributions" },
-        { name: "Internship Hunt", why: "Get real-world experience", time: "20-30 hours", resource: "Internship Guide", task: "Apply to 50+ internships" }
+        { name: "System Design", why: "Design scalable systems", time: "30-40 hours", resource: "System Design Primer", resourceUrl: "https://github.com/donnemartin/system-design-primer", task: "Design Twitter" },
+        { name: "Advanced Algorithms", why: "Ace technical interviews", time: "40-60 hours", resource: "CLRS", resourceUrl: "https://visualgo.net/en", task: "Solve 200+ LeetCode problems" },
+        { name: "Open Source", why: "Learn from real codebases", time: "Ongoing", resource: "First Timers Only", resourceUrl: "https://learngitbranching.js.org/", task: "Make 5 open source contributions" },
+        { name: "Internship Hunt", why: "Get real-world experience", time: "20-30 hours", resource: "Internship Guide", resourceUrl: "https://www.freecodecamp.org/", task: "Apply to 50+ internships" }
       ],
       advanced: [
-        { name: "Specialization", why: "Become an expert", time: "Ongoing", resource: "Advanced Courses", task: "Complete a capstone project" },
-        { name: "Interview Prep", why: "Land your dream job", time: "60-80 hours", resource: "Cracking the Coding Interview", task: "Mock interviews weekly" },
-        { name: "Networking", why: "Opportunities come from people", time: "Ongoing", resource: "Networking Guide", task: "Connect with 100+ professionals" },
-        { name: "Job Search Strategy", why: "Maximize your options", time: "20-30 hours", resource: "Job Search Guide", task: "Apply to 100+ positions" }
+        { name: "Specialization", why: "Become an expert", time: "Ongoing", resource: "Advanced Courses", resourceUrl: "https://www.freecodecamp.org/", task: "Complete a capstone project" },
+        { name: "Interview Prep", why: "Land your dream job", time: "60-80 hours", resource: "Cracking the Coding Interview", resourceUrl: "https://visualgo.net/en", task: "Mock interviews weekly" },
+        { name: "Networking", why: "Opportunities come from people", time: "Ongoing", resource: "Networking Guide", resourceUrl: "https://www.freecodecamp.org/", task: "Connect with 100+ professionals" },
+        { name: "Job Search Strategy", why: "Maximize your options", time: "20-30 hours", resource: "Job Search Guide", resourceUrl: "https://www.freecodecamp.org/", task: "Apply to 100+ positions" }
       ]
     }
   }
