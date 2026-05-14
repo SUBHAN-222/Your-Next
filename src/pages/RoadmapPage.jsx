@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRecommendation } from "@hooks/useRecommendation";
 import LoadingScreen from "@components/LoadingScreen";
 import RecommendationCard from "@components/RecommendationCard";
@@ -31,6 +31,64 @@ const beginnerResources = {
   "Colab": "https://colab.research.google.com",
   "HackerRank": "https://www.hackerrank.com/domains/python"
 };
+
+/**
+ * Validate that a URL is a real, working HTTPS URL (or HTTP for local dev).
+ * Returns null for any invalid/placeholder/plain-text URL.
+ */
+function validateUrl(url) {
+  if (!url || typeof url !== "string") return null;
+  const trimmed = url.trim();
+  if (
+    !trimmed ||
+    trimmed === " " ||
+    trimmed === "#" ||
+    (trimmed.startsWith("http://") === false && trimmed.startsWith("https://") === false)
+  ) {
+    return null;
+  }
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    if (parsed.hostname === "example.com" || parsed.hostname === "placeholder.com") return null;
+    return trimmed;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get a beginner-friendly resource URL by matching step name against keywords.
+ */
+function getBeginnerResource(text) {
+  for (const [keyword, url] of Object.entries(beginnerResources)) {
+    if (text.toLowerCase().includes(keyword.toLowerCase())) {
+      return url;
+    }
+  }
+  return null;
+}
+
+/**
+ * Safe external link component that validates URLs and provides fallback.
+ * Disables itself and shows "Coming Soon" if the URL is invalid.
+ */
+function SafeExternalLink({ href, label, className }) {
+  const validUrl = validateUrl(href);
+  if (!validUrl) {
+    return <span className={`${className || ""} disabled-link`}>Coming Soon</span>;
+  }
+  return (
+    <a
+      href={validUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
+      {label} →
+    </a>
+  );
+}
 
 function RoadmapPage({ answers, onRestart }) {
   const { recommendation, isReady } = useRecommendation(answers);
@@ -80,64 +138,6 @@ function RoadmapPage({ answers, onRestart }) {
   }
 
   const { primaryCareer, alternativeCareers, skills, tools, earningMethods, nextSteps } = recommendation;
-
-  /**
-   * Validate that a URL is a real, working HTTPS URL (or HTTP for local dev).
-   * Returns null for any invalid/placeholder/plain-text URL.
-   */
-  const validateUrl = useCallback((url) => {
-    if (!url || typeof url !== "string") return null;
-    const trimmed = url.trim();
-    // Reject empty strings, spaces, placeholders, and plain text
-    if (
-      !trimmed ||
-      trimmed === " " ||
-      trimmed === "#" ||
-      trimmed.startsWith("http://") === false && trimmed.startsWith("https://") === false
-    ) {
-      return null;
-    }
-    try {
-      const parsed = new URL(trimmed);
-      // Only allow http/https protocols
-      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
-      // Reject obviously invalid placeholders
-      if (parsed.hostname === "example.com" || parsed.hostname === "placeholder.com") return null;
-      return trimmed;
-    } catch {
-      return null;
-    }
-  }, []);
-
-  const getBeginnerResource = (text) => {
-    for (const [keyword, url] of Object.entries(beginnerResources)) {
-      if (text.toLowerCase().includes(keyword.toLowerCase())) {
-        return url;
-      }
-    }
-    return null;
-  };
-
-  /**
-   * Safe external link component that validates URLs and provides fallback.
-   * Disables itself and shows "Coming Soon" if the URL is invalid.
-   */
-  const SafeExternalLink = useCallback(({ href, label, className }) => {
-    const validUrl = validateUrl(href);
-    if (!validUrl) {
-      return <span className={`${className || ""} disabled-link`}>Coming Soon</span>;
-    }
-    return (
-      <a
-        href={validUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-      >
-        {label} →
-      </a>
-    );
-  }, [validateUrl]);
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
@@ -257,7 +257,7 @@ function RoadmapPage({ answers, onRestart }) {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> 
           </div>
         )}
 
