@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRecommendation } from "@hooks/useRecommendation";
 import LoadingScreen from "@components/LoadingScreen";
-import RecommendationCard from "@components/RecommendationCard";
 import SkillsSection from "@components/SkillsSection";
-import EarningSection from "@components/EarningSection";
 
 /**
  * Curated, beginner-friendly resource links for every skill keyword.
@@ -95,6 +93,7 @@ function RoadmapPage({ answers, onRestart }) {
   const [showLoading, setShowLoading] = useState(true);
   const [loadingStep, setLoadingStep] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [showFullRoadmap, setShowFullRoadmap] = useState(false);
 
   // Handle loading sequence
   useEffect(() => {
@@ -137,7 +136,7 @@ function RoadmapPage({ answers, onRestart }) {
     );
   }
 
-  const { primaryCareer, alternativeCareers, skills, tools, earningMethods, nextSteps, dontLearnYet } = recommendation;
+  const { primaryCareer, skills, tools, nextSteps, dontLearnYet } = recommendation;
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
@@ -146,28 +145,26 @@ function RoadmapPage({ answers, onRestart }) {
         <button className="nav-logo" onClick={onRestart} aria-label="Go home">
           Your<b>Next</b>
         </button>
-        <span className="nav-label">Your Recommendation</span>
+        <span className="nav-label">Your Path</span>
       </nav>
 
-      {/* Header */}
+      {/* 1. Personalized Intro Section */}
       <div className={`roadmap-top ${isVisible ? "visible" : ""}`}>
         <h2 className="roadmap-h">
-          Your personalized path to <span id="resField">{primaryCareer.name}</span>.
+          Welcome to your <span id="resField">{primaryCareer.name}</span> journey.
         </h2>
         <p className="roadmap-sub">
-          Based on your unique situation, goals, and preferences.
+          We've analyzed your goals to build this focused, one-step-at-a-time path.
         </p>
       </div>
 
       <div className="roadmap-container recommendation-container">
-        {/* First: AI & Machine Learning (Recommendation Card) */}
-        <RecommendationCard recommendation={recommendation} />
-
-        {/* Second: Your First 3 Steps */}
+        
+        {/* 2. Your First 3 Steps (MOST IMPORTANT SECTION) */}
         {nextSteps && nextSteps.length > 0 && (
-          <div className="next-steps-section">
+          <div className="next-steps-section priority-block">
             <h3 className="section-title">Your First 3 Steps</h3>
-            <p className="section-subtitle">Start here right now — momentum is everything.</p>
+            <p className="section-subtitle">Start here to build immediate momentum.</p>
             <div className="next-steps-grid">
               {nextSteps.map((step, index) => (
                 <div key={index} className="next-step-card">
@@ -183,7 +180,7 @@ function RoadmapPage({ answers, onRestart }) {
                     </div>
                     <SafeExternalLink
                       href={step.resource || ""}
-                      label="Learn more"
+                      label="Start Learning"
                       className="resource-link"
                     />
                   </div>
@@ -193,13 +190,13 @@ function RoadmapPage({ answers, onRestart }) {
           </div>
         )}
 
-        {/* Third: Don't Learn This Yet */}
+        {/* 3. Don’t Learn This Yet */}
         {dontLearnYet && dontLearnYet.length > 0 && (
           <div className="dont-learn-section">
             <h3 className="dont-learn-title">
               <span>🛡️</span> Don't Learn This Yet
             </h3>
-            <p className="dont-learn-subtitle">Focus matters more than learning everything.</p>
+            <p className="dont-learn-subtitle">Avoid these for now to stay focused and reduce overwhelm.</p>
             <div className="dont-learn-list">
               {dontLearnYet.map((item, index) => (
                 <div key={index} className="dont-learn-item">
@@ -211,91 +208,77 @@ function RoadmapPage({ answers, onRestart }) {
           </div>
         )}
 
-        {/* Fourth: Your Complete Roadmap */}
+        {/* 4. Your Complete Roadmap (Collapsible) */}
         {primaryCareer.roadmap && primaryCareer.roadmap.length > 0 && (
           <div className="full-roadmap-section">
-            <h3 className="section-title">Your Complete Roadmap</h3>
-            <p className="roadmap-level">
-              Level: <strong>{primaryCareer.experienceLevel}</strong>
-            </p>
-            <div className="roadmap-steps">
-              {primaryCareer.roadmap.map((step, index) => {
-                // Use resourceUrl from careerPaths.js first, fall back to keyword-based lookup
-                const resourceUrl = step.resourceUrl || getBeginnerResource(step.name) || "";
-                return (
-                  <div key={index} className="roadmap-step">
-                    <div className="step-indicator">
-                      <div className="step-dot"></div>
-                      {index < primaryCareer.roadmap.length - 1 && <div className="step-line"></div>}
+            <button 
+              className={`roadmap-toggle-btn ${showFullRoadmap ? 'open' : ''}`}
+              onClick={() => setShowFullRoadmap(!showFullRoadmap)}
+            >
+              <span>View Your Complete Roadmap</span>
+              <span className="roadmap-toggle-icon">▼</span>
+            </button>
+            
+            <div className={`roadmap-content-wrapper ${showFullRoadmap ? 'open' : ''}`}>
+              <p className="roadmap-level">
+                Current Focus: <strong>{primaryCareer.experienceLevel}</strong>
+              </p>
+              <div className="roadmap-steps">
+                {primaryCareer.roadmap.map((step, index) => {
+                  const resourceUrl = step.resourceUrl || getBeginnerResource(step.name) || "";
+                  return (
+                    <div key={index} className="roadmap-step">
+                      <div className="step-indicator">
+                        <div className="step-dot"></div>
+                        {index < primaryCareer.roadmap.length - 1 && <div className="step-line"></div>}
+                      </div>
+                      <div className="step-details">
+                        <h4>{step.name}</h4>
+                        <p>{step.why}</p>
+                        <div className="step-info">
+                          <span className="time">⏱️ {step.time}</span>
+                          {step.resource && (
+                            <span className="resource">📚 {step.resource}</span>
+                          )}
+                        </div>
+                        <div className="step-task">
+                          <strong>Task:</strong> {step.task}
+                        </div>
+                        <div className="step-beginner-resource">
+                          <SafeExternalLink
+                            href={resourceUrl}
+                            label="Learn more"
+                            className="beginner-link"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="step-details">
-                      <h4>{step.name}</h4>
-                      <p>{step.why}</p>
-                      <div className="step-info">
-                        <span className="time">⏱️ {step.time}</span>
-                        {step.resource && (
-                          <span className="resource">📚 {step.resource}</span>
-                        )}
-                      </div>
-                      <div className="step-task">
-                        <strong>Task:</strong> {step.task}
-                      </div>
-                      <div className="step-beginner-resource">
-                        <SafeExternalLink
-                          href={resourceUrl}
-                          label="Start here"
-                          className="beginner-link"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
 
-        {/* ── 3. SKILLS: What You'll Build ── */}
+        {/* 5. Skills to Learn */}
         <SkillsSection skills={skills} tools={tools} title="Skills to Learn" />
-
-        {/* ── 4. EARNING: Where This Leads ── */}
-        <EarningSection earningMethods={earningMethods} />
-
-        {/* Alternative Careers */}
-        {alternativeCareers && alternativeCareers.length > 0 && (
-          <div className="alternative-careers">
-            <h3 className="section-title">Other Great Fits</h3>
-            <div className="alternative-grid">
-              {alternativeCareers.map(career => (
-                <div key={career.id} className="alternative-card">
-                  <span className="alt-icon">{career.icon}</span>
-                  <div className="alt-info">
-                    <h4>{career.name}</h4>
-                    <span className="alt-confidence">{career.confidence}% match</span>
-                  </div>
-                </div>
-              ))}
-            </div> 
-          </div>
-        )}
 
         {/* Finished Card */}
         <div className="finished-card active" id="finishedCard">
           <div className="finished-icon">🎉</div>
           <div className="finished-title">
-            You now have a clear path forward.
+            Your path is clear.
           </div>
           <p className="step-why">
-            This personalized roadmap is based on your unique situation. 
-            Every step is designed to build on the previous one. Start with 
-            step 1 today — momentum is everything.
+            One step at a time is the only way to reach the finish line. 
+            Start with Step 1 today.
           </p>
           <button
             className="complete-btn"
             style={{ marginTop: "24px", width: "auto", padding: "14px 32px" }}
             onClick={onRestart}
           >
-            Share Your Path →
+            Start Over →
           </button>
         </div>
       </div>

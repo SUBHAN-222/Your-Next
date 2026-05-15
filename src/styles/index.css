@@ -941,7 +941,7 @@ body {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0;
   cursor: pointer;
   background: none;
   border: none;
@@ -1434,7 +1434,65 @@ body {
    NEXT STEPS SECTION
    ════════════════════════════════════════════ */
 .next-steps-section {
-  margin-top: 32px;
+  margin-top: 12px;
+}
+
+.priority-block {
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+  border: 2px solid #2563eb;
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1);
+  position: relative;
+  z-index: 5;
+}
+
+.priority-block .section-title {
+  color: #2563eb;
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.roadmap-toggle-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 12px;
+}
+
+.roadmap-toggle-btn:hover {
+  background: #f8fafc;
+  border-color: #2563eb;
+}
+
+.roadmap-toggle-icon {
+  transition: transform 0.3s ease;
+}
+
+.roadmap-toggle-btn.open .roadmap-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.roadmap-content-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+}
+
+.roadmap-content-wrapper.open {
+  max-height: 2000px;
+  transition: max-height 1s ease-in-out;
 }
 
 .next-steps-grid {
