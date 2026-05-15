@@ -1526,6 +1526,85 @@ body {
   text-decoration: underline;
 }
 
+/* ── Don't Learn This Yet Section ── */
+.dont-learn-section {
+  margin-top: 12px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, .06);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: riseUp .6s ease forwards .3s;
+}
+
+.dont-learn-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: #64748b;
+  opacity: 0.3;
+}
+
+.dont-learn-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dont-learn-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 24px;
+  font-weight: 400;
+}
+
+.dont-learn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dont-learn-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease;
+}
+
+.dont-learn-item:hover {
+  transform: translateX(4px);
+  background: #f1f5f9;
+}
+
+.dont-learn-icon {
+  font-size: 18px;
+  color: #94a3b8;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.dont-learn-text {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
 /* ════════════════════════════════════════════
    SKILLS SECTION
    ════════════════════════════════════════════ */

@@ -70,6 +70,23 @@ export const CAREER_PATHS = {
         { name: "Testing Strategies", why: "Ship with confidence", time: "10-15 hours", resource: "Testing Library", resourceUrl: "https://testing-library.com/docs/", task: "Write tests for your app" },
         { name: "Cloud Architecture", why: "Scale to millions of users", time: "20-30 hours", resource: "AWS Certified Developer", resourceUrl: "https://aws.amazon.com/getting-started/hands-on/", task: "Deploy with CI/CD pipeline" }
       ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't learn React immediately (Master HTML/CSS first)",
+        "Don't jump into backend yet",
+        "Don't watch advanced system design videos",
+        "Don't worry about Kubernetes or Docker yet"
+      ],
+      intermediate: [
+        "Don't worry about Microservices architecture yet",
+        "Don't focus on low-level performance optimization",
+        "Don't try to learn every frontend framework at once"
+      ],
+      advanced: [
+        "Don't ignore soft skills and leadership",
+        "Don't get stuck in tutorial hell for new tech"
+      ]
     }
   },
 
@@ -131,6 +148,22 @@ export const CAREER_PATHS = {
         { name: "Large Language Models", why: "Work with state-of-the-art AI", time: "20-30 hours", resource: "LLM Course", resourceUrl: "https://learnprompting.org/docs/intro", task: "Fine-tune a language model" },
         { name: "Reinforcement Learning", why: "AI that learns from experience", time: "30-40 hours", resource: "Spinning Up", resourceUrl: "https://spinningup.openai.com/en/latest/", task: "Train an RL agent" },
         { name: "AI Research Methods", why: "Contribute to the field", time: "Ongoing", resource: "Papers With Code", resourceUrl: "https://paperswithcode.com/", task: "Reproduce a research paper" }
+      ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't start deep math immediately (Focus on Python first)",
+        "Don't train custom models yet (Use pre-trained models first)",
+        "Don't learn every AI framework (Stick to one like PyTorch or TensorFlow)"
+      ],
+      intermediate: [
+        "Don't worry about complex research papers yet",
+        "Don't focus on high-performance GPU programming",
+        "Don't try to build your own LLM from scratch"
+      ],
+      advanced: [
+        "Don't ignore the ethical implications of your work",
+        "Don't forget to keep up with the latest research"
       ]
     }
   },
@@ -195,6 +228,22 @@ export const CAREER_PATHS = {
         { name: "Cloud Data Platforms", why: "Enterprise-grade solutions", time: "20-30 hours", resource: "AWS Data Analytics", resourceUrl: "https://aws.amazon.com/getting-started/hands-on/", task: "Build a data lake" },
         { name: "Advanced Analytics", why: "Solve complex business problems", time: "Ongoing", resource: "Towards Data Science", resourceUrl: "https://www.kaggle.com/learn", task: "End-to-end analytics project" }
       ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't learn Big Data tools yet (Master Excel/SQL first)",
+        "Don't worry about complex deep learning models",
+        "Don't spend too much time on niche visualization tools"
+      ],
+      intermediate: [
+        "Don't worry about complex MLOps pipelines yet",
+        "Don't focus on obscure programming languages for data",
+        "Don't try to master every single data visualization library"
+      ],
+      advanced: [
+        "Don't ignore the importance of data governance",
+        "Don't forget to keep your skills updated with new tools"
+      ]
     }
   },
 
@@ -255,6 +304,22 @@ export const CAREER_PATHS = {
         { name: "Cloud Security", why: "Secure cloud infrastructure", time: "20-30 hours", resource: "CCSP Certification", resourceUrl: "https://aws.amazon.com/training/", task: "Secure a cloud environment" },
         { name: "Reverse Engineering", why: "Understand malware and exploits", time: "30-40 hours", resource: "Malware Analysis", resourceUrl: "https://tryhackme.com/room/startingoutincybersec", task: "Analyze a malware sample" },
         { name: "Security Architecture", why: "Design secure systems", time: "Ongoing", resource: "CISSP", resourceUrl: "https://www.sans.org/cyber-security-courses/", task: "Design enterprise security" }
+      ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't start with advanced exploitation",
+        "Don't worry about complex malware analysis yet",
+        "Don't jump into professional certifications too early"
+      ],
+      intermediate: [
+        "Don't worry about complex cloud security architecture yet",
+        "Don't focus on niche security tools",
+        "Don't try to master every single OS's security"
+      ],
+      advanced: [
+        "Don't ignore the importance of security policy and compliance",
+        "Don't forget to keep your skills updated with new threats"
       ]
     }
   },
@@ -319,6 +384,22 @@ export const CAREER_PATHS = {
         { name: "CI/CD for Mobile", why: "Automate builds and releases", time: "10-15 hours", resource: "Fastlane", resourceUrl: "https://fastlane.tools/", task: "Set up automated deployments" },
         { name: "Monetization", why: "Earn from your apps", time: "Ongoing", resource: "RevenueCat", resourceUrl: "https://www.revenuecat.com/docs/", task: "Implement in-app purchases" }
       ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't worry about native modules yet (Stick to cross-platform/basic UI)",
+        "Don't try to build a complex social network app first",
+        "Don't worry about advanced animations yet"
+      ],
+      intermediate: [
+        "Don't worry about complex offline sync architecture yet",
+        "Don't focus on niche mobile platforms",
+        "Don't try to master every single mobile library"
+      ],
+      advanced: [
+        "Don't ignore the importance of mobile app performance",
+        "Don't forget to keep your skills updated with new OS features"
+      ]
     }
   },
 
@@ -382,6 +463,22 @@ export const CAREER_PATHS = {
         { name: "Data-Driven Design", why: "Measure design impact", time: "15-20 hours", resource: "Lean UX", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Run A/B tests on designs" },
         { name: "Specialization", why: "Become an expert", time: "Ongoing", resource: "Industry Conferences", resourceUrl: "https://www.interaction-design.org/literature/topics/ui-design", task: "Speak at a design event" }
       ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't worry about design systems yet",
+        "Don't try to master every design tool (Focus on Figma first)",
+        "Don't spend hours on micro-interactions"
+      ],
+      intermediate: [
+        "Don't worry about complex design strategy yet",
+        "Don't focus on niche design trends",
+        "Don't try to master every single design software"
+      ],
+      advanced: [
+        "Don't ignore the importance of accessibility and inclusivity",
+        "Don't forget to keep your skills updated with new design paradigms"
+      ]
     }
   },
 
@@ -443,6 +540,22 @@ export const CAREER_PATHS = {
         { name: "Personal Brand", why: "Attract inbound leads", time: "Ongoing", resource: "Personal Branding", resourceUrl: "https://www.upwork.com/resources/how-to-create-a-profile-that-stands-out", task: "Publish weekly content" },
         { name: "Exit Strategy", why: "Build something sellable", time: "Ongoing", resource: "Business Exit", resourceUrl: "https://www.upwork.com/resources/how-to-find-your-niche", task: "Document all processes" }
       ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't worry about starting an agency yet",
+        "Don't spend money on expensive ads or tools",
+        "Don't try to handle 10 clients at once"
+      ],
+      intermediate: [
+        "Don't worry about complex business scaling yet",
+        "Don't focus on niche freelance markets",
+        "Don't try to master every single freelance platform"
+      ],
+      advanced: [
+        "Don't ignore the importance of financial planning and taxes",
+        "Don't forget to maintain a healthy work-life balance"
+      ]
     }
   },
 
@@ -479,7 +592,7 @@ export const CAREER_PATHS = {
         { name: "Programming Fundamentals", why: "The foundation of everything", time: "20-30 hours", resource: "CS50", resourceUrl: "https://cs50.harvard.edu/x/", task: "Complete all problem sets" },
         { name: "Data Structures", why: "Write efficient code", time: "30-40 hours", resource: "Visualgo", resourceUrl: "https://visualgo.net/en", task: "Implement all basic data structures" },
         { name: "Algorithms", why: "Solve problems efficiently", time: "40-50 hours", resource: "Algorithms Specialization", resourceUrl: "https://visualgo.net/en", task: "Solve 100 LeetCode problems" },
-        { name: "Version Control", why: "Collaborate like a pro", time: "5-8 hours", resource: "GitHub Learning", resourceUrl: "https://learngitbranching.js.org/", task: "Contribute to open source" },
+        { name: "Version Control", why: "Collaborate like a pro", time: "5-8 hours", resource: "GitHub Learning", resourceUrl: "https://learngitbranching.js.org/", task: "Push your project to GitHub" },
         { name: "Build Projects", why: "Apply what you learn", time: "Ongoing", resource: "Build Your Own X", resourceUrl: "https://www.freecodecamp.org/", task: "Create a portfolio project" }
       ],
       intermediate: [
@@ -493,6 +606,22 @@ export const CAREER_PATHS = {
         { name: "Interview Prep", why: "Land your dream job", time: "60-80 hours", resource: "Cracking the Coding Interview", resourceUrl: "https://visualgo.net/en", task: "Mock interviews weekly" },
         { name: "Networking", why: "Opportunities come from people", time: "Ongoing", resource: "Networking Guide", resourceUrl: "https://www.freecodecamp.org/", task: "Connect with 100+ professionals" },
         { name: "Job Search Strategy", why: "Maximize your options", time: "20-30 hours", resource: "Job Search Guide", resourceUrl: "https://www.freecodecamp.org/", task: "Apply to 100+ positions" }
+      ]
+    },
+    dontLearnYet: {
+      beginner: [
+        "Don't memorize theory without practice",
+        "Don't compare yourself to seniors",
+        "Don't worry about advanced system architecture yet"
+      ],
+      intermediate: [
+        "Don't worry about complex research projects yet",
+        "Don't focus on niche computer science subfields",
+        "Don't try to master every single programming language"
+      ],
+      advanced: [
+        "Don't ignore the importance of networking and internships",
+        "Don't forget to keep your skills updated with industry trends"
       ]
     }
   }
@@ -561,6 +690,15 @@ export function getEarningMethods(careerId, categoryId) {
   const category = getCategory(careerId, categoryId);
   if (!category || !category.earningMethods) return [];
   return category.earningMethods;
+}
+
+/**
+ * Get "Don't Learn Yet" list for a career path
+ */
+export function getDontLearnYet(careerId, level = "beginner") {
+  const path = CAREER_PATHS[careerId];
+  if (!path || !path.dontLearnYet) return [];
+  return path.dontLearnYet[level] || path.dontLearnYet.beginner || [];
 }
 
 export default CAREER_PATHS;

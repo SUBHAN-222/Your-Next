@@ -137,7 +137,7 @@ function RoadmapPage({ answers, onRestart }) {
     );
   }
 
-  const { primaryCareer, alternativeCareers, skills, tools, earningMethods, nextSteps } = recommendation;
+  const { primaryCareer, alternativeCareers, skills, tools, earningMethods, nextSteps, dontLearnYet } = recommendation;
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
@@ -193,7 +193,25 @@ function RoadmapPage({ answers, onRestart }) {
           </div>
         )}
 
-        {/* Third: Your Complete Roadmap */}
+        {/* Third: Don't Learn This Yet */}
+        {dontLearnYet && dontLearnYet.length > 0 && (
+          <div className="dont-learn-section">
+            <h3 className="dont-learn-title">
+              <span>🛡️</span> Don't Learn This Yet
+            </h3>
+            <p className="dont-learn-subtitle">Focus matters more than learning everything.</p>
+            <div className="dont-learn-list">
+              {dontLearnYet.map((item, index) => (
+                <div key={index} className="dont-learn-item">
+                  <span className="dont-learn-icon">🔒</span>
+                  <p className="dont-learn-text">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Fourth: Your Complete Roadmap */}
         {primaryCareer.roadmap && primaryCareer.roadmap.length > 0 && (
           <div className="full-roadmap-section">
             <h3 className="section-title">Your Complete Roadmap</h3>

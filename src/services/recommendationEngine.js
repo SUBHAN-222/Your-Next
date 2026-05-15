@@ -4,7 +4,7 @@
  * personalized career path recommendations with confidence scores
  */
 
-import { CAREER_PATHS, getCareerPath, getCategories, getRoadmap } from "@data/careerPaths";
+import { CAREER_PATHS, getCareerPath, getCategories, getRoadmap, getDontLearnYet } from "@data/careerPaths";
 
 /**
  * Answer weight configurations for scoring
@@ -302,7 +302,8 @@ export function generateRecommendation(answers) {
     skills: recommendedCategory?.skills || [],
     tools: recommendedCategory?.tools || [],
     earningMethods: recommendedCategory?.earningMethods || [],
-    nextSteps: generateNextSteps(topCareer, experienceLevel)
+    nextSteps: generateNextSteps(topCareer, experienceLevel),
+    dontLearnYet: getDontLearnYet(topCareer.id, experienceLevel)
   };
 
   return recommendation;
