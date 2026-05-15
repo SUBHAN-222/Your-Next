@@ -939,9 +939,8 @@ body {
   font-weight: 700;
   color: #111;
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
+  display: inline-block;
+  vertical-align: middle;
   cursor: pointer;
   background: none;
   border: none;

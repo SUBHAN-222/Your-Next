@@ -10,9 +10,7 @@ function LandingPage({ onStart }) {
   return (
     <section className="screen active landing-screen" id="s-land">
       <div className="land-inner">
-        <div className={`land-logo ${isVisible ? 'visible' : ''}`}>
-          Your<b>Next</b>
-        </div>
+        <div className={`land-logo ${isVisible ? 'visible' : ''}`}>Your<b>Next</b></div>
         <p className={`land-tag ${isVisible ? 'visible' : ''}`}>
           Clarity for confused tech students
         </p>

@@ -56,9 +56,7 @@ function OnboardingPage({ answers, onAnswer, onBack, onComplete }) {
       <div className="ob">
         {/* Progress Bar */}
         <div className="ob-top">
-          <div className="ob-logo-sm">
-            Your<b>Next</b>
-          </div>
+          <div className="ob-logo-sm">Your<b>Next</b></div>
           <div className="ob-bar">
             <div 
               className="ob-fill" 

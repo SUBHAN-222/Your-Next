@@ -142,9 +142,7 @@ function RoadmapPage({ answers, onRestart }) {
     <section className="screen active roadmap-screen" id="s-res">
       {/* Fixed Navigation */}
       <nav className="res-nav">
-        <button className="nav-logo" onClick={onRestart} aria-label="Go home">
-          Your<b>Next</b>
-        </button>
+        <button className="nav-logo" onClick={onRestart} aria-label="Go home">Your<b>Next</b></button>
         <span className="nav-label">Your Path</span>
       </nav>
 
