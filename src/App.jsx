@@ -7,9 +7,12 @@ import FeedbackModal from '@components/FeedbackModal'
 function App() {
   const [currentScreen, setCurrentScreen] = useState('landing')
   const [answers, setAnswers] = useState({})
+  const [quizSession, setQuizSession] = useState(0)
   const [showFeedback, setShowFeedback] = useState(false)
 
   const handleStartQuiz = useCallback(() => {
+    setAnswers({})
+    setQuizSession((n) => n + 1)
     setCurrentScreen('onboarding')
   }, [])
 
@@ -26,6 +29,7 @@ function App() {
 
   const handleRestart = useCallback(() => {
     setAnswers({})
+    setQuizSession((n) => n + 1)
     setCurrentScreen('landing')
   }, [])
 
@@ -41,9 +45,9 @@ function App() {
       
       {currentScreen === 'onboarding' && (
         <OnboardingPage
+          key={quizSession}
           answers={answers}
           onAnswer={handleAnswer}
-          onBack={handleBack}
           onComplete={handleCompleteQuiz}
         />
       )}

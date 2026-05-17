@@ -89,7 +89,32 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
   }, [isTransitioning, handleSelect, nextStep])
 
   if (isQuizComplete) {
-    return null
+    return (
+      <section className="screen active onboarding-screen" id="s-ob">
+        <div className="ob">
+          <p className="ob-loading" role="status">Preparing your path…</p>
+        </div>
+      </section>
+    )
+  }
+
+  if (!currentQuestion?.opts?.length) {
+    return (
+      <section className="screen active onboarding-screen" id="s-ob">
+        <div className="ob">
+          <div className="ob-loading-fallback">
+            <p role="alert">We couldn&apos;t load this question. Please try again.</p>
+            <button
+              type="button"
+              className="ob-loading-retry"
+              onClick={() => (currentStep > 0 ? prevStep() : window.location.reload())}
+            >
+              {currentStep > 0 ? 'Go back' : 'Reload quiz'}
+            </button>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   const displayStep = currentStep + 1

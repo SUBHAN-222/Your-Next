@@ -14,12 +14,15 @@ export function useQuiz(answers, onAnswer) {
     return getNextQuestion(answers, currentStep)
   }, [answers, currentStep])
 
-  // Check if we should show the question or complete the quiz
-  const isQuizComplete = !currentQuestion
+  // Only complete after all steps — avoid skipping when a branch returns no question
+  const isQuizComplete = useMemo(() => {
+    if (currentQuestion) return false
+    return currentStep >= TOTAL_STEPS
+  }, [currentQuestion, currentStep])
 
   // Progress percentage for the progress bar
   const progress = useMemo(() => {
-    return ((currentStep + 1) / TOTAL_STEPS) * 100
+    return Math.min(100, ((currentStep + 1) / TOTAL_STEPS) * 100)
   }, [currentStep])
 
   // Handle selecting an answer

@@ -567,8 +567,7 @@ body {
 }
 
 .q-in {
-  opacity: 0;
-  animation: qStaggerIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: qStaggerIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes qStaggerIn {
@@ -606,7 +605,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .ob-q,
-  .q-in,
   .ob-opt,
   .ob-fill,
   .ob-feedback {
@@ -614,9 +612,58 @@ body {
     transition-duration: 0.01ms !important;
   }
 
+  .ob-q {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .q-in {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
   .ob-opt.picking {
     animation: none !important;
   }
+}
+
+.ob-loading {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.ob-loading-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.ob-loading-fallback p {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ob-loading-retry {
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ob-loading-retry:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* ════════════════════════════════════════════
