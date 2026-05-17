@@ -17,18 +17,6 @@ function formatSectionLabel(eye) {
   return (eye || 'Your journey').toUpperCase()
 }
 
-const CARD_DESCRIPTIONS = [
-  'Helps us understand where you are today',
-  'Shapes your recommended learning path',
-  'Unlocks the next step in your roadmap',
-  'Fine-tunes your personalized guidance',
-]
-
-function getCardDescription(option, index) {
-  if (option.desc) return option.desc
-  return CARD_DESCRIPTIONS[index % CARD_DESCRIPTIONS.length]
-}
-
 function OnboardingPage({ answers, onAnswer, onComplete }) {
   const {
     currentStep,
@@ -234,9 +222,6 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
                   </span>
                   <span className="quiz-card-body">
                     <span className="quiz-card-title">{option.l}</span>
-                    <span className="quiz-card-desc">
-                      {getCardDescription(option, idx)}
-                    </span>
                   </span>
                   <span className="quiz-card-arrow" aria-hidden="true">
                     {isSelected ? '✓' : '→'}
