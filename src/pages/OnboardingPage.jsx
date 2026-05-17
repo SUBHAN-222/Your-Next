@@ -11,6 +11,24 @@ const FEEDBACK_MESSAGES = [
   "Perfect — keep going.",
 ]
 
+const CARD_ACCENTS = ['cyan', 'purple', 'green', 'amber']
+
+function formatSectionLabel(eye) {
+  return (eye || 'Your journey').toUpperCase()
+}
+
+const CARD_DESCRIPTIONS = [
+  'Helps us understand where you are today',
+  'Shapes your recommended learning path',
+  'Unlocks the next step in your roadmap',
+  'Fine-tunes your personalized guidance',
+]
+
+function getCardDescription(option, index) {
+  if (option.desc) return option.desc
+  return CARD_DESCRIPTIONS[index % CARD_DESCRIPTIONS.length]
+}
+
 function OnboardingPage({ answers, onAnswer, onComplete }) {
   const {
     currentStep,
@@ -49,8 +67,8 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
       questionRef.current.style.animation = 'none'
       questionRef.current.offsetHeight
       questionRef.current.style.animation = isGoingBack
-        ? 'quizSlideBack .36s cubic-bezier(.22, 1, .36, 1) forwards'
-        : 'quizSlideIn .4s cubic-bezier(.22, 1, .36, 1) forwards'
+        ? 'quizSlideBack .4s cubic-bezier(.22, 1, .36, 1) forwards'
+        : 'quizSlideIn .45s cubic-bezier(.22, 1, .36, 1) forwards'
     }
   }, [currentStep, isGoingBack])
 
@@ -92,7 +110,12 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
   if (isQuizComplete) {
     return (
       <section className="screen active onboarding-screen" id="s-ob">
-        <div className="ob">
+        <div className="ob-bg" aria-hidden="true">
+          <div className="ob-bg-grid" />
+          <div className="ob-bg-glow-left" />
+          <div className="ob-bg-glow-right" />
+        </div>
+        <div className="ob-shell">
           <p className="ob-loading" role="status">Preparing your path…</p>
         </div>
       </section>
@@ -102,7 +125,12 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
   if (!currentQuestion?.opts?.length) {
     return (
       <section className="screen active onboarding-screen" id="s-ob">
-        <div className="ob">
+        <div className="ob-bg" aria-hidden="true">
+          <div className="ob-bg-grid" />
+          <div className="ob-bg-glow-left" />
+          <div className="ob-bg-glow-right" />
+        </div>
+        <div className="ob-shell">
           <div className="ob-loading-fallback">
             <p role="alert">We couldn&apos;t load this question. Please try again.</p>
             <button
@@ -119,22 +147,28 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
   }
 
   const displayStep = currentStep + 1
+  const canGoBack = currentStep > 0
 
   return (
     <section className="screen active onboarding-screen" id="s-ob">
-      <div className="ob-bg-glow" aria-hidden="true" />
+      <div className="ob-bg" aria-hidden="true">
+        <div className="ob-bg-grid" />
+        <div className="ob-bg-glow-left" />
+        <div className="ob-bg-glow-right" />
+      </div>
 
-      <div className="ob">
+      <div className="ob-shell">
         <header className="ob-top">
           <button
             type="button"
-            className={`ob-back${currentStep > 0 ? ' on' : ''}`}
+            className={`ob-back${canGoBack ? ' on' : ' placeholder'}`}
             onClick={prevStep}
-            disabled={currentStep === 0 || isTransitioning}
+            disabled={!canGoBack || isTransitioning}
             aria-label="Go back"
           >
             ←
           </button>
+
           <div className="ob-progress-wrap">
             <div className="ob-progress-meta">
               <span className="ob-progress-label">Question {displayStep}</span>
@@ -151,7 +185,10 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
               <div className="ob-fill" style={{ width: `${progress}%` }} />
             </div>
           </div>
-          <div className="ob-logo-sm">Your<b className="gradient-text">Next</b></div>
+
+          <div className="ob-logo-sm">
+            Your<b className="gradient-text">Next</b>
+          </div>
         </header>
 
         <div
@@ -160,49 +197,51 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
         >
           <header className="ob-q-header">
             <p className="ob-eyebrow fade-up" style={{ animationDelay: '0s' }}>
-              {currentQuestion.eye}
+              {formatSectionLabel(currentQuestion.eye)}
             </p>
-            <h2 className="ob-title fade-up" style={{ animationDelay: '.06s' }}>
+            <h1 className="ob-title fade-up" style={{ animationDelay: '.07s' }}>
               {renderGradientTitle(currentQuestion.title)}
-            </h2>
-            <p className="ob-hint fade-up" style={{ animationDelay: '.12s' }}>
+            </h1>
+            <p className="ob-hint fade-up" style={{ animationDelay: '.14s' }}>
               {currentQuestion.hint}
             </p>
           </header>
 
-          <div className="ob-opts fade-up" style={{ animationDelay: '.18s' }}>
+          <div className="ob-opts fade-up" style={{ animationDelay: '.2s' }}>
             {currentQuestion.opts.map((option, idx) => {
               const isSelected =
                 pickedVal === option.val || selectedAnswer?.val === option.val
               const isPicking = pickedVal === option.val && isTransitioning
+              const accent = CARD_ACCENTS[idx % CARD_ACCENTS.length]
 
               return (
-                <div
+                <button
                   key={option.val}
+                  type="button"
                   className={[
                     'quiz-card',
-                    'ob-opt',
-                    isSelected ? 'selected sel' : '',
+                    `quiz-card--${accent}`,
+                    isSelected ? 'selected' : '',
                     isPicking ? 'picking' : '',
                   ].filter(Boolean).join(' ')}
                   onClick={() => handleOptionSelect(option.val, idx)}
-                  role="button"
-                  tabIndex={isTransitioning ? -1 : 0}
+                  disabled={isTransitioning}
                   aria-pressed={isSelected}
-                  aria-disabled={isTransitioning}
-                  onKeyDown={(e) => {
-                    if (isTransitioning) return
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      handleOptionSelect(option.val, idx)
-                    }
-                  }}
                 >
-                  <span className="ob-opt-glow" aria-hidden="true" />
-                  <span className="ob-ico">{option.e}</span>
-                  <span className="ob-opt-label">{option.l}</span>
-                  <span className="ob-opt-check" aria-hidden="true">✓</span>
-                </div>
+                  <span className="quiz-card-shine" aria-hidden="true" />
+                  <span className="quiz-card-icon" aria-hidden="true">
+                    {option.e}
+                  </span>
+                  <span className="quiz-card-body">
+                    <span className="quiz-card-title">{option.l}</span>
+                    <span className="quiz-card-desc">
+                      {getCardDescription(option, idx)}
+                    </span>
+                  </span>
+                  <span className="quiz-card-arrow" aria-hidden="true">
+                    {isSelected ? '✓' : '→'}
+                  </span>
+                </button>
               )
             })}
           </div>
