@@ -1,8 +1,13 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
 import ProgressToast from '@components/ProgressToast'
+import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
 
 function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
+  if (activePlan?.steps) {
+    activePlan.steps = activePlan.steps.slice(0, 3)
+  }
+
   const {
     roadmapData,
     currentStep,
@@ -149,6 +154,42 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
             Not done yet — save my progress
           </button>
         </div>
+
+        {(() => {
+          const careerId = Object.keys(CAREER_PATHS).find(
+            key => CAREER_PATHS[key].name === roadmapData?.field
+          ) || 'web'
+          const dontLearnList = roadmapData?.dontLearnYet?.length > 0 
+            ? roadmapData.dontLearnYet 
+            : getDontLearnYet(careerId, 'beginner')
+
+          if (!dontLearnList || dontLearnList.length === 0) return null
+
+          return (
+            <div style={{
+              background: '#0f172a',
+              borderLeft: '4px solid #ef4444',
+              borderRadius: '16px',
+              padding: '24px',
+              marginBottom: '20px'
+            }}>
+              <h3 style={{ color: '#fff', fontFamily: 'Sora, sans-serif', fontWeight: 'bold', fontSize: '20px', marginBottom: '8px' }}>
+                🚫 Don't do this yet
+              </h3>
+              <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '20px' }}>
+                These are the #1 mistakes confused beginners make. Skip them for now.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {dontLearnList.slice(0, 4).map((item, idx) => (
+                  <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ color: '#ef4444', flexShrink: 0, marginTop: '2px' }}>✕</span>
+                    <span style={{ color: '#fff', fontSize: '15px', lineHeight: '1.5' }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
 
         {roadmapData.futurePath?.length > 0 && (
           <div className="future-path">

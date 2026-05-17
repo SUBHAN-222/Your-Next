@@ -17,10 +17,11 @@ JSON structure:
       "resourceUrl": "https://...",
       "task": "One tiny concrete task they can do right now"
     }
-  ]
+  ],
+  "dontLearnYet": ["mistake 1", "mistake 2", "mistake 3", "mistake 4"]
 }
 
-Rules: 4-6 steps only. Free resources only (YouTube, freeCodeCamp, Odin Project, Kaggle, TryHackMe). Start from where the student actually is. Be encouraging and specific.`
+Rules: EXACTLY 3 steps. No more, no less. This is critical. dontLearnYet: 3-4 specific things this exact student should NOT do yet based on where they are. Make them feel understood — like you know exactly where beginners go wrong. Free resources only (YouTube, freeCodeCamp, Odin Project, Kaggle, TryHackMe). Start from where the student actually is. Be encouraging and specific.`
 
 function buildUserMessage(answers) {
   const get = (i) => answers[i]?.val ?? 'unknown'
@@ -51,6 +52,7 @@ function normalizePlan(raw) {
   return {
     field: raw.field,
     futurePath: Array.isArray(raw.futurePath) ? raw.futurePath : [],
+    dontLearnYet: Array.isArray(raw.dontLearnYet) ? raw.dontLearnYet : [],
     steps: raw.steps.map((step) => ({
       name: step.name || 'Next step',
       why: step.why || '',
@@ -59,7 +61,7 @@ function normalizePlan(raw) {
       resourceTitle: step.resourceTitle || step.resource || 'Free resource',
       resourceUrl: step.resourceUrl || '',
       task: step.task || 'Complete one small action today.',
-    })),
+    })).slice(0, 3),
   }
 }
 
