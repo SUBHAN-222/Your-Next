@@ -16,6 +16,44 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  --bg: #0b0f19;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-hover: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+
+  --primary: #6366f1;
+  --secondary: #22d3ee;
+  --accent: #a78bfa;
+
+  --primary-glow: rgba(99, 102, 241, 0.25);
+  --primary-border: rgba(99, 102, 241, 0.5);
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, var(--secondary), var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.4s ease-out both;
+}
+
 body {
   font-family: 'DM Sans', sans-serif;
   background: #f9f8f6;
@@ -267,11 +305,15 @@ body {
    ════════════════════════════════════════════ */
 #s-ob {
   position: relative;
-  background: linear-gradient(165deg, #0c0e14 0%, #0a0a0f 45%, #0d1118 100%);
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -20%, rgba(99, 102, 241, 0.2) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(34, 211, 238, 0.08) 0%, transparent 50%),
+    var(--bg);
   align-items: center;
   justify-content: flex-start;
   padding: 28px 20px 40px;
   overflow: hidden;
+  color: var(--text-primary);
 }
 
 .ob-bg-glow {
@@ -279,8 +321,8 @@ body {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37, 99, 235, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99, 102, 241, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 80%, rgba(167, 139, 250, 0.1) 0%, transparent 50%);
 }
 
 .ob {
@@ -302,13 +344,9 @@ body {
   font-family: 'Sora', sans-serif;
   font-size: 13px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-primary);
   flex-shrink: 0;
   letter-spacing: -0.2px;
-}
-
-.ob-logo-sm b {
-  color: #60a5fa;
 }
 
 .ob-progress-wrap {
@@ -327,29 +365,29 @@ body {
 .ob-progress-label {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--text-primary);
   letter-spacing: 0.02em;
 }
 
 .ob-count {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-secondary);
   font-weight: 400;
 }
 
 .ob-bar {
-  height: 5px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 999px;
   overflow: hidden;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
 .ob-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.45);
+  background: linear-gradient(90deg, var(--secondary), var(--primary), var(--accent));
+  box-shadow: 0 0 14px var(--primary-glow);
   transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -391,71 +429,74 @@ body {
   min-height: min(52vh, 420px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 0;
   will-change: transform, opacity;
 }
 
-.ob-q--transitioning .ob-opt:not(.sel):not(.picking) {
-  opacity: 0.45;
+.ob-q-header {
+  margin-bottom: 32px;
+}
+
+.ob-q--transitioning .quiz-card:not(.selected):not(.picking) {
+  opacity: 0.5;
   pointer-events: none;
 }
 
 .ob-eyebrow {
   font-size: 11px;
-  letter-spacing: 1.4px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #60a5fa;
+  color: var(--secondary);
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .ob-title {
   font-family: 'Sora', sans-serif;
-  font-size: clamp(26px, 5vw, 34px);
+  font-size: clamp(28px, 5.5vw, 32px);
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
   letter-spacing: -0.9px;
-  line-height: 1.15;
-  margin-bottom: 10px;
+  line-height: 1.12;
+  margin-bottom: 12px;
 }
 
 .ob-hint {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.42);
+  color: var(--text-secondary);
   font-weight: 400;
-  margin-bottom: 28px;
-  line-height: 1.5;
+  line-height: 1.55;
   max-width: 42ch;
+  margin-bottom: 0;
 }
 
 .ob-opts {
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 12px;
 }
 
+/* Interactive quiz option cards */
+.quiz-card,
 .ob-opt {
   position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 18px;
-  background: rgba(255, 255, 255, 0.04);
+  padding: 18px;
+  background: var(--card);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  color: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 16px;
+  color: var(--text-primary);
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition:
-    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.22s,
-    background 0.22s,
-    box-shadow 0.22s,
-    color 0.2s;
+  transition: all 0.2s ease;
   font-family: 'DM Sans', sans-serif;
   user-select: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
 
@@ -463,32 +504,37 @@ body {
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 65%);
-  transition: opacity 0.25s;
+  background: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+  transition: opacity 0.2s ease;
   pointer-events: none;
 }
 
 @media (hover: hover) {
+  .quiz-card:hover,
   .ob-opt:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(96, 165, 250, 0.35);
-    color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(96, 165, 250, 0.12);
+    background: var(--card-hover);
+    border-color: var(--primary-border);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+    color: var(--text-primary);
   }
 
+  .quiz-card:hover .ob-opt-glow,
   .ob-opt:hover .ob-opt-glow {
     opacity: 1;
   }
 }
 
+.quiz-card.selected,
+.quiz-card.sel,
+.ob-opt.selected,
 .ob-opt.sel {
-  background: rgba(37, 99, 235, 0.16);
-  border-color: rgba(96, 165, 250, 0.65);
-  color: #fff;
+  border: 1px solid var(--primary);
   box-shadow:
-    0 4px 24px rgba(37, 99, 235, 0.25),
-    0 0 0 1px rgba(96, 165, 250, 0.2);
+    0 0 0 2px var(--primary-glow),
+    0 15px 40px rgba(99, 102, 241, 0.25);
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--text-primary);
 }
 
 .ob-opt.picking {
@@ -503,10 +549,10 @@ body {
 
 .ob-opt-check {
   margin-left: auto;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: #2563eb;
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -515,10 +561,12 @@ body {
   justify-content: center;
   opacity: 0;
   transform: scale(0.6);
-  transition: opacity 0.2s, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.2s ease, transform 0.2s ease;
   flex-shrink: 0;
+  box-shadow: 0 0 12px var(--primary-glow);
 }
 
+.quiz-card.selected .ob-opt-check,
 .ob-opt.sel .ob-opt-check {
   opacity: 1;
   transform: scale(1);
@@ -526,39 +574,44 @@ body {
 
 .ob-opt-label {
   flex: 1;
-  line-height: 1.35;
+  line-height: 1.4;
   text-align: left;
+  color: var(--text-primary);
 }
 
 .ob-ico {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.07);
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 19px;
   flex-shrink: 0;
-  transition: transform 0.22s, background 0.22s;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
+.quiz-card.selected .ob-ico,
+.quiz-card:hover .ob-ico,
 .ob-opt.sel .ob-ico,
 .ob-opt:hover .ob-ico {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.05);
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.25);
+  transform: scale(1.04);
 }
 
 .ob-feedback {
-  margin-top: 20px;
+  margin-top: 22px;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(147, 197, 253, 0.9);
+  color: var(--accent);
   text-align: center;
   min-height: 1.4em;
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 0.2s, transform 0.25s;
+  transition: opacity 0.2s ease, transform 0.25s ease;
 }
 
 .ob-feedback--visible {
@@ -566,19 +619,9 @@ body {
   transform: translateY(0);
 }
 
+/* Legacy alias — same as fadeUp */
 .q-in {
-  animation: qStaggerIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes qStaggerIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  animation: fadeUp 0.4s ease-out both;
 }
 
 @keyframes quizSlideIn {
@@ -605,6 +648,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .ob-q,
+  .quiz-card,
   .ob-opt,
   .ob-fill,
   .ob-feedback {
@@ -617,6 +661,7 @@ body {
     transform: none !important;
   }
 
+  .fade-up,
   .q-in {
     opacity: 1 !important;
     transform: none !important;
@@ -631,7 +676,7 @@ body {
 .ob-loading {
   font-family: 'Sora', sans-serif;
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   text-align: center;
   padding: 48px 24px;
 }
@@ -646,7 +691,7 @@ body {
 }
 
 .ob-loading-fallback p {
-  color: rgba(255, 255, 255, 0.65);
+  color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -1281,6 +1326,7 @@ body {
   .ob-title { font-size: 24px; line-height: 1.2; }
   .ob-hint { font-size: 13px; margin-bottom: 22px; }
   .ob-opts { gap: 10px; }
+  .quiz-card,
   .ob-opt { padding: 18px 16px; font-size: 15px; min-height: 56px; border-radius: 16px; }
   .ob-ico { width: 44px; height: 44px; font-size: 20px; }
   .ob-q { min-height: auto; justify-content: flex-start; padding-top: 8px; }
@@ -1313,12 +1359,12 @@ body {
    TACTILE MOBILE FEEDBACK
    ════════════════════════════════════════════ */
 @media (pointer: coarse) {
-  .cta:active, .ob-opt:active, .complete-btn:active, .resource-btn:active, .nav-logo:active {
+  .cta:active, .quiz-card:active, .ob-opt:active, .complete-btn:active, .resource-btn:active, .nav-logo:active {
     transform: scale(0.96) !important;
     opacity: 0.8;
   }
   
-  .cta, .ob-opt, .complete-btn, .resource-btn, .nav-logo, .ob-back {
+  .cta, .quiz-card, .ob-opt, .complete-btn, .resource-btn, .nav-logo, .ob-back {
     -webkit-tap-highlight-color: transparent;
     user-select: none;
   }

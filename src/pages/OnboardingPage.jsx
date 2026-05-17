@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useQuiz } from '@hooks/useQuiz'
+import { renderGradientTitle } from '@utils/renderGradientTitle'
 
 const ADVANCE_DELAY_MS = 320
 
@@ -150,22 +151,26 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
               <div className="ob-fill" style={{ width: `${progress}%` }} />
             </div>
           </div>
-          <div className="ob-logo-sm">Your<b>Next</b></div>
+          <div className="ob-logo-sm">Your<b className="gradient-text">Next</b></div>
         </header>
 
         <div
           className={`ob-q${isTransitioning ? ' ob-q--transitioning' : ''}`}
           ref={questionRef}
         >
-          <div className="ob-eyebrow q-in">{currentQuestion.eye}</div>
-          <h2 className="ob-title q-in" style={{ animationDelay: '.05s' }}>
-            {currentQuestion.title}
-          </h2>
-          <p className="ob-hint q-in" style={{ animationDelay: '.1s' }}>
-            {currentQuestion.hint}
-          </p>
+          <header className="ob-q-header">
+            <p className="ob-eyebrow fade-up" style={{ animationDelay: '0s' }}>
+              {currentQuestion.eye}
+            </p>
+            <h2 className="ob-title fade-up" style={{ animationDelay: '.06s' }}>
+              {renderGradientTitle(currentQuestion.title)}
+            </h2>
+            <p className="ob-hint fade-up" style={{ animationDelay: '.12s' }}>
+              {currentQuestion.hint}
+            </p>
+          </header>
 
-          <div className="ob-opts q-in" style={{ animationDelay: '.15s' }}>
+          <div className="ob-opts fade-up" style={{ animationDelay: '.18s' }}>
             {currentQuestion.opts.map((option, idx) => {
               const isSelected =
                 pickedVal === option.val || selectedAnswer?.val === option.val
@@ -175,8 +180,9 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
                 <div
                   key={option.val}
                   className={[
+                    'quiz-card',
                     'ob-opt',
-                    isSelected ? 'sel' : '',
+                    isSelected ? 'selected sel' : '',
                     isPicking ? 'picking' : '',
                   ].filter(Boolean).join(' ')}
                   onClick={() => handleOptionSelect(option.val, idx)}
