@@ -1,287 +1,196 @@
-import { useEffect, useState } from "react";
-import { useRecommendation } from "@hooks/useRecommendation";
-import LoadingScreen from "@components/LoadingScreen";
-import SkillsSection from "@components/SkillsSection";
+import { useEffect, useState, useCallback } from 'react'
+import { useRoadmap } from '@hooks/useRoadmap'
+import ProgressToast from '@components/ProgressToast'
 
-/**
- * Curated, beginner-friendly resource links for every skill keyword.
- * Every URL is a working, HTTPS resource. All links open in new tabs.
- */
-const beginnerResources = {
-  "Python": "https://www.learnpython.org",
-  "Machine Learning": "https://developers.google.com/machine-learning/crash-course",
-  "Andrew Ng": "https://www.coursera.org/learn/machine-learning",
-  "Deep Learning": "https://course.fast.ai",
-  "Mathematics": "https://www.khanacademy.org/math",
-  "Linear Algebra": "https://www.khanacademy.org/math",
-  "Statistics": "https://www.khanacademy.org/math/statistics-probability",
-  "Neural Networks": "https://www.youtube.com/@3blue1brown",
-  "Data Science": "https://www.kaggle.com/learn",
-  "NLP": "https://huggingface.co/learn/nlp-course/chapter1/1",
-  "Computer Vision": "https://www.youtube.com/watch?v=OXN3wuHUBP0",
-  "AI Tools": "https://learnprompting.org/docs/intro",
-  "Prompt Engineering": "https://learnprompting.org/docs/intro",
-  "Git": "https://learngitbranching.js.org",
-  "Version Control": "https://learngitbranching.js.org",
-  "SQL": "https://www.w3schools.com/sql",
-  "Databases": "https://www.w3schools.com/sql",
-  "Kaggle": "https://www.kaggle.com",
-  "Colab": "https://colab.research.google.com",
-  "HackerRank": "https://www.hackerrank.com/domains/python"
-};
+function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
+  const {
+    roadmapData,
+    currentStep,
+    currentStepIndex,
+    isComplete,
+    streak,
+    momentumMessage,
+    showMomentum,
+    completeCurrentStep,
+    deferCurrentStep,
+    hideMomentum,
+    getStepStatus,
+  } = useRoadmap(activePlan, initialStepIndex)
 
-/**
- * Validate that a URL is a real, working HTTPS URL (or HTTP for local dev).
- * Returns null for any invalid/placeholder/plain-text URL.
- */
-function validateUrl(url) {
-  if (!url || typeof url !== "string") return null;
-  const trimmed = url.trim();
-  if (
-    !trimmed ||
-    trimmed === " " ||
-    trimmed === "#" ||
-    (trimmed.startsWith("http://") === false && trimmed.startsWith("https://") === false)
-  ) {
-    return null;
-  }
-  try {
-    const parsed = new URL(trimmed);
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
-    if (parsed.hostname === "example.com" || parsed.hostname === "placeholder.com") return null;
-    return trimmed;
-  } catch {
-    return null;
-  }
-}
+  const [showToast, setShowToast] = useState(false)
+  const [completing, setCompleting] = useState(false)
 
-/**
- * Get a beginner-friendly resource URL by matching step name against keywords.
- */
-function getBeginnerResource(text) {
-  for (const [keyword, url] of Object.entries(beginnerResources)) {
-    if (text.toLowerCase().includes(keyword.toLowerCase())) {
-      return url;
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentStepIndex])
+
+  useEffect(() => {
+    if (!showMomentum) return
+    const timer = setTimeout(hideMomentum, 4000)
+    return () => clearTimeout(timer)
+  }, [showMomentum, hideMomentum])
+
+  const handleComplete = useCallback(() => {
+    setCompleting(true)
+    setTimeout(() => {
+      completeCurrentStep()
+      setCompleting(false)
+    }, 500)
+  }, [completeCurrentStep])
+
+  const handleDefer = useCallback(() => {
+    deferCurrentStep()
+    setShowToast(true)
+  }, [deferCurrentStep])
+
+  if (!roadmapData || !currentStep) {
+    if (isComplete && roadmapData) {
+      return (
+        <section className="screen active roadmap-screen" id="s-res">
+          <nav className="res-nav">
+            <button className="nav-logo" onClick={onRestart} type="button" aria-label="Go home">
+              Your<b>Next</b>
+            </button>
+            <div className="res-nav-end">
+              {streak > 0 && <span className="nav-streak">🔥 {streak}</span>}
+              <span className="nav-label">Your Roadmap</span>
+            </div>
+          </nav>
+          <div className="roadmap-container">
+            <div className="finished-card active" id="finishedCard">
+              <div className="finished-icon">🎉</div>
+              <div className="finished-title">You completed your roadmap!</div>
+              <p className="step-why">Every step you finished is proof you can do this.</p>
+              <button type="button" className="complete-btn" style={{ marginTop: '24px', width: 'auto', padding: '14px 32px' }} onClick={onRestart}>
+                Start Over →
+              </button>
+            </div>
+          </div>
+        </section>
+      )
     }
-  }
-  return null;
-}
-
-/**
- * Safe external link component that validates URLs and provides fallback.
- * Disables itself and shows "Coming Soon" if the URL is invalid.
- */
-function SafeExternalLink({ href, label, className }) {
-  const validUrl = validateUrl(href);
-  if (!validUrl) {
-    return <span className={`${className || ""} disabled-link`}>Coming Soon</span>;
-  }
-  return (
-    <a
-      href={validUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className}
-    >
-      {label} →
-    </a>
-  );
-}
-
-function RoadmapPage({ answers, onRestart }) {
-  const { recommendation, isReady } = useRecommendation(answers);
-  const [showLoading, setShowLoading] = useState(true);
-  const [loadingStep, setLoadingStep] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-  const [showFullRoadmap, setShowFullRoadmap] = useState(false);
-
-  // Handle loading sequence
-  useEffect(() => {
-    const timer1 = setTimeout(() => {
-      setShowLoading(false);
-      setIsVisible(true);
-    }, 2500);
-
-    return () => clearTimeout(timer1);
-  }, []);
-
-  // Update loading message
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLoadingStep(prev => Math.min(prev + 1, 4));
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Scroll to top when page loads
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
-  if (showLoading) {
-    return <LoadingScreen step={loadingStep} />;
+    return null
   }
 
-  if (!isReady || !recommendation) {
-    return (
-      <section className="screen active roadmap-screen" id="s-res">
-        <div className="error-state">
-          <h2>Unable to generate recommendation</h2>
-          <p>Please try again or restart the quiz.</p>
-          <button className="complete-btn" onClick={onRestart}>
-            Start Over →
-          </button>
-        </div>
-      </section>
-    );
-  }
-
-  const { primaryCareer, skills, tools, nextSteps, dontLearnYet } = recommendation;
+  const fieldLabel = roadmapData.field || 'learning'
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
-      {/* Fixed Navigation */}
       <nav className="res-nav">
-        <button className="nav-logo" onClick={onRestart} aria-label="Go home">Your<b>Next</b></button>
-        <span className="nav-label">Your Path</span>
+        <button className="nav-logo" onClick={onRestart} type="button" aria-label="Go home">
+          Your<b>Next</b>
+        </button>
+        <div className="res-nav-end">
+          {streak > 0 && (
+            <span className="nav-streak" aria-label={`${streak} day streak`}>
+              🔥 {streak}
+            </span>
+          )}
+          <span className="nav-label">Your Roadmap</span>
+        </div>
       </nav>
 
-      {/* 1. Personalized Intro Section */}
-      <div className={`roadmap-top ${isVisible ? "visible" : ""}`}>
+      <div className="roadmap-top">
         <h2 className="roadmap-h">
-          Welcome to your <span id="resField">{primaryCareer.name}</span> journey.
+          Welcome to your <span id="resField">{fieldLabel}</span> journey.
         </h2>
-        <p className="roadmap-sub">
-          We've analyzed your goals to build this focused, one-step-at-a-time path.
-        </p>
+        <p className="roadmap-sub">One step at a time — no overwhelm, just progress.</p>
       </div>
 
-      <div className="roadmap-container recommendation-container">
-        
-        {/* 2. Your First 3 Steps (MOST IMPORTANT SECTION) */}
-        {nextSteps && nextSteps.length > 0 && (
-          <div className="next-steps-section priority-block">
-            <h3 className="section-title">Your First 3 Steps</h3>
-            <p className="section-subtitle">Start here to build immediate momentum.</p>
-            <div className="next-steps-grid">
-              {nextSteps.map((step, index) => (
-                <div key={index} className="next-step-card">
-                  <div className="step-number">{index + 1}</div>
-                  <div className="step-content">
-                    <h4>{step.title}</h4>
-                    <p className="step-desc">{step.description}</p>
-                    <div className="step-meta">
-                      <span className="step-time">⏱️ {step.timeEstimate}</span>
-                    </div>
-                    <div className="step-action">
-                      <span>🎯 {step.action}</span>
-                    </div>
-                    <SafeExternalLink
-                      href={step.resource || ""}
-                      label="Start Learning"
-                      className="resource-link"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      <div className="roadmap-container">
+        {showMomentum && momentumMessage && (
+          <div className="momentum-banner show">{momentumMessage}</div>
         )}
 
-        {/* 3. Don’t Learn This Yet */}
-        {dontLearnYet && dontLearnYet.length > 0 && (
-          <div className="dont-learn-section">
-            <h3 className="dont-learn-title">
-              <span>🛡️</span> Don't Learn This Yet
-            </h3>
-            <p className="dont-learn-subtitle">Avoid these for now to stay focused and reduce overwhelm.</p>
-            <div className="dont-learn-list">
-              {dontLearnYet.map((item, index) => (
-                <div key={index} className="dont-learn-item">
-                  <span className="dont-learn-icon">🔒</span>
-                  <p className="dont-learn-text">{item}</p>
-                </div>
-              ))}
-            </div>
+        <div className="active-step-card">
+          <div className="daily-focus-header">
+            <span className="daily-focus-dot" />
+            <span className="daily-focus-label">Today&apos;s focus</span>
           </div>
-        )}
 
-        {/* 4. Your Complete Roadmap (Collapsible) */}
-        {primaryCareer.roadmap && primaryCareer.roadmap.length > 0 && (
-          <div className="full-roadmap-section">
-            <button 
-              className={`roadmap-toggle-btn ${showFullRoadmap ? 'open' : ''}`}
-              onClick={() => setShowFullRoadmap(!showFullRoadmap)}
+          <div className="step-kicker">Step {currentStepIndex + 1} of {roadmapData.steps.length}</div>
+          <h3 className="step-name">{currentStep.name}</h3>
+          <p className="step-why">{currentStep.why}</p>
+
+          {currentStep.whyMatters && (
+            <div className="why-box">
+              <div className="why-box-label">Why this matters</div>
+              <p className="why-box-text">{currentStep.whyMatters}</p>
+            </div>
+          )}
+
+          <div className="step-meta">{currentStep.time}</div>
+
+          {currentStep.resourceUrl && (
+            <a
+              className="resource-btn"
+              href={currentStep.resourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <span>View Your Complete Roadmap</span>
-              <span className="roadmap-toggle-icon">▼</span>
-            </button>
-            
-            <div className={`roadmap-content-wrapper ${showFullRoadmap ? 'open' : ''}`}>
-              <p className="roadmap-level">
-                Current Focus: <strong>{primaryCareer.experienceLevel}</strong>
-              </p>
-              <div className="roadmap-steps">
-                {primaryCareer.roadmap.map((step, index) => {
-                  const resourceUrl = step.resourceUrl || getBeginnerResource(step.name) || "";
-                  return (
-                    <div key={index} className="roadmap-step">
-                      <div className="step-indicator">
-                        <div className="step-dot"></div>
-                        {index < primaryCareer.roadmap.length - 1 && <div className="step-line"></div>}
-                      </div>
-                      <div className="step-details">
-                        <h4>{step.name}</h4>
-                        <p>{step.why}</p>
-                        <div className="step-info">
-                          <span className="time">⏱️ {step.time}</span>
-                          {step.resource && (
-                            <span className="resource">📚 {step.resource}</span>
-                          )}
-                        </div>
-                        <div className="step-task">
-                          <strong>Task:</strong> {step.task}
-                        </div>
-                        <div className="step-beginner-resource">
-                          <SafeExternalLink
-                            href={resourceUrl}
-                            label="Learn more"
-                            className="beginner-link"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
+              📚 {currentStep.resourceTitle || 'Start Learning'}
+            </a>
+          )}
 
-        {/* 5. Skills to Learn */}
-        <SkillsSection skills={skills} tools={tools} title="Skills to Learn" />
-
-        {/* Finished Card */}
-        <div className="finished-card active" id="finishedCard">
-          <div className="finished-icon">🎉</div>
-          <div className="finished-title">
-            Your path is clear.
+          <div className="practice-box">
+            <div className="practice-label">Your tiny task</div>
+            <p className="practice-task">{currentStep.task}</p>
           </div>
-          <p className="step-why">
-            One step at a time is the only way to reach the finish line. 
-            Start with Step 1 today.
-          </p>
+
           <button
-            className="complete-btn"
-            style={{ marginTop: "24px", width: "auto", padding: "14px 32px" }}
-            onClick={onRestart}
+            type="button"
+            className={`complete-btn${completing ? ' completing' : ''}`}
+            onClick={handleComplete}
           >
-            Start Over →
+            I completed this step →
+          </button>
+
+          <button type="button" className="defer-btn" onClick={handleDefer}>
+            Not done yet — save my progress
           </button>
         </div>
+
+        {roadmapData.futurePath?.length > 0 && (
+          <div className="future-path">
+            <h3 className="future-path-title">Your future path</h3>
+            <p className="future-path-sub">Where you are headed after these steps.</p>
+            <div className="future-path-track">
+              {roadmapData.futurePath.map((stage, i) => (
+                <div key={`${stage}-${i}`} className="future-path-node">
+                  {i > 0 && <span className="future-path-arrow">→</span>}
+                  <span className={`future-path-pill${i === 0 ? ' active-pill' : ''}`}>{stage}</span>
+                </div>
+              ))}
+            </div>
+            <p className="future-path-caption">Focus on today — the rest unlocks as you go.</p>
+          </div>
+        )}
+
+        <div className="roadmap-preview">
+          <div className="preview-list">
+            {roadmapData.steps.map((step, index) => {
+              const status = getStepStatus(index)
+              return (
+                <div key={index} className={`preview-item ${status}`}>
+                  <span className="preview-icon">
+                    {status === 'done' ? '✓' : status === 'current' ? '→' : '○'}
+                  </span>
+                  <span>{step.name}</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       </div>
+
+      {showToast && (
+        <ProgressToast
+          message="Progress saved! Come back whenever you're ready 💙"
+          onDone={() => setShowToast(false)}
+        />
+      )}
     </section>
-  );
+  )
 }
 
-export default RoadmapPage;
+export default RoadmapPage

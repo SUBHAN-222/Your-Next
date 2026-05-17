@@ -1,65 +1,71 @@
-import { useState, useCallback, useMemo } from 'react'
-import { generateRoadmapData } from '@data/roadmaps'
+import { useState, useCallback, useMemo, useEffect } from 'react'
+import { saveProgress } from '@utils/progressStorage'
+import { getStreakFromStorage, updateStreakOnComplete, getMomentumMessageForStreak } from '@utils/streak'
 
-const MOMENTUM_MESSAGES = [
+const DEFAULT_MOMENTUM_MESSAGES = [
   "⚡ You're building momentum.",
   '🔥 Most beginners quit before this stage. You did not.',
   '💪 You are making real progress. Keep going.',
   '✨ You now know more than you did yesterday.',
-  '🚀 One step closer. You are doing this.'
+  '🚀 One step closer. You are doing this.',
 ]
 
 /**
- * Custom hook for managing roadmap state and step completion
- * @param {Object} answers - Quiz answers to generate roadmap
- * @returns {Object} Roadmap state and handlers
+ * Step-by-step roadmap state with progress saving and streak support.
  */
-export function useRoadmap(answers) {
-  // Generate roadmap data based on answers
-  const roadmapData = useMemo(() => {
-    return generateRoadmapData(answers)
-  }, [answers])
-
-  // Current step index
-  const [currentStepIndex, setCurrentStepIndex] = useState(0)
-  
-  // Completed steps tracking
+export function useRoadmap(activePlan, initialStepIndex = 0) {
+  const [currentStepIndex, setCurrentStepIndex] = useState(initialStepIndex)
   const [completedSteps, setCompletedSteps] = useState([])
-  
-  // Momentum banner message
   const [momentumMessage, setMomentumMessage] = useState('')
-  
-  // Show momentum banner
   const [showMomentum, setShowMomentum] = useState(false)
+  const [streak, setStreak] = useState(() => getStreakFromStorage())
 
-  // Current step data
+  const roadmapData = activePlan
+
+  useEffect(() => {
+    setCurrentStepIndex(initialStepIndex)
+  }, [initialStepIndex, activePlan])
+
   const currentStep = useMemo(() => {
+    if (!roadmapData?.steps) return null
     return roadmapData.steps[currentStepIndex]
-  }, [roadmapData.steps, currentStepIndex])
+  }, [roadmapData, currentStepIndex])
 
-  // Check if all steps are completed
-  const isComplete = currentStepIndex >= roadmapData.steps.length
+  const isComplete = !roadmapData?.steps || currentStepIndex >= roadmapData.steps.length
 
-  // Handle completing current step
-  const completeStep = useCallback(() => {
-    // Add to completed steps
-    setCompletedSteps(prev => [...prev, currentStepIndex])
-    
-    // Show momentum message
-    const messageIndex = Math.min(currentStepIndex, MOMENTUM_MESSAGES.length - 1)
-    setMomentumMessage(MOMENTUM_MESSAGES[messageIndex])
+  const persistProgress = useCallback(
+    (index) => {
+      if (!roadmapData) return
+      saveProgress(roadmapData, index, getStreakFromStorage())
+      setStreak(getStreakFromStorage())
+    },
+    [roadmapData]
+  )
+
+  const completeCurrentStep = useCallback(() => {
+    setCompletedSteps((prev) => [...prev, currentStepIndex])
+
+    const newStreak = updateStreakOnComplete()
+    setStreak(newStreak)
+
+    const defaultMsg =
+      DEFAULT_MOMENTUM_MESSAGES[Math.min(currentStepIndex, DEFAULT_MOMENTUM_MESSAGES.length - 1)]
+    setMomentumMessage(getMomentumMessageForStreak(newStreak, defaultMsg))
     setShowMomentum(true)
-    
-    // Move to next step
-    setCurrentStepIndex(prev => prev + 1)
-  }, [currentStepIndex])
 
-  // Hide momentum banner
+    const nextIndex = currentStepIndex + 1
+    setCurrentStepIndex(nextIndex)
+    persistProgress(nextIndex)
+  }, [currentStepIndex, persistProgress])
+
+  const deferCurrentStep = useCallback(() => {
+    persistProgress(currentStepIndex)
+  }, [currentStepIndex, persistProgress])
+
   const hideMomentum = useCallback(() => {
     setShowMomentum(false)
   }, [])
 
-  // Reset roadmap to beginning
   const reset = useCallback(() => {
     setCurrentStepIndex(0)
     setCompletedSteps([])
@@ -67,29 +73,30 @@ export function useRoadmap(answers) {
     setShowMomentum(false)
   }, [])
 
-  // Get step status for preview list
-  const getStepStatus = useCallback((index) => {
-    if (index < currentStepIndex) return 'done'
-    if (index === currentStepIndex) return 'current'
-    return 'locked'
-  }, [currentStepIndex])
+  const getStepStatus = useCallback(
+    (index) => {
+      if (index < currentStepIndex) return 'done'
+      if (index === currentStepIndex) return 'current'
+      return 'locked'
+    },
+    [currentStepIndex]
+  )
 
   return {
-    // Data
     roadmapData,
     currentStep,
     currentStepIndex,
     completedSteps,
     isComplete,
-    
-    // Momentum
+    streak,
     momentumMessage,
     showMomentum,
-    
-    // Actions
-    completeStep,
+    completeCurrentStep,
+    deferCurrentStep,
     hideMomentum,
     reset,
-    getStepStatus
+    getStepStatus,
   }
 }
+
+export default useRoadmap
