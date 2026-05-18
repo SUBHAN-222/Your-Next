@@ -243,6 +243,17 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🎯", l: "I want to plan it carefully first", val: "planned" }
         ]
       }
+    if (q2 === 'design') return {
+      id: 'design_exp', eye: "Design Path",
+      title: "What is your design experience right now?",
+      hint: "This shapes your starting point completely.",
+      opts: [
+        { e: "🆕", l: "Complete beginner — never opened Figma", val: "zero" },
+        { e: "👀", l: "I've watched tutorials but made nothing", val: "watched" },
+        { e: "🖼️", l: "I've made a few designs but they look amateur", val: "some" },
+        { e: "💼", l: "I have designs but no clients or portfolio", val: "no_clients" }
+      ]
+    }
     if (q2 === "uni") {
       if (q1 === "code")
         return {
@@ -347,6 +358,17 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🤷", l: "Starting completely from zero", val: "nothing" }
         ]
       }
+    if (q2 === 'design') return {
+      id: 'design_goal', eye: "Design Path",
+      title: "What do you want to design for?",
+      hint: "This decides which skills to focus on first.",
+      opts: [
+        { e: "📱", l: "Mobile apps — screens and flows", val: "mobile" },
+        { e: "🌐", l: "Websites and landing pages", val: "web" },
+        { e: "🏢", l: "SaaS products and dashboards", val: "saas" },
+        { e: "💸", l: "Freelance — design for paying clients", val: "freelance" }
+      ]
+    }
     if (q2 === "uni")
       return {
         id: "uni_coding",
