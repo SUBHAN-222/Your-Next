@@ -146,8 +146,16 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
             type="button"
             className={`complete-btn${completing ? ' completing' : ''}`}
             onClick={handleComplete}
+            disabled={completing}
           >
-            I completed this step →
+            {completing ? (
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <span className="btn-spinner" />
+                Nice work — preparing next step...
+              </span>
+            ) : (
+              "I completed this step →"
+            )}
           </button>
 
           <button type="button" className="defer-btn" onClick={handleDefer}>
