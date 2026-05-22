@@ -40,7 +40,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
     setTimeout(() => {
       completeCurrentStep()
       setCompleting(false)
-    }, 500)
+    }, 1500)
   }, [completeCurrentStep])
 
   const handleDefer = useCallback(() => {
@@ -108,59 +108,64 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
         )}
 
         <div className="active-step-card">
-          <div className="daily-focus-header">
-            <span className="daily-focus-dot" />
-            <span className="daily-focus-label">Today&apos;s focus</span>
-          </div>
-
-          <div className="step-kicker">Step {currentStepIndex + 1} of {roadmapData.steps.length}</div>
-          <h3 className="step-name">{currentStep.name}</h3>
-          <p className="step-why">{currentStep.why}</p>
-
-          {currentStep.whyMatters && (
-            <div className="why-box">
-              <div className="why-box-label">Why this matters</div>
-              <p className="why-box-text">{currentStep.whyMatters}</p>
+          {completing ? (
+            <div className="step-loading-state">
+              <div className="step-loading-icon">✓</div>
+              <h3 className="step-loading-title">Step Completed</h3>
+              <p className="step-loading-sub">
+                Nice work — updating your roadmap<span className="loading-dots"></span>
+              </p>
+              <p className="step-loading-whisper">Your next step is almost ready.</p>
             </div>
+          ) : (
+            <>
+              <div className="daily-focus-header">
+                <span className="daily-focus-dot" />
+                <span className="daily-focus-label">Today&apos;s focus</span>
+              </div>
+
+              <div className="step-kicker">Step {currentStepIndex + 1} of {roadmapData.steps.length}</div>
+              <h3 className="step-name">{currentStep.name}</h3>
+              <p className="step-why">{currentStep.why}</p>
+
+              {currentStep.whyMatters && (
+                <div className="why-box">
+                  <div className="why-box-label">Why this matters</div>
+                  <p className="why-box-text">{currentStep.whyMatters}</p>
+                </div>
+              )}
+
+              <div className="step-meta">{currentStep.time}</div>
+
+              {currentStep.resourceUrl && (
+                <a
+                  className="resource-btn"
+                  href={currentStep.resourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  📚 {currentStep.resourceTitle || 'Start Learning'}
+                </a>
+              )}
+
+              <div className="practice-box">
+                <div className="practice-label">Your tiny task</div>
+                <p className="practice-task">{currentStep.task}</p>
+              </div>
+
+              <button
+                type="button"
+                className="complete-btn"
+                onClick={handleComplete}
+              >
+                I completed this step →
+              </button>
+
+              <button type="button" className="defer-btn" onClick={handleDefer}>
+                Not done yet — save my progress
+              </button>
+            </>
           )}
-
-          <div className="step-meta">{currentStep.time}</div>
-
-          {currentStep.resourceUrl && (
-            <a
-              className="resource-btn"
-              href={currentStep.resourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              📚 {currentStep.resourceTitle || 'Start Learning'}
-            </a>
-          )}
-
-          <div className="practice-box">
-            <div className="practice-label">Your tiny task</div>
-            <p className="practice-task">{currentStep.task}</p>
-          </div>
-
-          <button
-            type="button"
-            className={`complete-btn${completing ? ' completing' : ''}`}
-            onClick={handleComplete}
-            disabled={completing}
-          >
-            {completing ? (
-              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <span className="btn-spinner" />
-                Nice work — preparing next step...
-              </span>
-            ) : (
-              "I completed this step →"
-            )}
-          </button>
-
-          <button type="button" className="defer-btn" onClick={handleDefer}>
-            Not done yet — save my progress
-          </button>
         </div>
 
         {(() => {
