@@ -26,11 +26,11 @@ export function getNextQuestion(answers, currentStep) {
       title: "Where are you stuck right now?",
       hint: "Be honest — there's no wrong answer here.",
       opts: [
-        { e: "🤷", l: "I haven't started yet because there are too many options", val: "no_start" },
-        { e: "😵", l: "I started tutorials but got overwhelmed and stopped", val: "lost" },
-        { e: "📉", l: "I'm stuck in 'tutorial hell' and can't build projects", val: "not_improving" },
-        { e: "🎓", l: "I'm passing university classes but can't code in the real world", val: "uni_confused" },
-        { e: "💸", l: "I want to learn a skill specifically to start freelancing", val: "earning" }
+        { e: "🤷", l: "I want to start but I'm not sure how", val: "no_start" },
+        { e: "😵", l: "I tried learning but it feels too confusing", val: "lost" },
+        { e: "📉", l: "I'm practicing but I don't feel like I'm getting better", val: "not_improving" },
+        { e: "🎓", l: "I'm in school but I still don't know what to do", val: "uni_confused" },
+        { e: "💸", l: "I just want to learn a skill to make money", val: "earning" }
       ]
     }
   }

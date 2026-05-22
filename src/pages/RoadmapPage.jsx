@@ -108,51 +108,53 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
         )}
 
         <div className="active-step-card">
+          <div className="daily-focus-header">
+            <span className="daily-focus-dot" />
+            <span className="daily-focus-label">Today&apos;s focus</span>
+          </div>
+
+          <div className="step-kicker">Step {currentStepIndex + 1} of {roadmapData.steps.length}</div>
+          <h3 className="step-name">{currentStep.name}</h3>
+          <p className="step-why">{currentStep.why}</p>
+
+          {currentStep.whyMatters && (
+            <div className="why-box">
+              <div className="why-box-label">Why this matters</div>
+              <p className="why-box-text">{currentStep.whyMatters}</p>
+            </div>
+          )}
+
+          <div className="step-meta">{currentStep.time}</div>
+
+          {currentStep.resourceUrl && (
+            <a
+              className="resource-btn"
+              href={currentStep.resourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              📚 {currentStep.resourceTitle || 'Start Learning'}
+            </a>
+          )}
+
+          <div className="practice-box">
+            <div className="practice-label">Your tiny task</div>
+            <p className="practice-task">{currentStep.task}</p>
+          </div>
+
           {completing ? (
-            <div className="step-loading-state">
-              <div className="step-loading-icon">✓</div>
-              <h3 className="step-loading-title">Step Completed</h3>
-              <p className="step-loading-sub">
-                Nice work — updating your roadmap<span className="loading-dots"></span>
-              </p>
-              <p className="step-loading-whisper">Your next step is almost ready.</p>
+            <div className="button-loading-state" style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', 
+              justifyContent: 'center', padding: '24px 20px', 
+              background: 'rgba(34, 197, 94, 0.05)', border: '1px solid rgba(34, 197, 94, 0.15)',
+              borderRadius: '12px', marginTop: '16px', animation: 'fadeInSoft 0.3s ease'
+            }}>
+              <span className="btn-spinner" style={{ marginBottom: '12px', width: '24px', height: '24px', borderWidth: '3px' }} />
+              <div style={{ color: '#22c55e', fontWeight: 'bold', fontSize: '15px', marginBottom: '4px' }}>Updating your progress...</div>
+              <div style={{ color: '#64748b', fontSize: '13px' }}>Saving your completion status...</div>
             </div>
           ) : (
             <>
-              <div className="daily-focus-header">
-                <span className="daily-focus-dot" />
-                <span className="daily-focus-label">Today&apos;s focus</span>
-              </div>
-
-              <div className="step-kicker">Step {currentStepIndex + 1} of {roadmapData.steps.length}</div>
-              <h3 className="step-name">{currentStep.name}</h3>
-              <p className="step-why">{currentStep.why}</p>
-
-              {currentStep.whyMatters && (
-                <div className="why-box">
-                  <div className="why-box-label">Why this matters</div>
-                  <p className="why-box-text">{currentStep.whyMatters}</p>
-                </div>
-              )}
-
-              <div className="step-meta">{currentStep.time}</div>
-
-              {currentStep.resourceUrl && (
-                <a
-                  className="resource-btn"
-                  href={currentStep.resourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  📚 {currentStep.resourceTitle || 'Start Learning'}
-                </a>
-              )}
-
-              <div className="practice-box">
-                <div className="practice-label">Your tiny task</div>
-                <p className="practice-task">{currentStep.task}</p>
-              </div>
-
               <button
                 type="button"
                 className="complete-btn"
