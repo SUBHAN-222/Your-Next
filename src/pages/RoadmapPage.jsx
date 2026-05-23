@@ -39,7 +39,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   const handleComplete = useCallback(() => {
     setCompleting(true)
     posthog.capture('roadmap_step_completed', {
-      step_index: currentStepIndex,
+      step_id: currentStepIndex + 1,
       step_name: currentStep?.name,
       field: roadmapData?.field,
     })

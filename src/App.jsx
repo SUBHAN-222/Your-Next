@@ -17,6 +17,7 @@ function App() {
   const [activePlan, setActivePlan] = useState(null)
   const [roadmapIndex, setRoadmapIndex] = useState(0)
   const [savedProgress, setSavedProgress] = useState(null)
+  const [quizStartTime, setQuizStartTime] = useState(null)
 
   useEffect(() => {
     initPostHog()
@@ -30,6 +31,7 @@ function App() {
     setAnswers({})
     setQuizSession((n) => n + 1)
     setCurrentScreen('onboarding')
+    setQuizStartTime(Date.now())
     posthog.capture('quiz_started')
   }, [])
 
@@ -66,8 +68,17 @@ function App() {
 
   const handleCompleteQuiz = useCallback(() => {
     setCurrentScreen('generating')
-    posthog.capture('quiz_completed', { total_answers: Object.keys(answers).length })
-  }, [answers])
+    const timeTakenMs = quizStartTime ? Date.now() - quizStartTime : 0
+    const minutes = Math.floor(timeTakenMs / 60000)
+    const seconds = Math.floor((timeTakenMs % 60000) / 1000)
+    const timeTakenStr = `${minutes}m ${seconds}s`
+    
+    posthog.capture('quiz_completed', { 
+      total_answers: Object.keys(answers).length,
+      score: 100, // Dummy score, since we don't have a real score
+      time_taken: timeTakenStr
+    })
+  }, [answers, quizStartTime])
 
   useEffect(() => {
     if (currentScreen !== 'generating') return
@@ -86,6 +97,19 @@ function App() {
     return () => {
       cancelled = true
     }
+  }, [currentScreen, answers])
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (currentScreen === 'onboarding') {
+        posthog.capture('user_dropped_off', {
+          step: 'quiz',
+          answers_so_far: Object.keys(answers).length
+        })
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [currentScreen, answers])
 
   return (
