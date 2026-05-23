@@ -29,7 +29,7 @@ export function getNextQuestion(answers, currentStep) {
         { e: "🤷", l: "I want to start but I'm not sure how", val: "no_start" },
         { e: "😵", l: "I tried learning but it feels too confusing", val: "lost" },
         { e: "📉", l: "I'm practicing but I don't feel like I'm getting better", val: "not_improving" },
-        { e: "🎓", l: "I'm in school but I still don't know what to do", val: "uni_confused" },
+        { e: "🎓", l: "I'm a university student but I don't have a clear path", val: "uni_confused" },
         { e: "💸", l: "I just want to learn a skill to make money", val: "earning" }
       ]
     }
