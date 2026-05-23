@@ -105,7 +105,7 @@ function App() {
         posthog.capture('user_dropped_off', {
           step: 'quiz',
           answers_so_far: Object.keys(answers).length
-        })
+        }, { transport: 'sendBeacon' })
       }
     }
     window.addEventListener('beforeunload', handleBeforeUnload)
