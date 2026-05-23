@@ -7,6 +7,7 @@ import FeedbackModal from '@components/FeedbackModal'
 import { generateAIRoadmap } from '@services/aiRoadmap'
 import { getSavedProgress, clearProgress, saveProgress } from '@utils/progressStorage'
 import { getStreakFromStorage } from '@utils/streak'
+import posthog, { initPostHog } from '@lib/posthog'
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('landing')
@@ -18,6 +19,10 @@ function App() {
   const [savedProgress, setSavedProgress] = useState(null)
 
   useEffect(() => {
+    initPostHog()
+  }, [])
+
+  useEffect(() => {
     setSavedProgress(getSavedProgress())
   }, [currentScreen])
 
@@ -25,6 +30,7 @@ function App() {
     setAnswers({})
     setQuizSession((n) => n + 1)
     setCurrentScreen('onboarding')
+    posthog.capture('quiz_started')
   }, [])
 
   const handleAnswer = useCallback((stepIndex, value, index) => {
@@ -42,6 +48,7 @@ function App() {
     setSavedProgress(null)
     setQuizSession((n) => n + 1)
     setCurrentScreen('landing')
+    posthog.capture('quiz_restarted')
   }, [])
 
   const handleStartFresh = useCallback(() => {
@@ -59,7 +66,8 @@ function App() {
 
   const handleCompleteQuiz = useCallback(() => {
     setCurrentScreen('generating')
-  }, [])
+    posthog.capture('quiz_completed', { total_answers: Object.keys(answers).length })
+  }, [answers])
 
   useEffect(() => {
     if (currentScreen !== 'generating') return

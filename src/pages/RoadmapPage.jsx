@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
 import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
+import posthog from '@lib/posthog'
 
 function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   if (activePlan?.steps) {
@@ -37,16 +38,25 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
 
   const handleComplete = useCallback(() => {
     setCompleting(true)
+    posthog.capture('roadmap_step_completed', {
+      step_index: currentStepIndex,
+      step_name: currentStep?.name,
+      field: roadmapData?.field,
+    })
     setTimeout(() => {
       completeCurrentStep()
       setCompleting(false)
     }, 1500)
-  }, [completeCurrentStep])
+  }, [completeCurrentStep, currentStepIndex, currentStep, roadmapData])
 
   const handleDefer = useCallback(() => {
     deferCurrentStep()
     setShowToast(true)
-  }, [deferCurrentStep])
+    posthog.capture('roadmap_step_deferred', {
+      step_index: currentStepIndex,
+      step_name: currentStep?.name,
+    })
+  }, [deferCurrentStep, currentStepIndex, currentStep])
 
   if (!roadmapData || !currentStep) {
     if (isComplete && roadmapData) {
