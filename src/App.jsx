@@ -73,6 +73,7 @@ function App() {
     const seconds = Math.floor((timeTakenMs % 60000) / 1000)
     const timeTakenStr = `${minutes}m ${seconds}s`
     
+    console.log("Firing quiz_completed")
     posthog.capture('quiz_completed', { 
       total_answers: Object.keys(answers).length,
       score: 100, // Dummy score, since we don't have a real score
@@ -102,6 +103,7 @@ function App() {
   useEffect(() => {
     const trackDropOff = () => {
       if (currentScreen === 'onboarding') {
+        console.log("Firing user_dropped_off")
         posthog.capture('user_dropped_off', {
           step: 'quiz',
           answers_so_far: Object.keys(answers).length
