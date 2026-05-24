@@ -100,7 +100,7 @@ function App() {
   }, [currentScreen, answers])
 
   useEffect(() => {
-    const handleBeforeUnload = () => {
+    const trackDropOff = () => {
       if (currentScreen === 'onboarding') {
         posthog.capture('user_dropped_off', {
           step: 'quiz',
@@ -108,8 +108,24 @@ function App() {
         }, { transport: 'sendBeacon' })
       }
     }
+
+    const handleBeforeUnload = () => {
+      trackDropOff()
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        trackDropOff()
+      }
+    }
+
     window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, [currentScreen, answers])
 
   return (
