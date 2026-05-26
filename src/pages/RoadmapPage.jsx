@@ -4,11 +4,35 @@ import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
 import posthog from '@lib/posthog'
 
-function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
-  if (activePlan?.steps) {
-    activePlan.steps = activePlan.steps.slice(0, 3)
-  }
+const Accordion = ({ title, subtitle, icon, badgeText, theme = 'default', children, defaultOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+  return (
+    <div className={`premium-accordion theme-${theme} ${isOpen ? 'open' : ''}`}>
+      <button type="button" className="p-accordion-header" onClick={() => setIsOpen(!isOpen)}>
+        <div className="p-accordion-left">
+          {icon && <span className="p-accordion-icon-box">{icon}</span>}
+          <div className="p-accordion-texts">
+            <span className="p-accordion-title">{title}</span>
+            {subtitle && <span className="p-accordion-subtitle">{subtitle}</span>}
+          </div>
+        </div>
+        <div className="p-accordion-right">
+          {badgeText && <span className="p-accordion-badge">{badgeText}</span>}
+          <span className="p-accordion-chevron">
+             <svg width="14" height="8" viewBox="0 0 14 8" fill="none" style={{transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s'}}>
+               <path d="M1 1L7 7L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+             </svg>
+          </span>
+        </div>
+      </button>
+      <div className="p-accordion-content-wrapper" style={{ height: isOpen ? 'auto' : 0, overflow: 'hidden' }}>
+        <div className="p-accordion-content">{children}</div>
+      </div>
+    </div>
+  )
+}
 
+function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   const {
     roadmapData,
     currentStep,
@@ -88,6 +112,8 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   }
 
   const fieldLabel = roadmapData.field || 'learning'
+  const upcomingSteps = roadmapData.steps.slice(currentStepIndex + 1, currentStepIndex + 4)
+  const hasUpcomingSteps = upcomingSteps.length > 0
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
@@ -105,148 +131,172 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
         </div>
       </nav>
 
-      <div className="roadmap-top">
-        <h2 className="roadmap-h">
-          Welcome to your <span id="resField">{fieldLabel}</span> journey.
-        </h2>
-        <p className="roadmap-sub">One step at a time — no overwhelm, just progress.</p>
+      
+      <div className="premium-hero-card">
+        <div className="ph-left">
+          <div className="ph-icon-box">{roadmapData.icon || '🚀'}</div>
+          <div className="ph-text">
+            <h2 className="ph-title">{fieldLabel}</h2>
+            <p className="ph-subtitle">Beginner Stage • Keep going, you're doing great!</p>
+          </div>
+        </div>
+        <div className="ph-right">
+          <div className="ph-stats">
+            <div className="ph-count"><strong>{currentStepIndex}</strong> / {roadmapData.steps.length} completed</div>
+            <div className="ph-pct">{Math.round((currentStepIndex / roadmapData.steps.length) * 100)}%</div>
+          </div>
+          <div className="ph-progress-bg">
+            <div className="ph-progress-fill" style={{ width: `${(currentStepIndex / roadmapData.steps.length) * 100}%` }}></div>
+          </div>
+        </div>
       </div>
 
-      <div className="roadmap-container">
-        {showMomentum && momentumMessage && (
-          <div className="momentum-banner show">{momentumMessage}</div>
-        )}
-
-        <div className="active-step-card">
-          <div className="daily-focus-header">
-            <span className="daily-focus-dot" />
-            <span className="daily-focus-label">Today&apos;s focus</span>
+      <div className="premium-main-grid">
+        <div className="premium-task-card">
+          <div className="pt-header">
+            <span className="pt-dot-label"><span className="pt-dot"></span> Current Task</span>
+            <span className="pt-step-badge">Step {currentStepIndex + 1} of {roadmapData.steps.length}</span>
           </div>
-
-          <div className="step-kicker">Step {currentStepIndex + 1} of {roadmapData.steps.length}</div>
-          <h3 className="step-name">{currentStep.name}</h3>
-          <p className="step-why">{currentStep.why}</p>
-
-          {currentStep.whyMatters && (
-            <div className="why-box">
-              <div className="why-box-label">Why this matters</div>
-              <p className="why-box-text">{currentStep.whyMatters}</p>
+          <div className="pt-body">
+            <div className="pt-icon-large">
+              <span>{roadmapData.icon || '🎯'}</span>
             </div>
-          )}
-
-          <div className="step-meta">{currentStep.time}</div>
-
-          {currentStep.resourceUrl && (
-            <a
-              className="resource-btn"
-              href={currentStep.resourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              📚 {currentStep.resourceTitle || 'Start Learning'}
-            </a>
-          )}
-
-          <div className="practice-box">
-            <div className="practice-label">Your tiny task</div>
-            <p className="practice-task">{currentStep.task}</p>
+            <div className="pt-info">
+              <h3 className="pt-title">{currentStep.name}</h3>
+              <p className="pt-desc">{currentStep.why}</p>
+              <div className="pt-meta-tags">
+                <span className="pt-meta-tag">⏱️ {currentStep.time}</span>
+                <span className="pt-meta-tag">📖 Beginner</span>
+              </div>
+            </div>
           </div>
-
-          {completing ? (
-            <div className="button-loading-state" style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', 
-              justifyContent: 'center', padding: '24px 20px', 
-              background: 'rgba(34, 197, 94, 0.05)', border: '1px solid rgba(34, 197, 94, 0.15)',
-              borderRadius: '12px', marginTop: '16px', animation: 'fadeInSoft 0.3s ease'
-            }}>
-              <span className="btn-spinner" style={{ marginBottom: '12px', width: '24px', height: '24px', borderWidth: '3px' }} />
-              <div style={{ color: '#22c55e', fontWeight: 'bold', fontSize: '15px', marginBottom: '4px' }}>Updating your progress...</div>
-              <div style={{ color: '#64748b', fontSize: '13px' }}>Saving your completion status...</div>
-            </div>
-          ) : (
-            <>
-              <button
-                type="button"
-                className="complete-btn"
-                onClick={handleComplete}
-              >
-                I completed this step →
+          <div className="pt-actions">
+            {completing ? (
+              <div className="pt-loading">Saving progress...</div>
+            ) : (
+              <button type="button" className="pt-complete-btn" onClick={handleComplete}>
+                <span className="pt-check">✓</span> Complete this task
               </button>
-
-              <button type="button" className="defer-btn" onClick={handleDefer}>
-                Not done yet — save my progress
-              </button>
-            </>
-          )}
+            )}
+            {!completing && (
+              <a href={currentStep.resourceUrl} className="pt-resource-btn" target="_blank" rel="noopener noreferrer">Start learning</a>
+            )}
+          </div>
         </div>
 
-        {(() => {
-          const careerId = Object.keys(CAREER_PATHS).find(
-            key => CAREER_PATHS[key].name === roadmapData?.field
-          ) || 'web'
-          const dontLearnList = roadmapData?.dontLearnYet?.length > 0 
-            ? roadmapData.dontLearnYet 
-            : getDontLearnYet(careerId, 'beginner')
-
-          if (!dontLearnList || dontLearnList.length === 0) return null
-
-          return (
-            <div style={{
-              background: '#0f172a',
-              borderLeft: '4px solid #ef4444',
-              borderRadius: '16px',
-              padding: '24px',
-              marginBottom: '20px'
-            }}>
-              <h3 style={{ color: '#fff', fontFamily: 'Sora, sans-serif', fontWeight: 'bold', fontSize: '20px', marginBottom: '8px' }}>
-                🚫 Don't do this yet
-              </h3>
-              <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '20px' }}>
-                These are the #1 mistakes confused beginners make. Skip them for now.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {dontLearnList.slice(0, 4).map((item, idx) => (
-                  <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <span style={{ color: '#ef4444', flexShrink: 0, marginTop: '2px' }}>✕</span>
-                    <span style={{ color: '#fff', fontSize: '15px', lineHeight: '1.5' }}>{item}</span>
+        <div className={`premium-next-card ${!hasUpcomingSteps ? 'is-complete' : ''}`}>
+          {hasUpcomingSteps ? (
+            <>
+              <div className="pn-header">
+                <span className="pn-icon">🚀</span> Coming Next
+              </div>
+              <div className="pn-list">
+                {upcomingSteps.map((step, idx) => (
+                  <div key={idx} className="pn-item">
+                    <div className="pn-num">{currentStepIndex + 2 + idx}</div>
+                    <div className="pn-info">
+                      <h4 className="pn-title">{step.name}</h4>
+                      <p className="pn-sub">{step.why ? step.why.substring(0, 40) + '...' : 'Continue your journey'}</p>
+                    </div>
+                    <div className="pn-time">{step.time.replace('⏱️ ', '')}</div>
                   </div>
                 ))}
               </div>
+              {roadmapData.steps.length > currentStepIndex + 4 && (
+                <button className="pn-view-all" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>
+                  View full roadmap <span className="pn-arrow">›</span>
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="pn-complete-state">
+              <div className="pn-complete-icon">🎉</div>
+              <h3 className="pn-complete-title">You completed all tasks</h3>
+              <p className="pn-complete-text">
+                You learned the basics, built your first steps, and proved you can keep going.
+              </p>
+              <p className="pn-complete-next">
+                Next: Review your completed roadmap or start a new path.
+              </p>
             </div>
-          )
-        })()}
+          )}
+        </div>
+      </div>
 
-        {roadmapData.futurePath?.length > 0 && (
-          <div className="future-path">
-            <h3 className="future-path-title">Your future path</h3>
-            <p className="future-path-sub">Where you are headed after these steps.</p>
-            <div className="future-path-track">
-              {roadmapData.futurePath.map((stage, i) => (
-                <div key={`${stage}-${i}`} className="future-path-node">
-                  {i > 0 && <span className="future-path-arrow">→</span>}
-                  <span className={`future-path-pill${i === 0 ? ' active-pill' : ''}`}>{stage}</span>
+      {(() => {
+        const careerId = Object.keys(CAREER_PATHS).find(
+          key => CAREER_PATHS[key].name === roadmapData?.field
+        ) || 'web'
+        const dontLearnList = roadmapData?.dontLearnYet?.length > 0 
+          ? roadmapData.dontLearnYet 
+          : getDontLearnYet(careerId, 'beginner')
+
+        if (!dontLearnList || dontLearnList.length === 0) return null
+
+        return (
+          <div className="premium-warning-wrapper">
+            <Accordion 
+              theme="warning"
+              icon="⚠️"
+              title="Don't do this yet"
+              subtitle="Avoid these common beginner mistakes."
+              badgeText={`View ${dontLearnList.length} tips`}
+            >
+              <div className="p-dont-learn-list">
+                {dontLearnList.slice(0, 4).map((item, idx) => (
+                  <div key={idx} className="p-dont-learn-item">
+                    <span className="p-dont-learn-icon">✕</span>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </Accordion>
+          </div>
+        )
+      })()}
+
+      <div className="premium-accordions-group">
+        {currentStepIndex > 0 && (
+          <Accordion 
+            theme="success"
+            icon="✅"
+            title="Completed Steps"
+            badgeText={`${currentStepIndex} completed`}
+          >
+            <div className="p-completed-list">
+              {roadmapData.steps.slice(0, currentStepIndex).map((step, index) => (
+                <div key={index} className="p-completed-item">
+                  <span className="p-completed-check">✓</span>
+                  <span className="p-completed-name">{step.name}</span>
                 </div>
               ))}
             </div>
-            <p className="future-path-caption">Focus on today — the rest unlocks as you go.</p>
-          </div>
+          </Accordion>
         )}
 
-        <div className="roadmap-preview">
-          <div className="preview-list">
+        <Accordion 
+          theme="default"
+          icon="📁"
+          title="Full Roadmap"
+          badgeText={`${roadmapData.steps.length} steps total`}
+        >
+          <div className="p-full-roadmap-list">
             {roadmapData.steps.map((step, index) => {
-              const status = getStepStatus(index)
+              const status = getStepStatus(index);
               return (
-                <div key={index} className={`preview-item ${status}`}>
-                  <span className="preview-icon">
+                <div key={index} className={`p-roadmap-step-item ${status}`}>
+                  <div className="p-step-icon">
                     {status === 'done' ? '✓' : status === 'current' ? '→' : '○'}
-                  </span>
-                  <span>{step.name}</span>
+                  </div>
+                  <div className="p-step-details">
+                    <div className="p-step-item-name">{step.name}</div>
+                    {status === 'current' && <div className="p-step-item-meta">Current task</div>}
+                  </div>
                 </div>
               )
             })}
           </div>
-        </div>
+        </Accordion>
       </div>
 
       {showToast && (

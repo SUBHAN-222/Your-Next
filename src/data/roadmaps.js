@@ -96,7 +96,7 @@ export function generateRoadmapData(answers) {
           task:
             "Build a 'Mentor Bot' that takes any problem you have and gives you one encouraging step to solve it. You are now an AI Builder."
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -145,7 +145,7 @@ export function generateRoadmapData(answers) {
           task:
             'Add a button to your page that changes the background color when clicked. That is real interactivity.'
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -193,7 +193,7 @@ export function generateRoadmapData(answers) {
           task:
             'Build a login screen with an email field, password field, and a styled login button.'
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -241,7 +241,7 @@ export function generateRoadmapData(answers) {
           task:
             "Complete the 'Starting Out in Cyber Sec' room on TryHackMe and earn your first badge."
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -347,7 +347,7 @@ export function generateRoadmapData(answers) {
           task:
             'Find a dataset about something you love (sports, music, weather) and find the top 3 most common items in it.'
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -396,7 +396,7 @@ export function generateRoadmapData(answers) {
           task:
             'Find one job that matches your skill. Send a personalized proposal that references their specific problem.'
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -444,7 +444,7 @@ export function generateRoadmapData(answers) {
           task:
             'Pick a simple app you use. Sketch one way you would make the main task (like posting a photo) even easier.'
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -493,7 +493,7 @@ export function generateRoadmapData(answers) {
           task:
             'Watch bubble sort and merge sort animate. Then explain the difference to yourself out loud.'
         }
-      ].slice(0, 3)
+      ]
     }
   }
 
@@ -511,6 +511,6 @@ export function generateRoadmapData(answers) {
         resourceUrl: 'https://www.freecodecamp.org/',
         task: 'Complete the first module. Just the first one.'
       }
-    ].slice(0, 3)
+    ]
   }
 }
