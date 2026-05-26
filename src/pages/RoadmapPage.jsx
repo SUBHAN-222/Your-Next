@@ -240,7 +240,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
               icon="⚠️"
               title="Don't do this yet"
               subtitle="Avoid these common beginner mistakes."
-              badgeText={`View ${dontLearnList.length} tips`}
             >
               <div className="p-dont-learn-list">
                 {dontLearnList.slice(0, 4).map((item, idx) => (
@@ -261,7 +260,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
             theme="success"
             icon="✅"
             title="Completed Steps"
-            badgeText={`${currentStepIndex} completed`}
           >
             <div className="p-completed-list">
               {roadmapData.steps.slice(0, currentStepIndex).map((step, index) => (
@@ -278,7 +276,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
           theme="default"
           icon="📁"
           title="Full Roadmap"
-          badgeText={`${roadmapData.steps.length} steps total`}
         >
           <div className="p-full-roadmap-list">
             {roadmapData.steps.map((step, index) => {
