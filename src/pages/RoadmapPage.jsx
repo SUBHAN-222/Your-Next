@@ -4,6 +4,33 @@ import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
 import posthog from '@lib/posthog'
 
+const PATH_AVOID_ITEMS = {
+  data: [
+    "Don't start Machine Learning yet",
+    "Don't learn Deep Learning first",
+    "Don't memorize libraries",
+    "Don't jump into Kaggle competitions",
+  ],
+  web: [
+    "Don't learn React immediately",
+    "Don't start backend yet",
+    "Don't watch advanced system design videos",
+  ],
+  ai: [
+    "Don't train your own models yet",
+    "Don't learn every AI framework",
+    "Don't start with advanced math",
+  ],
+}
+
+const getCareerIdFromPlan = (field) => (
+  Object.keys(CAREER_PATHS).find(
+    key => CAREER_PATHS[key].name === field
+  ) || 'web'
+)
+
+const cleanAvoidItem = (item) => String(item).replace(/\s*\([^)]*\)/g, '')
+
 const Accordion = ({ title, subtitle, icon, badgeText, theme = 'default', children, defaultOpen = false }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen)
   return (
@@ -112,8 +139,12 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   }
 
   const fieldLabel = roadmapData.field || 'learning'
-  const upcomingSteps = roadmapData.steps.slice(currentStepIndex + 1, currentStepIndex + 4)
-  const hasUpcomingSteps = upcomingSteps.length > 0
+  const careerId = getCareerIdFromPlan(roadmapData?.field)
+  const avoidItems = (
+    PATH_AVOID_ITEMS[careerId] ||
+    roadmapData?.dontLearnYet ||
+    getDontLearnYet(careerId, 'beginner')
+  ).slice(0, 4).map(cleanAvoidItem)
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
@@ -184,75 +215,27 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
           </div>
         </div>
 
-        <div className={`premium-next-card ${!hasUpcomingSteps ? 'is-complete' : ''}`}>
-          {hasUpcomingSteps ? (
-            <>
-              <div className="pn-header">
-                <span className="pn-icon">🚀</span> Coming Next
-              </div>
-              <div className="pn-list">
-                {upcomingSteps.map((step, idx) => (
-                  <div key={idx} className="pn-item">
-                    <div className="pn-num">{currentStepIndex + 2 + idx}</div>
-                    <div className="pn-info">
-                      <h4 className="pn-title">{step.name}</h4>
-                      <p className="pn-sub">{step.why ? step.why.substring(0, 40) + '...' : 'Continue your journey'}</p>
-                    </div>
-                    <div className="pn-time">{step.time.replace('⏱️ ', '')}</div>
-                  </div>
-                ))}
-              </div>
-              {roadmapData.steps.length > currentStepIndex + 4 && (
-                <button className="pn-view-all" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>
-                  View full roadmap <span className="pn-arrow">›</span>
-                </button>
-              )}
-            </>
-          ) : (
-            <div className="pn-complete-state">
-              <div className="pn-complete-icon">🎉</div>
-              <h3 className="pn-complete-title">You completed all tasks</h3>
-              <p className="pn-complete-text">
-                You learned the basics, built your first steps, and proved you can keep going.
-              </p>
-              <p className="pn-complete-next">
-                Next: Review your completed roadmap or start a new path.
-              </p>
+        <div className="premium-next-card premium-avoid-card">
+          <div className="pn-header avoid-header">
+            <span className="pn-icon avoid-icon">⚠️</span>
+            <div>
+              <span className="avoid-title">Don't Do This Yet</span>
+              <span className="avoid-subtitle">Avoid these common beginner mistakes.</span>
             </div>
-          )}
+          </div>
+          <div className="pn-list avoid-list">
+            {avoidItems.map((item, idx) => (
+              <div key={idx} className="pn-item avoid-item">
+                <span className="avoid-check">!</span>
+                <span className="avoid-text">{item}</span>
+              </div>
+            ))}
+          </div>
+          <div className="avoid-note">
+            Focus on one thing. Ignore the rest for now.
+          </div>
         </div>
       </div>
-
-      {(() => {
-        const careerId = Object.keys(CAREER_PATHS).find(
-          key => CAREER_PATHS[key].name === roadmapData?.field
-        ) || 'web'
-        const dontLearnList = roadmapData?.dontLearnYet?.length > 0 
-          ? roadmapData.dontLearnYet 
-          : getDontLearnYet(careerId, 'beginner')
-
-        if (!dontLearnList || dontLearnList.length === 0) return null
-
-        return (
-          <div className="premium-warning-wrapper">
-            <Accordion 
-              theme="warning"
-              icon="⚠️"
-              title="Don't do this yet"
-              subtitle="Avoid these common beginner mistakes."
-            >
-              <div className="p-dont-learn-list">
-                {dontLearnList.slice(0, 4).map((item, idx) => (
-                  <div key={idx} className="p-dont-learn-item">
-                    <span className="p-dont-learn-icon">✕</span>
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </Accordion>
-          </div>
-        )
-      })()}
 
       <div className="premium-accordions-group">
         {currentStepIndex > 0 && (
