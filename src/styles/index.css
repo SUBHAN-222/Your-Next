@@ -445,6 +445,30 @@ body {
   border-radius: 10px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.ph-trust-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.ph-save-status,
+.ph-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ph-save-status {
+  color: #16a34a;
+}
+.ph-streak {
+  color: #f97316;
+}
 
 /* Premium Main Grid */
 .premium-main-grid {
@@ -576,6 +600,13 @@ body {
 .pt-actions > * {
   flex: 1;
 }
+.pt-action-hint {
+  margin: -8px 0 14px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+}
 
 @media (max-width: 640px) {
   .pt-actions {
@@ -593,44 +624,6 @@ body {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: #f8fbff;
-  color: #2563eb;
-  border: 1.5px solid #2563eb;
-  padding: 14px 22px;
-  min-height: 52px;
-  border-radius: 16px;
-  font-family: 'Sora', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-decoration: none;
-  transition: background-color .22s ease, transform .22s ease, box-shadow .22s ease, color .22s ease;
-  outline: none;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-}
-.pt-resource-btn:hover {
-  background: #eaf2ff;
-  color: #2563eb;
-  transform: translateY(-2px);
-  text-decoration: none;
-  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.14);
-}
-.pt-resource-btn:focus,
-.pt-resource-btn:focus-visible {
-  text-decoration: none;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2), 0 8px 18px rgba(37, 99, 235, 0.14);
-}
-
-.pt-complete-btn {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
   background: linear-gradient(180deg, #2f7cff 0%, #2563eb 100%);
   color: #fff;
   border: 1px solid transparent;
@@ -645,23 +638,64 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
+  text-decoration: none;
   transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+  outline: none;
   box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28), 0 2px 6px rgba(15, 23, 42, 0.1);
+}
+.pt-resource-btn:hover {
+  filter: brightness(1.03);
+  color: #fff;
+  transform: translateY(-2px);
+  text-decoration: none;
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34), 0 4px 10px rgba(15, 23, 42, 0.12);
+}
+.pt-resource-btn:focus,
+.pt-resource-btn:focus-visible {
+  text-decoration: none;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.28), 0 14px 28px rgba(37, 99, 235, 0.34);
+}
+
+.pt-complete-btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: #fff;
+  color: #334155;
+  border: 1.5px solid #cbd5e1;
+  padding: 14px 22px;
+  min-height: 52px;
+  border-radius: 16px;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color .22s ease, border-color .22s ease, color .22s ease, transform .22s ease, box-shadow .22s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   outline: none;
 }
 .pt-complete-btn:hover {
-  filter: brightness(1.03);
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34), 0 4px 10px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
 }
 .pt-complete-btn:focus,
 .pt-complete-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.28), 0 14px 28px rgba(37, 99, 235, 0.34);
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.24), 0 8px 18px rgba(15, 23, 42, 0.08);
 }
 .pt-check {
-  background: rgba(255, 255, 255, 0.24);
+  background: #dcfce7;
+  color: #16a34a;
   width: 22px;
   height: 22px;
   border-radius: 50%;

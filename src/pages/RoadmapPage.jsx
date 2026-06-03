@@ -139,6 +139,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   }
 
   const fieldLabel = roadmapData.field || 'learning'
+  const streakLabel = `${streak} Day${streak === 1 ? '' : 's'} Streak`
   const careerId = getCareerIdFromPlan(roadmapData?.field)
   const avoidItems = (
     PATH_AVOID_ITEMS[careerId] ||
@@ -179,6 +180,10 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
           <div className="ph-progress-bg">
             <div className="ph-progress-fill" style={{ width: `${(currentStepIndex / roadmapData.steps.length) * 100}%` }}></div>
           </div>
+          <div className="ph-trust-row">
+            <span className="ph-save-status">✓ Progress saved automatically</span>
+            {streak > 0 && <span className="ph-streak">🔥 {streakLabel}</span>}
+          </div>
         </div>
       </div>
 
@@ -201,16 +206,17 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
               </div>
             </div>
           </div>
+          <p className="pt-action-hint">Start the activity first. When you return, mark it complete.</p>
           <div className="pt-actions">
+            {!completing && (
+              <a href={currentStep.resourceUrl} className="pt-resource-btn" target="_blank" rel="noopener noreferrer">Start Learning</a>
+            )}
             {completing ? (
               <div className="pt-loading">Saving progress...</div>
             ) : (
               <button type="button" className="pt-complete-btn" onClick={handleComplete}>
-                <span className="pt-check">✓</span> Complete this task
+                <span className="pt-check">✓</span> Mark Complete
               </button>
-            )}
-            {!completing && (
-              <a href={currentStep.resourceUrl} className="pt-resource-btn" target="_blank" rel="noopener noreferrer">Start learning</a>
             )}
           </div>
         </div>
