@@ -141,9 +141,9 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Day${streak === 1 ? '' : 's'} Streak`
   const careerId = getCareerIdFromPlan(roadmapData?.field)
-  const avoidItems = (
-    PATH_AVOID_ITEMS[careerId] ||
+const avoidItems = (
     roadmapData?.dontLearnYet ||
+    PATH_AVOID_ITEMS[careerId] ||
     getDontLearnYet(careerId, 'beginner')
   ).slice(0, 4).map(cleanAvoidItem)
 
