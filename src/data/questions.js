@@ -23,7 +23,7 @@ export function getNextQuestion(answers, currentStep) {
     return {
       id: "q_stuck",
       eye: "Let's understand you",
-      title: "Where are you stuck right now?",
+      title: "Let's figure out where you're stuck.",
       hint: "Be honest — there's no wrong answer here.",
       opts: [
         { e: "🤷", l: "I want to start but I'm not sure how", val: "no_start" },
@@ -41,7 +41,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "q_tried",
         eye: "Starting fresh",
-        title: "Have you tried learning anything before?",
+        title: "Have you tried anything before this?",
         hint: "Even YouTube or a free course counts.",
         opts: [
           { e: "❌", l: "No, I haven't tried anything yet", val: "never" },
@@ -53,7 +53,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "q_lost_cause",
         eye: "Finding the block",
-        title: "What made you feel lost?",
+        title: "What's the exact moment things stopped making sense?",
         hint: "Pin down the exact moment things stopped making sense.",
         opts: [
           { e: "🌊", l: "Too much information at once", val: "overload" },
@@ -66,7 +66,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "q_how_long",
         eye: "Progress check",
-        title: "How long have you been learning?",
+        title: "How long have you been at this?",
         hint: "This helps us understand what is blocking you.",
         opts: [
           { e: "📅", l: "Less than 1 month", val: "fresh" },
@@ -78,7 +78,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "q_uni_hard",
         eye: "University struggles",
-        title: "Which part of university confuses you most?",
+        title: "What's confusing you most about university right now?",
         hint: "This will shape everything we suggest.",
         opts: [
           { e: "💻", l: "Programming — I can't write code", val: "code" },
@@ -91,7 +91,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "q_earn_tried",
         eye: "Earning ambition",
-        title: "Have you tried earning online before?",
+        title: "Have you tried making money online yet?",
         hint: "Knowing this helps us skip what does not work for you.",
         opts: [
           { e: "❌", l: "No, completely new to this", val: "never" },
@@ -125,7 +125,7 @@ export function getNextQuestion(answers, currentStep) {
       id: "q_direction",
       eye,
       hint,
-      title: "What feels most interesting to you?",
+      title: "What pulls you in the most?",
       opts: [
         { e: "🌐", l: "Web & App Development", val: "web" },
         { e: "🤖", l: "AI & Machine Learning", val: "ai" },
@@ -146,7 +146,7 @@ export function getNextQuestion(answers, currentStep) {
         return {
           id: "web_stuck",
           eye: "Dev Path",
-          title: "What part frustrates you most right now?",
+          title: "What's the part that keeps tripping you up?",
           hint: "Let's fix the exact blocker, not guess.",
           opts: [
             { e: "🎨", l: "CSS — making things look good", val: "css" },
@@ -159,7 +159,7 @@ export function getNextQuestion(answers, currentStep) {
         return {
           id: "web_earn_goal",
           eye: "Dev Path",
-          title: "How do you plan to earn with development?",
+          title: "How do you picture earning from this?",
           hint: "This decides your exact roadmap.",
           opts: [
             { e: "💸", l: "Freelance on Upwork/Fiverr", val: "freelance" },
@@ -170,7 +170,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "web_goal",
         eye: "Dev Path",
-        title: "What is your main goal with development?",
+        title: "What are you really building toward?",
         hint: "Be specific — this decides your path.",
         opts: [
           { e: "💼", l: "Get a full-time job at a company", val: "job" },
@@ -184,7 +184,7 @@ export function getNextQuestion(answers, currentStep) {
         return {
           id: "ai_earn",
           eye: "AI Path",
-          title: "How do you want to earn with AI?",
+          title: "How do you see yourself earning with AI?",
           hint: "Your answer completely changes the roadmap.",
           opts: [
             { e: "🛠️", l: "Build AI tools and sell them", val: "tools" },
@@ -195,7 +195,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "ai_why",
         eye: "AI Path",
-        title: "Why are you drawn to AI?",
+        title: "What's pulling you toward AI?",
         hint: "Honest answer gives you the best path.",
         opts: [
           { e: "🚀", l: "I want to build the next generation of products", val: "future" },
@@ -209,7 +209,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "data_goal",
         eye: "Data Science",
-        title: "What draws you to data?",
+        title: "What's the pull toward data, for you?",
         hint: "Data has many career directions.",
         opts: [
           { e: "📊", l: "Finding insights and making decisions", val: "analytics" },
@@ -222,7 +222,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "cyber_side",
         eye: "Cyber Security",
-        title: "Which side of security excites you?",
+        title: "Which side of security gets you excited?",
         hint: "Both are valid and well-paying.",
         opts: [
           { e: "🕵️", l: "Ethical hacking — finding vulnerabilities", val: "offense" },
@@ -235,7 +235,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "free_urgency",
         eye: "Freelance Path",
-        title: "How urgent is earning for you?",
+        title: "How soon do you need this to pay off?",
         hint: "No judgement — this helps us prioritize correctly.",
         opts: [
           { e: "🔥", l: "I need income within weeks", val: "urgent" },
@@ -245,7 +245,7 @@ export function getNextQuestion(answers, currentStep) {
       }
     if (q2 === 'design') return {
       id: 'design_exp', eye: "Design Path",
-      title: "What is your design experience right now?",
+      title: "Where are you at with design right now?",
       hint: "This shapes your starting point completely.",
       opts: [
         { e: "🆕", l: "Complete beginner — never opened Figma", val: "zero" },
@@ -259,7 +259,7 @@ export function getNextQuestion(answers, currentStep) {
         return {
           id: "uni_code_level",
           eye: "University",
-          title: "How stuck are you with code specifically?",
+          title: "Be honest — how stuck are you with actual code?",
           hint: "Be honest — that's how we help.",
           opts: [
             { e: "💀", l: "I can't write basic code at all", val: "zero" },
@@ -270,7 +270,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "uni_semester",
         eye: "University",
-        title: "What is your biggest semester struggle?",
+        title: "What's been the hardest part of this semester?",
         hint: "We've all been there.",
         opts: [
           { e: "🤯", l: "Too much theory delivered too fast", val: "theory" },
@@ -289,7 +289,7 @@ export function getNextQuestion(answers, currentStep) {
         return {
           id: "web_enjoy",
           eye: "Dev Path",
-          title: "What do you enjoy more?",
+          title: "Which one actually feels more fun to you?",
           hint: "Go with your gut — both are valid.",
           opts: [
             { e: "🎨", l: "Designing beautiful user interfaces", val: "frontend" },
@@ -300,7 +300,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "web_type",
         eye: "Dev Path",
-        title: "Frontend, backend, or full-stack?",
+        title: "Front, back, or a bit of both?",
         hint: "This shapes your entire learning stack.",
         opts: [
           { e: "🖥️", l: "Frontend — what users see and click", val: "frontend" },
@@ -313,7 +313,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "ai_math",
         eye: "AI Path",
-        title: "How comfortable are you with Math?",
+        title: "Be honest — how's your relationship with math?",
         hint: "This decides your starting point — be honest.",
         opts: [
           { e: "😰", l: "I really struggle with it", val: "hate" },
@@ -325,7 +325,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "data_math",
         eye: "Data Science",
-        title: "How is your math and statistics?",
+        title: "How comfortable are you with numbers?",
         hint: "It determines where we start you.",
         opts: [
           { e: "🤓", l: "Strong — calculus and stats are fine", val: "strong" },
@@ -337,7 +337,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "cyber_net",
         eye: "Cyber Security",
-        title: "How well do you understand networking?",
+        title: "What do you already know about how networks work?",
         hint: "Security is built on top of networks.",
         opts: [
           { e: "🌐", l: "I know IP, TCP/UDP, DNS", val: "good" },
@@ -349,7 +349,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "free_skill",
         eye: "Freelance Path",
-        title: "What skill do you already have?",
+        title: "What's one skill you already bring to the table?",
         hint: "Don't worry if the answer is nothing.",
         opts: [
           { e: "🎨", l: "Design, video, or content creation", val: "design" },
@@ -360,7 +360,7 @@ export function getNextQuestion(answers, currentStep) {
       }
     if (q2 === 'design') return {
       id: 'design_goal', eye: "Design Path",
-      title: "What do you want to design for?",
+      title: "What kind of thing do you want to design?",
       hint: "This decides which skills to focus on first.",
       opts: [
         { e: "📱", l: "Mobile apps — screens and flows", val: "mobile" },
@@ -373,7 +373,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "uni_coding",
         eye: "University",
-        title: "How confident are you in programming?",
+        title: "How confident do you feel writing code?",
         hint: "Loops, functions, data structures…",
         opts: [
           { e: "💪", l: "I can code, just need direction", val: "good" },
@@ -388,7 +388,7 @@ export function getNextQuestion(answers, currentStep) {
     return {
       id: "final_guide",
       eye: "Almost done",
-      title: "How do you want YourNext to guide you?",
+      title: "Last thing — how should YourNext guide you?",
       hint: "This personalizes your roadmap style.",
       opts: [
         { e: "⚡", l: "Fast and practical — get results quick", val: "fast" },
