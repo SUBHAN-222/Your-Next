@@ -1,4 +1,5 @@
 import { generateRoadmapData } from '@data/roadmaps'
+import { getLearningHistory } from '@utils/progressStorage'
 
 function normalizeStep(step) {
   return {
@@ -34,10 +35,11 @@ export async function generateAIRoadmap(answers) {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 12000)
 
+    const history = getLearningHistory()
     const response = await fetch('/api/generate-roadmap', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers }),
+      body: JSON.stringify({ answers, history }),
       signal: controller.signal,
     })
 

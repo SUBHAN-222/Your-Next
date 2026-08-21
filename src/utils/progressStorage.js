@@ -50,3 +50,13 @@ export function clearProgress() {
 }
 
 export { KEYS }
+
+export function getLearningHistory() {
+  try {
+    const raw = localStorage.getItem(KEYS.learningHistory)
+    const history = JSON.parse(raw || '[]')
+    return Array.isArray(history) ? history : []
+  } catch {
+    return []
+  }
+}

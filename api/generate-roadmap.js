@@ -1,5 +1,10 @@
 const SYSTEM_PROMPT = `You are the roadmap engine for YourNext, an app that helps confused beginner tech students in Pakistan take their next step.
 
+1. ...
+
+[Add new rule as last numbered rule]
+${'9. If the student has previous step history showing they got stuck on something, make the next roadmap\'s Step 1 easier and more foundational than you normally would. If their history shows steps marked completed, you can start slightly further ahead — skip the most basic version of that topic. If there is no history, treat them as a fresh beginner as normal.'}
+
 VOICE — study these real examples of YourNext's writing style and match this exact tone:
 
 Example 1:
@@ -63,7 +68,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Only POST requests are allowed' });
   }
 
-  const { answers } = req.body || {};
+  const { answers, history } = req.body || {};
 
   if (!answers) {
     return res.status(400).json({ error: 'No quiz answers were sent' });
@@ -82,7 +87,7 @@ export default async function handler(req, res) {
           model: 'qwen-plus',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Student quiz answers: ${JSON.stringify(answers)}` }
+            { role: 'user', content: `Student quiz answers: ${JSON.stringify(answers)}\n\nHere is what happened with their previous steps (if any):\n${Array.isArray(history) && history.length > 0 ? history.map(entry => `Step '${entry.stepName || entry.name}' — ${entry.status || entry.stuck ? 'stuck' : 'completed'}`).join('\n') : 'No previous history — this is their first roadmap.'}` }
           ]
         })
       }
