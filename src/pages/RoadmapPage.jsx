@@ -209,10 +209,10 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
               <span className="pt-step-badge">Completed 🎉</span>
             </div>
             <div style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#f8fafc', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#0f172a', marginBottom: '8px' }}>
                 You're on your way.
               </h3>
-              <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: '1.5', marginBottom: '24px' }}>
+              <p style={{ color: '#64748b', fontSize: '15px', lineHeight: '1.5', marginBottom: '24px' }}>
                 3 steps down. You already know more than you did yesterday — and there's more waiting for you.
               </p>
 
@@ -230,7 +230,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
                 </div>
               </div>
 
-              <p style={{ color: '#cbd5e1', fontSize: '14px', marginBottom: '24px', fontWeight: '500' }}>
+              <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '24px', fontWeight: '500' }}>
                 Come back tomorrow and we'll pick up right where you left off.
               </p>
 
