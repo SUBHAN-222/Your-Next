@@ -3,7 +3,7 @@
  * Each question can branch based on previous answers
  */
 
-export const TOTAL_STEPS = 6
+export const TOTAL_STEPS = 7
 
 /**
  * Get the next question based on current answers and step
@@ -13,10 +13,10 @@ export const TOTAL_STEPS = 6
  */
 export function getNextQuestion(answers, currentStep) {
   const q0 = answers[0]?.val // where stuck
-  const q1 = answers[1]?.val // why stuck (branched on q0)
-  const q2 = answers[2]?.val // direction
-  const q3 = answers[3]?.val // path q1 (branched on q0+q2)
-  const q4 = answers[4]?.val // path q2
+  const q1 = answers[2]?.val // why stuck (branched on q0)
+  const q2 = answers[3]?.val // direction
+  const q3 = answers[4]?.val // path q1 (branched on q0+q2)
+  const q4 = answers[5]?.val // path q2
 
   // ── STEP 0: Always the same opening ──
   if (currentStep === 0) {
@@ -35,8 +35,24 @@ export function getNextQuestion(answers, currentStep) {
     }
   }
 
-  // ── STEP 1: Branches based on Q0 answer ──
+  // ── STEP 1: AI Help Question (Asked to all) ──
   if (currentStep === 1) {
+    return {
+      id: "q_ai_help",
+      eye: "Using tools",
+      title: "Have you already tried asking AI tools like ChatGPT for help with this?",
+      hint: "This helps us understand how you currently solve problems.",
+      opts: [
+        { e: "🌊", l: "Yes, but it gave me too many options and I got overwhelmed", val: "ai_overwhelmed" },
+        { e: "🤷", l: "Yes, but I still didn't know what to actually DO next", val: "ai_no_action" },
+        { e: "👍", l: "Yes, it helped a little", val: "ai_helped_some" },
+        { e: "❌", l: "No, haven't tried that yet", val: "ai_not_tried" }
+      ]
+    }
+  }
+
+  // ── STEP 2: Branches based on Q0 answer ──
+  if (currentStep === 2) {
     if (q0 === "no_start")
       return {
         id: "q_tried",
@@ -101,8 +117,8 @@ export function getNextQuestion(answers, currentStep) {
       }
   }
 
-  // ── STEP 2: Direction — eyebrow adapts to journey so far ──
-  if (currentStep === 2) {
+  // ── STEP 3: Direction — eyebrow adapts to journey so far ──
+  if (currentStep === 3) {
     let eye = "Your direction"
     let hint = "Pick the world that excites you most."
     if (q0 === "no_start" && q1 === "never") {
@@ -139,8 +155,8 @@ export function getNextQuestion(answers, currentStep) {
     }
   }
 
-  // ── STEP 3: First path question — branches on Q0 + Q2 ──
-  if (currentStep === 3) {
+  // ── STEP 4: First path question — branches on Q0 + Q2 ──
+  if (currentStep === 4) {
     if (q2 === "web" || q2 === "mobile") {
       if (q0 === "not_improving")
         return {
@@ -259,7 +275,7 @@ export function getNextQuestion(answers, currentStep) {
         return {
           id: "uni_code_level",
           eye: "University",
-          title: "Be honest — how stuck are you with actual code?",
+          title: "When you try to write code, what actually happens — you freeze up, copy from somewhere, or don't even open the editor?",
           hint: "Be honest — that's how we help.",
           opts: [
             { e: "💀", l: "I can't write basic code at all", val: "zero" },
@@ -282,8 +298,8 @@ export function getNextQuestion(answers, currentStep) {
     }
   }
 
-  // ── STEP 4: Second path question — branches on Q3 answer ──
-  if (currentStep === 4) {
+  // ── STEP 5: Second path question — branches on Q3 answer ──
+  if (currentStep === 5) {
     if (q2 === "web" || q2 === "mobile") {
       if (q3 === "css" || q3 === "no_project")
         return {
@@ -313,7 +329,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "ai_math",
         eye: "AI Path",
-        title: "Be honest — how's your relationship with math?",
+        title: "When you see an equation, what's your first reaction — curiosity, dread, or 'skip to the next slide'?",
         hint: "This decides your starting point — be honest.",
         opts: [
           { e: "😰", l: "I really struggle with it", val: "hate" },
@@ -325,7 +341,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "data_math",
         eye: "Data Science",
-        title: "How comfortable are you with numbers?",
+        title: "When you look at a spreadsheet full of numbers, do you feel curious, or want to close the tab?",
         hint: "It determines where we start you.",
         opts: [
           { e: "🤓", l: "Strong — calculus and stats are fine", val: "strong" },
@@ -373,7 +389,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "uni_coding",
         eye: "University",
-        title: "How confident do you feel writing code?",
+        title: "If a coding assignment breaks, what do you usually do — debug it, ask someone, or give up for the day?",
         hint: "Loops, functions, data structures…",
         opts: [
           { e: "💪", l: "I can code, just need direction", val: "good" },
@@ -383,8 +399,8 @@ export function getNextQuestion(answers, currentStep) {
       }
   }
 
-  // ── STEP 5: Final — style preference ──
-  if (currentStep === 5) {
+  // ── STEP 6: Final — style preference ──
+  if (currentStep === 6) {
     return {
       id: "final_guide",
       eye: "Almost done",
