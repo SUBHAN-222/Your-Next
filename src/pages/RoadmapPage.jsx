@@ -89,9 +89,27 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
     return () => clearTimeout(timer)
   }, [showMomentum, hideMomentum])
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [currentStepIndex])
+
+  useEffect(() => {
+    if (!showMomentum) return
+    const timer = setTimeout(hideMomentum, 4000)
+    return () => clearTimeout(timer)
+  }, [showMomentum, hideMomentum])
+
   const handleComplete = useCallback(() => {
     setShowCompletionFeedback(true)
   }, [])
+
+  const handleDefer = useCallback(() => {
+    posthog.capture('roadmap_step_deferred', {
+      step_index: currentStepIndex,
+      step_name: currentStep?.name,
+    })
+    deferCurrentStep()
+  }, [deferCurrentStep, currentStepIndex, currentStep?.name])
 
   const handleCompletionFeedback = useCallback((status) => {
     saveLearningHistory({
@@ -107,58 +125,18 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
         step_name: currentStep?.name,
         field: roadmapData?.field,
       })
-    }
-
-    setShowCompletionFeedback(false)
-    setCompleting(true)
-    setTimeout(() => {
       completeCurrentStep()
-      setCompleting(false)
-    }, 1500)
-  }, [completeCurrentStep, currentStepIndex, currentStep, roadmapData])
-
-  const handleDefer = useCallback(() => {
-    deferCurrentStep()
-    setShowToast(true)
-    posthog.capture('roadmap_step_deferred', {
-      step_index: currentStepIndex,
-      step_name: currentStep?.name,
-    })
-  }, [deferCurrentStep, currentStepIndex, currentStep])
-
-  if (!roadmapData || !currentStep) {
-    if (isComplete && roadmapData) {
-      return (
-        <section className="screen active roadmap-screen" id="s-res">
-          <nav className="res-nav">
-            <button className="nav-logo" onClick={onRestart} type="button" aria-label="Go home">
-              Your<b>Next</b>
-            </button>
-            <div className="res-nav-end">
-              {streak > 0 && <span className="nav-streak">🔥 {streak}</span>}
-              <span className="nav-label">Your Roadmap</span>
-            </div>
-          </nav>
-          <div className="roadmap-container">
-            <div className="finished-card active" id="finishedCard">
-              <div className="finished-icon">🎉</div>
-              <div className="finished-title">You completed your roadmap!</div>
-              <p className="step-why">Every step you finished is proof you can do this.</p>
-              <button type="button" className="complete-btn" style={{ marginTop: '24px', width: 'auto', padding: '14px 32px' }} onClick={onRestart}>
-                Start Over →
-              </button>
-            </div>
-          </div>
-        </section>
-      )
+      setShowCompletionFeedback(false)
+    } else {
+      // For 'stuck' or 'not_started', just close feedback without advancing
+      setShowCompletionFeedback(false)
     }
-    return null
-  }
+  }, [currentStepIndex, currentStep?.name, roadmapData?.field, completeCurrentStep])
 
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Day${streak === 1 ? '' : 's'} Streak`
   const careerId = getCareerIdFromPlan(roadmapData?.field)
-const avoidItems = (
+  const avoidItems = (
     roadmapData?.dontLearnYet ||
     PATH_AVOID_ITEMS[careerId] ||
     getDontLearnYet(careerId, 'beginner')
