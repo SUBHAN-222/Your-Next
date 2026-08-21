@@ -4,6 +4,7 @@ const KEYS = {
   field: 'yn_field',
   streak: 'yn_streak',
   lastComplete: 'yn_last_complete',
+  learningHistory: 'yn_learning_history',
 }
 
 export function getSavedProgress() {
@@ -31,6 +32,17 @@ export function saveProgress(activePlan, currentRoadmapIndex, streak) {
   localStorage.setItem(KEYS.index, String(currentRoadmapIndex))
   localStorage.setItem(KEYS.field, activePlan.field || '')
   localStorage.setItem(KEYS.streak, String(streak))
+}
+
+export function saveLearningHistory(record) {
+  try {
+    const savedHistory = JSON.parse(localStorage.getItem(KEYS.learningHistory) || '[]')
+    const history = Array.isArray(savedHistory) ? savedHistory : []
+    history.push(record)
+    localStorage.setItem(KEYS.learningHistory, JSON.stringify(history))
+  } catch {
+    // Learning history should never interrupt the student's roadmap progress.
+  }
 }
 
 export function clearProgress() {

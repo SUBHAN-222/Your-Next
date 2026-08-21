@@ -608,6 +608,44 @@ body {
   line-height: 1.45;
 }
 
+.completion-feedback {
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  background: #f8fbff;
+}
+.completion-feedback-title {
+  margin: 0 0 12px;
+  color: #1e3a5f;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+.completion-feedback-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.completion-feedback-options button {
+  flex: 1 1 150px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+  color: #334155;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.completion-feedback-options button:hover,
+.completion-feedback-options button:focus-visible {
+  border-color: #60a5fa;
+  background: #eff6ff;
+  outline: none;
+}
+
 @media (max-width: 640px) {
   .pt-actions {
     flex-direction: column;

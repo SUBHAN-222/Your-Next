@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
 import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
+import { saveLearningHistory } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
 
 const PATH_AVOID_ITEMS = {
@@ -76,6 +77,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
 
   const [showToast, setShowToast] = useState(false)
   const [completing, setCompleting] = useState(false)
+  const [showCompletionFeedback, setShowCompletionFeedback] = useState(false)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -88,12 +90,27 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   }, [showMomentum, hideMomentum])
 
   const handleComplete = useCallback(() => {
-    setCompleting(true)
-    posthog.capture('roadmap_step_completed', {
-      step_id: currentStepIndex + 1,
-      step_name: currentStep?.name,
-      field: roadmapData?.field,
+    setShowCompletionFeedback(true)
+  }, [])
+
+  const handleCompletionFeedback = useCallback((status) => {
+    saveLearningHistory({
+      stepIndex: currentStepIndex,
+      stepName: currentStep?.name || 'Current step',
+      status,
+      timestamp: new Date().toISOString(),
     })
+
+    if (status === 'completed') {
+      posthog.capture('roadmap_step_completed', {
+        step_id: currentStepIndex + 1,
+        step_name: currentStep?.name,
+        field: roadmapData?.field,
+      })
+    }
+
+    setShowCompletionFeedback(false)
+    setCompleting(true)
     setTimeout(() => {
       completeCurrentStep()
       setCompleting(false)
@@ -207,6 +224,22 @@ const avoidItems = (
             </div>
           </div>
           <p className="pt-action-hint">Start the activity first. When you return, mark it complete.</p>
+          {showCompletionFeedback && (
+            <div className="completion-feedback" role="group" aria-label="How did it go?">
+              <p className="completion-feedback-title">How did it go?</p>
+              <div className="completion-feedback-options">
+                <button type="button" onClick={() => handleCompletionFeedback('completed')}>
+                  🟢 I completed it
+                </button>
+                <button type="button" onClick={() => handleCompletionFeedback('stuck')}>
+                  🟡 I got stuck
+                </button>
+                <button type="button" onClick={() => handleCompletionFeedback('not_started')}>
+                  🔴 I couldn't start
+                </button>
+              </div>
+            </div>
+          )}
           <div className="pt-actions">
             {!completing && (
               <a href={currentStep.resourceUrl} className="pt-resource-btn" target="_blank" rel="noopener noreferrer">Start Learning</a>
@@ -214,7 +247,7 @@ const avoidItems = (
             {completing ? (
               <div className="pt-loading">Saving progress...</div>
             ) : (
-              <button type="button" className="pt-complete-btn" onClick={handleComplete}>
+              <button type="button" className="pt-complete-btn" onClick={handleComplete} disabled={showCompletionFeedback}>
                 <span className="pt-check">✓</span> Mark Complete
               </button>
             )}
