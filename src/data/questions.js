@@ -40,7 +40,7 @@ export function getNextQuestion(answers, currentStep) {
     return {
       id: "q_ai_help",
       eye: "Using tools",
-      title: "Have you already tried asking AI tools like ChatGPT for help with this?",
+      title: "Tried ChatGPT or similar AI for this already?",
       hint: "This helps us understand how you currently solve problems.",
       opts: [
         { e: "🌊", l: "Yes, but it gave me too many options and I got overwhelmed", val: "ai_overwhelmed" },
@@ -275,7 +275,7 @@ export function getNextQuestion(answers, currentStep) {
         return {
           id: "uni_code_level",
           eye: "University",
-          title: "When you try to write code, what actually happens — you freeze up, copy from somewhere, or don't even open the editor?",
+          title: "When you sit down to code, what usually happens?",
           hint: "Be honest — that's how we help.",
           opts: [
             { e: "💀", l: "I can't write basic code at all", val: "zero" },
@@ -329,7 +329,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "ai_math",
         eye: "AI Path",
-        title: "When you see an equation, what's your first reaction — curiosity, dread, or 'skip to the next slide'?",
+        title: "When you see math, what's your gut reaction?",
         hint: "This decides your starting point — be honest.",
         opts: [
           { e: "😰", l: "I really struggle with it", val: "hate" },
@@ -341,7 +341,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "data_math",
         eye: "Data Science",
-        title: "When you look at a spreadsheet full of numbers, do you feel curious, or want to close the tab?",
+        title: "Numbers and spreadsheets — curious, or close the tab?",
         hint: "It determines where we start you.",
         opts: [
           { e: "🤓", l: "Strong — calculus and stats are fine", val: "strong" },
@@ -389,7 +389,7 @@ export function getNextQuestion(answers, currentStep) {
       return {
         id: "uni_coding",
         eye: "University",
-        title: "If a coding assignment breaks, what do you usually do — debug it, ask someone, or give up for the day?",
+        title: "When your code breaks, what do you do?",
         hint: "Loops, functions, data structures…",
         opts: [
           { e: "💪", l: "I can code, just need direction", val: "good" },

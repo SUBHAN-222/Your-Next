@@ -50,6 +50,7 @@ Your ONLY job is to return a roadmap in this exact structure, written in the exa
 8. Keep it Pakistan-friendly where relevant, but equally short.
 9. RESOURCE LINKS: Only use these real platforms: freeCodeCamp, The Odin Project, Kaggle Learn, TryHackMe, MDN Web Docs, W3Schools, Coursera, Harvard CS50, or YouTube (channel/topic search only, never an invented specific video URL). Never invent a URL, WhatsApp group, or community link you are not certain is real.
 10. "field" must be a proper display name (e.g. "Web Development", "Artificial Intelligence") — never a lowercase code like "web" or "ai".
+11. If the student mentions they got overwhelmed or didn't know what to do next after trying AI tools before, make Step 1 feel deliberately smaller and more specific than usual, and consider referencing in the 'why' text that this is intentionally narrower than what a generic AI chat would give them.
 
 Return your answer ONLY in this exact JSON format, nothing before or after it:
 
@@ -138,7 +139,17 @@ export default async function handler(req, res) {
           model: 'qwen-plus',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
-            { role: 'user', content: `Student quiz answers: ${JSON.stringify(answers)}\n\nHere is what happened with their previous steps (if any):\n${Array.isArray(history) && history.length > 0 ? history.map(entry => `Step '${entry.stepName || entry.name}' — ${entry.status || entry.stuck ? 'stuck' : 'completed'}`).join('\n') : 'No previous history — this is their first roadmap.'}` }
+            { role: 'user', content: (() => {
+              const aiUseMap = {
+                ai_overwhelmed: 'got overwhelmed by too many options',
+                ai_no_action: 'didn\'t know what to actually do next',
+                ai_helped_some: 'found it somewhat helpful',
+                ai_not_tried: 'hasn\'t tried AI tools yet'
+              };
+              const aiVal = Object.values(answers).map(v => v?.val).find(v => aiUseMap[v]);
+              const aiLine = aiVal ? `\nThis student already tried AI tools before: ${aiUseMap[aiVal]}.` : '';
+              return `Student quiz answers: ${JSON.stringify(answers)}\n\nHere is what happened with their previous steps (if any):\n${Array.isArray(history) && history.length > 0 ? history.map(entry => `Step '${entry.stepName || entry.name}' — ${entry.status || entry.stuck ? 'stuck' : 'completed'}`).join('\n') : 'No previous history — this is their first roadmap.'}${aiLine}`;
+            })() }
           ]
         })
       }
