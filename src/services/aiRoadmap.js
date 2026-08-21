@@ -55,3 +55,35 @@ export async function generateAIRoadmap(answers) {
     return generateRoadmapData(answers)
   }
 }
+
+export async function getEasierStep(step, field) {
+  try {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10000)
+
+    const response = await fetch('/api/generate-roadmap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mode: 'easier',
+        step: {
+          name: step?.name,
+          why: step?.why,
+          task: step?.task,
+        },
+        field,
+      }),
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeout)
+
+    if (!response.ok) throw new Error(`Backend returned ${response.status}`)
+
+    const data = await response.json()
+    return data
+  } catch (err) {
+    console.warn('Failed to get easier step:', err.message)
+    return null
+  }
+}

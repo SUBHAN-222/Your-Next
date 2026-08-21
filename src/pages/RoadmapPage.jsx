@@ -4,6 +4,7 @@ import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
 import { saveLearningHistory } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
+import { getEasierStep } from '@services/aiRoadmap'
 
 const PATH_AVOID_ITEMS = {
   data: [
@@ -78,19 +79,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
   const [showToast, setShowToast] = useState(false)
   const [completing, setCompleting] = useState(false)
   const [showCompletionFeedback, setShowCompletionFeedback] = useState(false)
+  const [showEasierMessage, setShowEasierMessage] = useState(false)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [currentStepIndex])
-
-  useEffect(() => {
-    if (!showMomentum) return
-    const timer = setTimeout(hideMomentum, 4000)
-    return () => clearTimeout(timer)
-  }, [showMomentum, hideMomentum])
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setShowEasierMessage(false)
   }, [currentStepIndex])
 
   useEffect(() => {
@@ -111,7 +104,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
     deferCurrentStep()
   }, [deferCurrentStep, currentStepIndex, currentStep?.name])
 
-  const handleCompletionFeedback = useCallback((status) => {
+  const handleCompletionFeedback = useCallback(async (status) => {
     saveLearningHistory({
       stepIndex: currentStepIndex,
       stepName: currentStep?.name || 'Current step',
@@ -127,11 +120,24 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
       })
       completeCurrentStep()
       setShowCompletionFeedback(false)
+    } else if (status === 'stuck') {
+      setShowEasierMessage(true)
+      setShowCompletionFeedback(false)
+      const easier = await getEasierStep(currentStep, roadmapData?.field)
+      if (easier && roadmapData?.steps?.[currentStepIndex]) {
+        roadmapData.steps[currentStepIndex] = {
+          ...roadmapData.steps[currentStepIndex],
+          name: easier.name || roadmapData.steps[currentStepIndex].name,
+          why: easier.why || roadmapData.steps[currentStepIndex].why,
+          task: easier.task || roadmapData.steps[currentStepIndex].task,
+        }
+        setShowEasierMessage(true)
+      }
     } else {
-      // For 'stuck' or 'not_started', just close feedback without advancing
+      // For 'not_started', just close feedback without advancing
       setShowCompletionFeedback(false)
     }
-  }, [currentStepIndex, currentStep?.name, roadmapData?.field, completeCurrentStep])
+  }, [currentStepIndex, currentStep, roadmapData, completeCurrentStep])
 
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Day${streak === 1 ? '' : 's'} Streak`
@@ -188,6 +194,12 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
             <span className="pt-dot-label"><span className="pt-dot"></span> Current Task</span>
             <span className="pt-step-badge">Step {currentStepIndex + 1} of {roadmapData.steps.length}</span>
           </div>
+          {showEasierMessage && (
+            <div style={{ margin: '12px 24px 0', padding: '12px 16px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '10px', color: '#60a5fa', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span>💙</span>
+              <span>No worries — here's an easier version of this step</span>
+            </div>
+          )}
           <div className="pt-body">
             <div className="pt-icon-large">
               <span>{roadmapData.icon || '🎯'}</span>
