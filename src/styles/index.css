@@ -765,9 +765,10 @@ body {
 }
 
 .premium-avoid-card {
-  border-color: rgba(245, 158, 11, 0.26);
-  background: linear-gradient(180deg, #fffaf0 0%, #ffffff 42%);
+  border-color: rgba(220, 38, 38, 0.3);
+  background: linear-gradient(180deg, #fef2f2 0%, #ffffff 100%);
   padding: 20px;
+  min-height: auto;
 }
 
 .avoid-header {
@@ -779,8 +780,8 @@ body {
   width: 34px;
   height: 34px;
   border-radius: 12px;
-  background: #fef3c7;
-  color: #b45309;
+  background: #fee2e2;
+  color: #dc2626;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -792,7 +793,7 @@ body {
   font-family: 'Sora', sans-serif;
   font-size: 18px;
   font-weight: 800;
-  color: #0f172a;
+  color: #991b1b;
   letter-spacing: -0.35px;
   line-height: 1.2;
 }
@@ -815,16 +816,16 @@ body {
   gap: 10px;
   padding: 12px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(245, 158, 11, 0.16);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(220, 38, 38, 0.16);
 }
 
 .avoid-check {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #fff7ed;
-  color: #c2410c;
+  background: #fef2f2;
+  color: #dc2626;
   font-size: 12px;
   font-weight: 900;
   display: inline-flex;
@@ -842,10 +843,10 @@ body {
 }
 
 .avoid-note {
-  margin-top: auto;
-  border-top: 1px solid rgba(245, 158, 11, 0.18);
+  margin-top: 16px;
+  border-top: 1px solid rgba(220, 38, 38, 0.15);
   padding-top: 16px;
-  color: #92400e;
+  color: #991b1b;
   font-size: 13px;
   font-weight: 700;
   line-height: 1.5;
