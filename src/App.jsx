@@ -130,6 +130,16 @@ function App() {
     }
   }, [currentScreen, answers])
 
+  const handleUpdateStep = useCallback((stepIndex, updatedStepData) => {
+    setActivePlan((prev) => {
+      if (!prev || !Array.isArray(prev.steps)) return prev
+      const updatedSteps = prev.steps.map((step, idx) =>
+        idx === stepIndex ? { ...step, ...updatedStepData } : step
+      )
+      return { ...prev, steps: updatedSteps }
+    })
+  }, [])
+
   return (
     <>
       {currentScreen === 'landing' && (
@@ -157,6 +167,7 @@ function App() {
           activePlan={activePlan}
           initialStepIndex={roadmapIndex}
           onRestart={handleRestart}
+          onUpdateStep={handleUpdateStep}
         />
       )}
 

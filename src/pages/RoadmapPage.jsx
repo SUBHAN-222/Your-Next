@@ -61,7 +61,7 @@ const Accordion = ({ title, subtitle, icon, badgeText, theme = 'default', childr
   )
 }
 
-function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
+function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep }) {
   const {
     roadmapData,
     currentStep,
@@ -124,20 +124,18 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart }) {
       setShowEasierMessage(true)
       setShowCompletionFeedback(false)
       const easier = await getEasierStep(currentStep, roadmapData?.field)
-      if (easier && roadmapData?.steps?.[currentStepIndex]) {
-        roadmapData.steps[currentStepIndex] = {
-          ...roadmapData.steps[currentStepIndex],
-          name: easier.name || roadmapData.steps[currentStepIndex].name,
-          why: easier.why || roadmapData.steps[currentStepIndex].why,
-          task: easier.task || roadmapData.steps[currentStepIndex].task,
-        }
-        setShowEasierMessage(true)
+      if (easier) {
+        onUpdateStep?.(currentStepIndex, {
+          name: easier.name,
+          why: easier.why,
+          task: easier.task,
+        })
       }
     } else {
       // For 'not_started', just close feedback without advancing
       setShowCompletionFeedback(false)
     }
-  }, [currentStepIndex, currentStep, roadmapData, completeCurrentStep])
+  }, [currentStepIndex, currentStep, roadmapData, completeCurrentStep, onUpdateStep])
 
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Day${streak === 1 ? '' : 's'} Streak`
