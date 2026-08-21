@@ -146,6 +146,21 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
     getDontLearnYet(careerId, 'beginner')
   ).slice(0, 4).map(cleanAvoidItem)
 
+  const upcomingStages = (
+    roadmapData?.futurePath && roadmapData.futurePath.length >= 2
+      ? roadmapData.futurePath.slice(0, 3)
+      : ['Unlocks tomorrow', 'Advanced Topics', 'Next Level Practice']
+  )
+
+  const handleScrollToCompleted = () => {
+    const el = document.getElementById('completed-steps-section')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const isFinished = isComplete || (roadmapData?.steps && currentStepIndex >= roadmapData.steps.length)
+
   return (
     <section className="screen active roadmap-screen" id="s-res">
       <nav className="res-nav">
@@ -173,11 +188,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
         </div>
         <div className="ph-right">
           <div className="ph-stats">
-            <div className="ph-count"><strong>{currentStepIndex}</strong> / {roadmapData.steps.length} completed</div>
-            <div className="ph-pct">{Math.round((currentStepIndex / roadmapData.steps.length) * 100)}%</div>
+            <div className="ph-count"><strong>{Math.min(currentStepIndex, roadmapData?.steps?.length || 0)}</strong> / {roadmapData?.steps?.length || 0} completed</div>
+            <div className="ph-pct">{Math.round((Math.min(currentStepIndex, roadmapData?.steps?.length || 0) / (roadmapData?.steps?.length || 1)) * 100)}%</div>
           </div>
           <div className="ph-progress-bg">
-            <div className="ph-progress-fill" style={{ width: `${(currentStepIndex / roadmapData.steps.length) * 100}%` }}></div>
+            <div className="ph-progress-fill" style={{ width: `${(Math.min(currentStepIndex, roadmapData?.steps?.length || 0) / (roadmapData?.steps?.length || 1)) * 100}%` }}></div>
           </div>
           <div className="ph-trust-row">
             <span className="ph-save-status">✓ Progress saved automatically</span>
@@ -187,60 +202,122 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
       </div>
 
       <div className="premium-main-grid">
-        <div className="premium-task-card">
-          <div className="pt-header">
-            <span className="pt-dot-label"><span className="pt-dot"></span> Current Task</span>
-            <span className="pt-step-badge">Step {currentStepIndex + 1} of {roadmapData.steps.length}</span>
-          </div>
-          {showEasierMessage && (
-            <div style={{ margin: '12px 24px 0', padding: '12px 16px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '10px', color: '#60a5fa', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>💙</span>
-              <span>No worries — here's an easier version of this step</span>
+        {isFinished ? (
+          <div className="premium-task-card finished-task-card">
+            <div className="pt-header">
+              <span className="pt-dot-label"><span className="pt-dot" style={{ background: '#22c55e' }}></span> Progress Summary</span>
+              <span className="pt-step-badge">Completed 🎉</span>
             </div>
-          )}
-          <div className="pt-body">
-            <div className="pt-icon-large">
-              <span>{roadmapData.icon || '🎯'}</span>
-            </div>
-            <div className="pt-info">
-              <h3 className="pt-title">{currentStep.name}</h3>
-              <p className="pt-desc">{currentStep.why}</p>
-              <div className="pt-meta-tags">
-                <span className="pt-meta-tag">⏱️ {currentStep.time}</span>
-                <span className="pt-meta-tag">📖 Beginner</span>
+            <div style={{ padding: '24px' }}>
+              <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#f8fafc', marginBottom: '8px' }}>
+                You're on your way.
+              </h3>
+              <p style={{ color: '#94a3b8', fontSize: '15px', lineHeight: '1.5', marginBottom: '24px' }}>
+                3 steps down. You already know more than you did yesterday — and there's more waiting for you.
+              </p>
+
+              <div style={{ marginBottom: '24px', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', color: '#64748b', marginBottom: '12px' }}>
+                  What's Ahead
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {upcomingStages.map((stage, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '14px', opacity: 0.75 }}>
+                      <span>🔒</span>
+                      <span>{typeof stage === 'string' ? stage : stage?.name || 'Unlocks tomorrow'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <p style={{ color: '#cbd5e1', fontSize: '14px', marginBottom: '24px', fontWeight: '500' }}>
+                Come back tomorrow and we'll pick up right where you left off.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  className="pt-resource-btn"
+                  style={{ width: '100%', justifyContent: 'center', textAlign: 'center', cursor: 'pointer' }}
+                  onClick={handleScrollToCompleted}
+                >
+                  See what I completed
+                </button>
+                <button
+                  type="button"
+                  onClick={onRestart}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#94a3b8',
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    marginTop: '14px',
+                    padding: '4px 8px'
+                  }}
+                >
+                  Or start a completely new path
+                </button>
               </div>
             </div>
           </div>
-          <p className="pt-action-hint">Start the activity first. When you return, mark it complete.</p>
-          {showCompletionFeedback && (
-            <div className="completion-feedback" role="group" aria-label="How did it go?">
-              <p className="completion-feedback-title">How did it go?</p>
-              <div className="completion-feedback-options">
-                <button type="button" onClick={() => handleCompletionFeedback('completed')}>
-                  🟢 I completed it
-                </button>
-                <button type="button" onClick={() => handleCompletionFeedback('stuck')}>
-                  🟡 I got stuck
-                </button>
-                <button type="button" onClick={() => handleCompletionFeedback('not_started')}>
-                  🔴 I couldn't start
-                </button>
+        ) : (
+          <div className="premium-task-card">
+            <div className="pt-header">
+              <span className="pt-dot-label"><span className="pt-dot"></span> Current Task</span>
+              <span className="pt-step-badge">Step {currentStepIndex + 1} of {roadmapData?.steps?.length || 0}</span>
+            </div>
+            {showEasierMessage && (
+              <div style={{ margin: '12px 24px 0', padding: '12px 16px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '10px', color: '#60a5fa', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>💙</span>
+                <span>No worries — here's an easier version of this step</span>
+              </div>
+            )}
+            <div className="pt-body">
+              <div className="pt-icon-large">
+                <span>{roadmapData?.icon || '🎯'}</span>
+              </div>
+              <div className="pt-info">
+                <h3 className="pt-title">{currentStep?.name}</h3>
+                <p className="pt-desc">{currentStep?.why}</p>
+                <div className="pt-meta-tags">
+                  <span className="pt-meta-tag">⏱️ {currentStep?.time}</span>
+                  <span className="pt-meta-tag">📖 Beginner</span>
+                </div>
               </div>
             </div>
-          )}
-          <div className="pt-actions">
-            {!completing && (
-              <a href={currentStep.resourceUrl} className="pt-resource-btn" target="_blank" rel="noopener noreferrer">Start Learning</a>
+            <p className="pt-action-hint">Start the activity first. When you return, mark it complete.</p>
+            {showCompletionFeedback && (
+              <div className="completion-feedback" role="group" aria-label="How did it go?">
+                <p className="completion-feedback-title">How did it go?</p>
+                <div className="completion-feedback-options">
+                  <button type="button" onClick={() => handleCompletionFeedback('completed')}>
+                    🟢 I completed it
+                  </button>
+                  <button type="button" onClick={() => handleCompletionFeedback('stuck')}>
+                    🟡 I got stuck
+                  </button>
+                  <button type="button" onClick={() => handleCompletionFeedback('not_started')}>
+                    🔴 I couldn't start
+                  </button>
+                </div>
+              </div>
             )}
-            {completing ? (
-              <div className="pt-loading">Saving progress...</div>
-            ) : (
-              <button type="button" className="pt-complete-btn" onClick={handleComplete} disabled={showCompletionFeedback}>
-                <span className="pt-check">✓</span> Mark Complete
-              </button>
-            )}
+            <div className="pt-actions">
+              {!completing && (
+                <a href={currentStep?.resourceUrl} className="pt-resource-btn" target="_blank" rel="noopener noreferrer">Start Learning</a>
+              )}
+              {completing ? (
+                <div className="pt-loading">Saving progress...</div>
+              ) : (
+                <button type="button" className="pt-complete-btn" onClick={handleComplete} disabled={showCompletionFeedback}>
+                  <span className="pt-check">✓</span> Mark Complete
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="premium-next-card premium-avoid-card">
           <div className="pn-header avoid-header">
@@ -264,15 +341,16 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
         </div>
       </div>
 
-      <div className="premium-accordions-group">
-        {currentStepIndex > 0 && (
+      <div className="premium-accordions-group" id="completed-steps-section">
+        {(currentStepIndex > 0 || isFinished) && (
           <Accordion 
             theme="success"
             icon="✅"
             title="Completed Steps"
+            defaultOpen={isFinished}
           >
             <div className="p-completed-list">
-              {roadmapData.steps.slice(0, currentStepIndex).map((step, index) => (
+              {roadmapData?.steps?.slice(0, Math.min(currentStepIndex, roadmapData.steps.length)).map((step, index) => (
                 <div key={index} className="p-completed-item">
                   <span className="p-completed-check">✓</span>
                   <span className="p-completed-name">{step.name}</span>
@@ -288,7 +366,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
           title="Full Roadmap"
         >
           <div className="p-full-roadmap-list">
-            {roadmapData.steps.map((step, index) => {
+            {roadmapData?.steps?.map((step, index) => {
               const status = getStepStatus(index);
               return (
                 <div key={index} className={`p-roadmap-step-item ${status}`}>
@@ -305,13 +383,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
           </div>
         </Accordion>
       </div>
-
-      {showToast && (
-        <ProgressToast
-          message="Progress saved! Come back whenever you're ready 💙"
-          onDone={() => setShowToast(false)}
-        />
-      )}
     </section>
   )
 }
