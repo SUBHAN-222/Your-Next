@@ -24,7 +24,7 @@ export function useRoadmap(activePlan, initialStepIndex = 0) {
 
   useEffect(() => {
     setCurrentStepIndex(initialStepIndex)
-  }, [initialStepIndex, activePlan])
+  }, [initialStepIndex])
 
   const currentStep = useMemo(() => {
     if (!roadmapData?.steps) return null
