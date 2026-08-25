@@ -51,13 +51,11 @@ Your ONLY job is to return a roadmap in this exact structure, written in the exa
 9. RESOURCE LINKS: Only use these real platforms: freeCodeCamp, The Odin Project, Kaggle Learn, TryHackMe, MDN Web Docs, W3Schools, Coursera, Harvard CS50, or YouTube (channel/topic search only, never an invented specific video URL). Never invent a URL, WhatsApp group, or community link you are not certain is real.
 10. "field" must be a proper display name (e.g. "Web Development", "Artificial Intelligence") — never a lowercase code like "web" or "ai".
 11. If the student mentions they got overwhelmed or didn't know what to do next after trying AI tools before, make Step 1 feel deliberately smaller and more specific than usual, and consider referencing in the 'why' text that this is intentionally narrower than what a generic AI chat would give them.
-12. Also write a welcomeMessage: a short, warm, personal message. STRICT LIMIT: maximum 2 sentences total, each sentence maximum 12 words. It must sound like a real mentor speaking personally to them, using 'we' or 'together'. Base it on their actual quiz answers. Do not exceed these word limits under any circumstance — being extremely brief here is more important than being thorough.
 
 Return your answer ONLY in this exact JSON format, nothing before or after it:
 
 {
   "field": "",
-  "welcomeMessage": "",
   "steps": [
     { "name": "", "why": "", "task": "", "resourceTitle": "", "resourceUrl": "" },
     { "name": "", "why": "", "task": "", "resourceTitle": "", "resourceUrl": "" },
@@ -72,6 +70,56 @@ export default async function handler(req, res) {
   }
 
   const { mode, step, field, answers, history } = req.body || {};
+
+  if (mode === 'welcome') {
+    if (!answers) {
+      return res.status(400).json({ error: 'No quiz answers were sent' });
+    }
+    try {
+      const welcomeSystemPrompt = `You are YourNext, a warm mentor for confused beginner tech students in Pakistan. Based on these quiz answers, write ONE short welcome message. STRICT RULES: maximum 2 sentences, each sentence maximum 10 words. Must reference one SPECIFIC detail from their actual answers (their exact struggle, or their field) — not a generic greeting. Use simple, easy words a 15-year-old understands instantly — no complex vocabulary. Use 'we' or 'together' once. It must feel personal, warm, and exciting — like a real mentor is genuinely glad to help THIS specific person. Return ONLY this JSON: { "welcomeMessage": "" }`;
+
+      const welcomeResponse = await fetch(
+        'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.QWEN_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'qwen-plus',
+            messages: [
+              { role: 'system', content: welcomeSystemPrompt },
+              { role: 'user', content: `Student quiz answers: ${JSON.stringify(answers)}` }
+            ]
+          })
+        }
+      );
+
+      if (!welcomeResponse.ok) {
+        throw new Error(`Qwen API request failed with status ${welcomeResponse.status}`);
+      }
+
+      const welcomeData = await welcomeResponse.json();
+      const welcomeContent = welcomeData.choices?.[0]?.message?.content;
+
+      if (!welcomeContent) {
+        throw new Error('Qwen API returned no content');
+      }
+
+      const cleanedWelcome = welcomeContent
+        .replace(/^```json\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/\s*```$/, '')
+        .trim();
+      const welcomeParsed = JSON.parse(cleanedWelcome);
+
+      return res.status(200).json({ welcomeMessage: welcomeParsed.welcomeMessage || '' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Welcome message generation failed' });
+    }
+  }
 
   if (mode === 'easier') {
     try {

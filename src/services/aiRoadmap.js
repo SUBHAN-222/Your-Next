@@ -24,7 +24,6 @@ function normalizePlan(raw) {
 
   return {
     field: raw.field,
-    welcomeMessage: raw.welcomeMessage || null,
     futurePath: Array.isArray(raw.futurePath) ? raw.futurePath : [],
     dontLearnYet: singleWarning ? [singleWarning] : [],
     steps: raw.steps.slice(0, 3).map(normalizeStep),
@@ -54,6 +53,30 @@ export async function generateAIRoadmap(answers) {
   } catch (err) {
     console.warn('AI roadmap generation failed, using fallback:', err.message)
     return generateRoadmapData(answers)
+  }
+}
+
+export async function getWelcomeMessage(answers) {
+  try {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000)
+
+    const response = await fetch('/api/generate-roadmap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: 'welcome', answers }),
+      signal: controller.signal,
+    })
+
+    clearTimeout(timeout)
+
+    if (!response.ok) throw new Error(`Backend returned ${response.status}`)
+
+    const data = await response.json()
+    return data.welcomeMessage || null
+  } catch (err) {
+    console.warn('Failed to get welcome message:', err.message)
+    return null
   }
 }
 

@@ -4,7 +4,7 @@ import OnboardingPage from '@pages/OnboardingPage'
 import RoadmapPage from '@pages/RoadmapPage'
 import AIRoadmapLoading from '@components/AIRoadmapLoading'
 import FeedbackModal from '@components/FeedbackModal'
-import { generateAIRoadmap } from '@services/aiRoadmap'
+import { generateAIRoadmap, getWelcomeMessage } from '@services/aiRoadmap'
 import { getSavedProgress, clearProgress, saveProgress } from '@utils/progressStorage'
 import { getStreakFromStorage } from '@utils/streak'
 import posthog, { initPostHog } from '@lib/posthog'
@@ -86,7 +86,12 @@ function App() {
     if (currentScreen !== 'generating') return
 
     let cancelled = false
-    let delayTimer = null
+
+    // Fire both calls in parallel — welcome message shows as soon as it arrives
+    getWelcomeMessage(answers).then((msg) => {
+      if (cancelled) return
+      if (msg) setWelcomeMessage(msg)
+    })
 
     generateAIRoadmap(answers).then((plan) => {
       if (cancelled) return
@@ -94,23 +99,12 @@ function App() {
       setRoadmapIndex(0)
       saveProgress(plan, 0, getStreakFromStorage())
       setSavedProgress(getSavedProgress())
-
-      if (plan.welcomeMessage) {
-        setWelcomeMessage(plan.welcomeMessage)
-        delayTimer = setTimeout(() => {
-          if (!cancelled) {
-            setWelcomeMessage(null)
-            setCurrentScreen('roadmap')
-          }
-        }, 4000)
-      } else {
-        setCurrentScreen('roadmap')
-      }
+      setWelcomeMessage(null)
+      setCurrentScreen('roadmap')
     })
 
     return () => {
       cancelled = true
-      if (delayTimer) clearTimeout(delayTimer)
     }
   }, [currentScreen, answers])
 
