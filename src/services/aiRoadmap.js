@@ -24,6 +24,7 @@ function normalizePlan(raw) {
 
   return {
     field: raw.field,
+    welcomeMessage: raw.welcomeMessage || null,
     futurePath: Array.isArray(raw.futurePath) ? raw.futurePath : [],
     dontLearnYet: singleWarning ? [singleWarning] : [],
     steps: raw.steps.slice(0, 3).map(normalizeStep),

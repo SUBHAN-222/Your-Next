@@ -17,6 +17,7 @@ function App() {
   const [activePlan, setActivePlan] = useState(null)
   const [roadmapIndex, setRoadmapIndex] = useState(0)
   const [savedProgress, setSavedProgress] = useState(null)
+  const [welcomeMessage, setWelcomeMessage] = useState(null)
   const [quizStartTime, setQuizStartTime] = useState(null)
 
   useEffect(() => {
@@ -85,6 +86,7 @@ function App() {
     if (currentScreen !== 'generating') return
 
     let cancelled = false
+    let delayTimer = null
 
     generateAIRoadmap(answers).then((plan) => {
       if (cancelled) return
@@ -92,11 +94,23 @@ function App() {
       setRoadmapIndex(0)
       saveProgress(plan, 0, getStreakFromStorage())
       setSavedProgress(getSavedProgress())
-      setCurrentScreen('roadmap')
+
+      if (plan.welcomeMessage) {
+        setWelcomeMessage(plan.welcomeMessage)
+        delayTimer = setTimeout(() => {
+          if (!cancelled) {
+            setWelcomeMessage(null)
+            setCurrentScreen('roadmap')
+          }
+        }, 2500)
+      } else {
+        setCurrentScreen('roadmap')
+      }
     })
 
     return () => {
       cancelled = true
+      if (delayTimer) clearTimeout(delayTimer)
     }
   }, [currentScreen, answers])
 
@@ -160,7 +174,7 @@ function App() {
         />
       )}
 
-      {currentScreen === 'generating' && <AIRoadmapLoading />}
+      {currentScreen === 'generating' && <AIRoadmapLoading welcomeMessage={welcomeMessage} />}
 
       {currentScreen === 'roadmap' && activePlan && (
         <RoadmapPage
