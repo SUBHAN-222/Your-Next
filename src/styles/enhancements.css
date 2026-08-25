@@ -1,0 +1,203 @@
+/* ════════════════════════════════════════════
+   YOURNEXT — Visual Enhancement Layer
+   Loads last: adds richer color, motion, and depth
+   on top of the existing layout without breaking it.
+   ════════════════════════════════════════════ */
+
+:root {
+  /* Refined palette — deep indigo primary, warm coral accent, emerald success */
+  --yn-primary: #4f46e5;
+  --yn-primary-light: #6366f1;
+  --yn-primary-dark: #3730a3;
+  --yn-accent: #f97316;
+  --yn-accent-light: #fb923c;
+  --yn-success: #10b981;
+  --yn-success-light: #34d399;
+  --yn-surface: #ffffff;
+  --yn-surface-tint: #f8f7ff;
+
+  --yn-gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+  --yn-gradient-warm: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  --yn-gradient-success: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  --yn-gradient-mesh: radial-gradient(at 20% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+    radial-gradient(at 80% 10%, rgba(249, 115, 22, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%);
+
+  --yn-shadow-soft: 0 4px 24px rgba(79, 70, 229, 0.06);
+  --yn-shadow-lift: 0 16px 40px rgba(79, 70, 229, 0.14);
+  --yn-shadow-glow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Ambient background mesh — sits behind everything, adds depth without noise */
+body {
+  background-image: var(--yn-gradient-mesh);
+  background-attachment: fixed;
+}
+
+/* ── Page-level entrance choreography ── */
+@keyframes ynFadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ynFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes ynScaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ynFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes ynShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes ynGlowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.35); }
+  50%      { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+}
+
+/* ── Primary buttons — richer gradient, springier hover ── */
+.primary-btn,
+.complete-btn,
+.next-btn {
+  background: var(--yn-gradient-primary) !important;
+  background-size: 200% 200% !important;
+  transition: transform .35s cubic-bezier(.34, 1.56, .64, 1),
+              box-shadow .35s ease,
+              background-position .6s ease !important;
+}
+
+.primary-btn:hover,
+.complete-btn:hover,
+.next-btn:hover {
+  transform: translateY(-3px) scale(1.015) !important;
+  box-shadow: var(--yn-shadow-lift) !important;
+  background-position: 100% 50% !important;
+}
+
+.primary-btn:active,
+.complete-btn:active,
+.next-btn:active {
+  transform: translateY(-1px) scale(0.98) !important;
+}
+
+/* ── Resource / success buttons — warmer green, gentle lift ── */
+.resource-btn {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5) !important;
+  border-color: #6ee7b7 !important;
+  color: #047857 !important;
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s ease, background .3s ease !important;
+}
+
+.resource-btn:hover {
+  background: var(--yn-gradient-success) !important;
+  color: #fff !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.3) !important;
+}
+
+/* ── Cards — soft float-in, gentle hover lift ── */
+.active-step-card,
+.future-path,
+.p-roadmap-step-item,
+.card,
+.step-card {
+  animation: ynFadeSlideUp .6s cubic-bezier(.16, 1, .3, 1) both;
+}
+
+.active-step-card {
+  box-shadow: var(--yn-shadow-soft) !important;
+  border: 1px solid rgba(79, 70, 229, 0.08) !important;
+}
+
+/* ── Progress / momentum accents now use the warm gradient ── */
+.daily-focus-dot {
+  background: var(--yn-accent) !important;
+  animation: ynGlowPulse 2s ease-in-out infinite !important;
+}
+
+.step-kicker,
+.why-box-label,
+.future-path-caption {
+  color: var(--yn-primary) !important;
+}
+
+.why-box {
+  background: linear-gradient(135deg, #eef2ff, #fdf4ff) !important;
+  border-color: rgba(79, 70, 229, 0.12) !important;
+}
+
+/* ── Locked step styling — clearer, calmer, not just faded ── */
+.p-roadmap-step-item.locked {
+  opacity: 0.55 !important;
+  filter: grayscale(0.3);
+}
+
+.p-roadmap-step-item.current {
+  background: linear-gradient(135deg, #eef2ff, #f5f3ff) !important;
+  border: 1px solid rgba(79, 70, 229, 0.25) !important;
+  box-shadow: var(--yn-shadow-soft);
+}
+
+.p-roadmap-step-item.done .p-step-icon {
+  color: var(--yn-success) !important;
+}
+
+.p-roadmap-step-item.current .p-step-icon {
+  color: var(--yn-primary) !important;
+}
+
+/* ── Future path pills — active one glows warmly ── */
+.future-path-pill.active-pill {
+  background: var(--yn-gradient-primary) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.3) !important;
+}
+
+/* ── Progress bar — animated gradient sweep ── */
+.gradient-text {
+  background: var(--yn-gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Streak / momentum banner — subtle warm tint ── */
+.momentum-banner {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.08), rgba(79, 70, 229, 0.06)) !important;
+  border-color: rgba(249, 115, 22, 0.18) !important;
+}
+
+/* ── Generic utility classes for new/future components ── */
+.yn-fade-up   { animation: ynFadeSlideUp .5s cubic-bezier(.16, 1, .3, 1) both; }
+.yn-fade-in   { animation: ynFadeIn .4s ease both; }
+.yn-scale-in  { animation: ynScaleIn .35s cubic-bezier(.34, 1.56, .64, 1) both; }
+.yn-float     { animation: ynFloat 3.5s ease-in-out infinite; }
+
+/* Staggered children — apply .yn-stagger to a container, children fade in one after another */
+.yn-stagger > * { animation: ynFadeSlideUp .5s cubic-bezier(.16, 1, .3, 1) both; }
+.yn-stagger > *:nth-child(1) { animation-delay: .05s; }
+.yn-stagger > *:nth-child(2) { animation-delay: .12s; }
+.yn-stagger > *:nth-child(3) { animation-delay: .19s; }
+.yn-stagger > *:nth-child(4) { animation-delay: .26s; }
+.yn-stagger > *:nth-child(5) { animation-delay: .33s; }
+.yn-stagger > *:nth-child(6) { animation-delay: .40s; }
+
+/* Respect users who've asked for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
