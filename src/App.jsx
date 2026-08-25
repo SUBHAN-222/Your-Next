@@ -93,7 +93,9 @@ function App() {
       if (msg) setWelcomeMessage(msg)
     })
 
-    generateAIRoadmap(answers).then((plan) => {
+    const minDelay = new Promise((resolve) => setTimeout(resolve, 4500))
+
+    Promise.all([generateAIRoadmap(answers), minDelay]).then(([plan]) => {
       if (cancelled) return
       setActivePlan(plan)
       setRoadmapIndex(0)
