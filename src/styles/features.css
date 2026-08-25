@@ -36,6 +36,26 @@
   text-align: center;
 }
 
+.ai-welcome-card {
+  width: 100%;
+  max-width: 540px;
+  box-sizing: border-box;
+  padding: 28px 32px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.ai-welcome-text {
+  font-family: 'Sora', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.65;
+  margin: 0;
+}
+
 /* Continue journey banner */
 .continue-banner-wrap {
   width: 100%;

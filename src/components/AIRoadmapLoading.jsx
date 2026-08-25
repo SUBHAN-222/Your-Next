@@ -29,15 +29,19 @@ function AIRoadmapLoading({ welcomeMessage = null }) {
     <section className="screen active ai-roadmap-loading" id="s-ai-load">
       <div className="ai-load-inner">
         <div className="ai-load-ring" aria-hidden="true" />
-        <p
-          className="ai-load-message"
-          style={{
-            transition: 'opacity 0.5s ease',
-            opacity: visible ? 1 : 0,
-          }}
-        >
-          {welcomeMessage ?? MESSAGES[messageIndex]}
-        </p>
+        {welcomeMessage ? (
+          <div
+            className="ai-welcome-card"
+            style={{
+              transition: 'opacity 0.5s ease',
+              opacity: visible ? 1 : 0,
+            }}
+          >
+            <p className="ai-welcome-text">{welcomeMessage}</p>
+          </div>
+        ) : (
+          <p className="ai-load-message">{MESSAGES[messageIndex]}</p>
+        )}
       </div>
     </section>
   )

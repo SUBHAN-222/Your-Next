@@ -102,7 +102,7 @@ function App() {
             setWelcomeMessage(null)
             setCurrentScreen('roadmap')
           }
-        }, 2500)
+        }, 4000)
       } else {
         setCurrentScreen('roadmap')
       }
