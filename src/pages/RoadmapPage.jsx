@@ -230,8 +230,16 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
                 </div>
               </div>
 
+              <p style={{ fontWeight: '700', color: '#f97316', fontSize: '14px', marginBottom: '12px' }}>
+                {streak > 1
+                  ? `🔥 You're on a ${streak} day streak — don't lose it`
+                  : '🔥 Start your streak tomorrow'}
+              </p>
+
               <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '24px', fontWeight: '500' }}>
-                Come back tomorrow and we'll pick up right where you left off.
+                {roadmapData?.tomorrowTeaser
+                  ? `Tomorrow: ${roadmapData.tomorrowTeaser}`
+                  : "Come back tomorrow and we'll pick up right where you left off."}
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
