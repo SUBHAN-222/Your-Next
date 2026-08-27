@@ -61,7 +61,6 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
             <span>Find My Path</span>
             <div className="cta-arrow">→</div>
           </button>
-          <p className="cta-whisper">2 minutes · no signup · completely free</p>
         </div>
       </div>
     </section>
