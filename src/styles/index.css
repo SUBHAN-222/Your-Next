@@ -206,12 +206,18 @@ body {
   animation-play-state: running;
 }
 
+@media (min-width: 901px) {
+  .land-h1 {
+    font-size: clamp(32px, 4.5vw, 56px);
+  }
+}
+
 .land-hero-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 40px;
-  max-width: 1100px;
+  gap: 48px;
+  max-width: 1140px;
   margin: 0 auto 40px;
   width: 100%;
 }
@@ -233,14 +239,15 @@ body {
 }
 
 .roadmap-preview-card {
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border: 1px solid rgba(226, 232, 240, 0.9);
+  border-left: 4px solid #2563eb;
   border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  padding: 28px 30px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
   text-align: left;
   width: 100%;
-  max-width: 400px;
+  max-width: 470px;
   flex-shrink: 0;
   opacity: 0;
   animation: riseUp .7s ease forwards .55s;
@@ -251,15 +258,45 @@ body {
   animation-play-state: running;
 }
 
+.rpc-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.rpc-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
 .rpc-badge {
   display: inline-block;
   font-size: 12px;
   font-weight: 700;
   color: #2563eb;
   background: #eff6ff;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 100px;
-  margin-bottom: 12px;
+}
+
+.rpc-content {
+  transition: opacity 300ms ease, transform 300ms ease;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rpc-content.fading {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
 .rpc-title {
@@ -292,6 +329,7 @@ body {
   border-radius: 8px;
   font-weight: 500;
 }
+
 
 
 .cta-outer {
