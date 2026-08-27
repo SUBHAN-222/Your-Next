@@ -206,6 +206,94 @@ body {
   animation-play-state: running;
 }
 
+.land-hero-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1100px;
+  margin: 0 auto 40px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .land-hero-row {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.land-hero-text {
+  flex: 1;
+  max-width: 640px;
+}
+
+.land-hero-text .land-sub {
+  margin-bottom: 0;
+}
+
+.roadmap-preview-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  text-align: left;
+  width: 100%;
+  max-width: 400px;
+  flex-shrink: 0;
+  opacity: 0;
+  animation: riseUp .7s ease forwards .55s;
+  animation-play-state: paused;
+}
+
+.roadmap-preview-card.visible {
+  animation-play-state: running;
+}
+
+.rpc-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-bottom: 12px;
+}
+
+.rpc-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.rpc-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.rpc-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.rpc-pill {
+  font-size: 12px;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+
 .cta-outer {
   opacity: 0;
   animation: riseUp .7s ease forwards .65s;

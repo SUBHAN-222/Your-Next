@@ -25,12 +25,26 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
         <p className={`land-tag ${isVisible ? 'visible' : ''}`}>
           Clarity for confused tech students
         </p>
-        <h1 className={`land-h1 ${isVisible ? 'visible' : ''}`}>
-          No more guessing.<br />Just your <i>next clear step</i>.
-        </h1>
-        <p className={`land-sub ${isVisible ? 'visible' : ''}`}>
-          YourNext understands where you are stuck and guides you step-by-step without overwhelm.
-        </p>
+        <div className="land-hero-row">
+          <div className="land-hero-text">
+            <h1 className={`land-h1 ${isVisible ? 'visible' : ''}`}>
+              No more guessing.<br />Just your <i>next clear step</i>.
+            </h1>
+            <p className={`land-sub ${isVisible ? 'visible' : ''}`}>
+              YourNext understands where you are stuck and guides you step-by-step without overwhelm.
+            </p>
+          </div>
+
+          <div className={`roadmap-preview-card ${isVisible ? 'visible' : ''}`}>
+            <span className="rpc-badge">Step 1 of 3</span>
+            <h3 className="rpc-title">Start with HTML today — structure first, perfection later.</h3>
+            <p className="rpc-desc">HTML is the foundation. Everything you build will sit on top of this.</p>
+            <div className="rpc-meta">
+              <span className="rpc-pill">⏱️ 30-45 mins</span>
+              <span className="rpc-pill">Beginner</span>
+            </div>
+          </div>
+        </div>
         <div className={`cta-outer ${isVisible ? 'visible' : ''}`}>
           {showBanner && savedProgress && (
             <div className="continue-banner-wrap">
