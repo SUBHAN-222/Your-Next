@@ -167,6 +167,24 @@ body {
   animation-play-state: running;
 }
 
+.land-intro {
+  font-size: clamp(14px, 2.5vw, 16px);
+  font-weight: 500;
+  color: #475569;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 580px;
+  margin: 0 auto 20px;
+  opacity: 0;
+  animation: riseUp .6s ease forwards .3s;
+  animation-play-state: paused;
+}
+
+.land-intro.visible {
+  animation-play-state: running;
+}
+
+
 .land-h1 {
   font-family: 'Sora', sans-serif;
   font-size: clamp(32px, 9vw, 72px);

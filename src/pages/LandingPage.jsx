@@ -46,6 +46,9 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
         <p className={`land-tag ${isVisible ? 'visible' : ''}`}>
           Clarity for confused tech students
         </p>
+        <p className={`land-intro ${isVisible ? 'visible' : ''}`}>
+          Confused isn't a problem with you. It's a problem with having too many options. We fix that.
+        </p>
         <div className="land-hero-row">
           <div className="land-hero-text">
             <h1 className={`land-h1 ${isVisible ? 'visible' : ''}`}>
