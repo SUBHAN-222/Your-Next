@@ -1,0 +1,180 @@
+/* ── Feature additions only (AI loading, continue banner, defer, toast, streak) ── */
+
+/* AI roadmap loading */
+.ai-roadmap-loading {
+  background: #0a0a0a;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.ai-load-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.ai-load-ring {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: aiRingSpin 0.9s linear infinite;
+}
+
+@keyframes aiRingSpin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-load-message {
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+}
+
+/* Continue journey banner */
+.continue-banner-wrap {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 16px;
+}
+
+.continue-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+}
+
+.continue-banner:hover {
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.12);
+}
+
+.continue-banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
+  animation: focusPulse 2s ease-in-out infinite;
+}
+
+.continue-banner-text {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
+
+.continue-banner-streak {
+  font-size: 12px;
+  font-weight: 600;
+  color: #f97316;
+  white-space: nowrap;
+}
+
+.continue-banner-arrow {
+  font-size: 16px;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.continue-banner-fresh {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 4px;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: #888;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.continue-banner-fresh:hover {
+  color: #555;
+}
+
+/* Defer / ghost button */
+.defer-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px 18px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 14px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.defer-btn:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: #fafafa;
+}
+
+/* Progress toast */
+.progress-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translate(-50%, 120%);
+  z-index: 60;
+  padding: 14px 22px;
+  background: #1a1a1a;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 100px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+  white-space: nowrap;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+.progress-toast.show {
+  transform: translate(-50%, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Streak in navbar */
+.res-nav-end {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.nav-streak {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f97316;
+  white-space: nowrap;
+}

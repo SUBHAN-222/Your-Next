@@ -1,0 +1,397 @@
+/* ════════════════════════════════════════════
+   Daily Task Card — base layout styles
+   (enhancements.css layers color/animation on top of these)
+   ════════════════════════════════════════════ */
+
+.active-step-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, .08);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+}
+
+.step-kicker {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.step-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 12px;
+  letter-spacing: -.5px;
+  line-height: 1.25;
+}
+
+.step-why {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.step-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f4f4f5;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.resource-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  width: 100%;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+}
+
+.practice-box {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 28px;
+}
+
+.practice-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #64748b;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.practice-task {
+  font-size: 15px;
+  color: #0f172a;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.daily-focus-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.daily-focus-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.daily-focus-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.momentum-banner {
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Full Roadmap — flashcard track ── */
+.future-path {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, .06);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.future-path-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.future-path-sub {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.future-path-caption {
+  font-size: 12px;
+  color: #999;
+  margin-top: 16px;
+}
+
+.flashcard-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+
+.flashcard {
+  flex-shrink: 0;
+  width: 140px;
+  min-height: 120px;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(0, 0, 0, .06);
+  background: #f8f9fa;
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.flashcard-icon {
+  font-size: 22px;
+}
+
+.flashcard-status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #999;
+}
+
+.flashcard-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.3;
+}
+
+.flashcard--done {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+}
+.flashcard--done .flashcard-status-badge { color: #059669; }
+
+.flashcard--current {
+  transform: scale(1.04);
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.18);
+}
+
+.flashcard--locked {
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+
+.custom-duration-input {
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(0, 0, 0, .12);
+  font-size: 16px;
+  text-align: center;
+  font-family: inherit;
+}
+
+/* ════════════════════════════════════════════
+   Responsive layout — Daily Roadmap screen
+   Mobile: single column, roadmap collapsible below.
+   Desktop (≥900px): two columns, roadmap panel
+   always visible in a sticky sidebar.
+   ════════════════════════════════════════════ */
+
+.yn-roadmap-banner {
+  max-width: 480px;
+  margin: 0 auto 16px;
+}
+
+.yn-roadmap-layout {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.yn-main-col .active-step-card {
+  margin: 0;
+}
+
+.yn-mobile-toggle {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.yn-toggle-link {
+  background: none;
+  border: none;
+  color: var(--yn-primary, #4f46e5);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 10px 16px; /* comfortable tap target */
+}
+
+.yn-side-col {
+  display: none;
+  margin-top: 16px;
+}
+
+.yn-side-col--open {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .yn-roadmap-layout {
+    max-width: 920px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .yn-mobile-toggle {
+    display: none; /* desktop always shows the sidebar, no toggle needed */
+  }
+
+  .yn-side-col {
+    display: block !important;
+    position: sticky;
+    top: 32px;
+    margin-top: 0;
+  }
+
+  .active-step-card {
+    padding: 48px; /* a bit more breathing room on larger screens */
+  }
+}
+
+/* Mobile-specific tuning */
+@media (max-width: 480px) {
+  .active-step-card {
+    padding: 28px 22px;
+    border-radius: 20px;
+  }
+
+  .step-name {
+    font-size: 22px;
+  }
+
+  .complete-btn {
+    padding: 16px;
+    font-size: 15px;
+  }
+
+  .flashcard-track {
+    scroll-snap-type: x mandatory;
+  }
+
+  .flashcard {
+    width: 74vw;
+    max-width: 220px;
+    scroll-snap-align: start;
+  }
+}
+
+/* Disable hover-lift effects on touch devices — prevents the "stuck
+   hover" look after tapping a button on phones/tablets. */
+@media (hover: none) {
+  .primary-btn:hover,
+  .complete-btn:hover,
+  .next-btn:hover,
+  .resource-btn:hover {
+    transform: none !important;
+  }
+}
+
+/* ── Progress Dashboard ── */
+.progress-dashboard {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, .06);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.progress-dashboard-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 16px;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 10px;
+  background: #f1f1f3;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7);
+  transition: width .6s cubic-bezier(.16, 1, .3, 1);
+}
+
+.progress-bar-label {
+  font-size: 12px;
+  color: #777;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-card {
+  background: #f8f9fb;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #4f46e5;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
