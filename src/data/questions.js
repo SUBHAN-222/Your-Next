@@ -5,6 +5,21 @@
 
 export const TOTAL_STEPS = 7
 
+export const QUESTION_IDS = [
+  'q_stuck',
+  'q_ai_help',
+  'q_why_stuck',
+  'q_direction',
+  'q_path1',
+  'q_path2',
+  'q_guide_style'
+]
+
+export function getAnswerByQuestionId(answers, questionId) {
+  const stepIndex = QUESTION_IDS.indexOf(questionId)
+  return stepIndex >= 0 ? answers[stepIndex]?.val : undefined
+}
+
 /**
  * Get the next question based on current answers and step
  * @param {Object} answers - Object containing all previous answers
@@ -12,11 +27,10 @@ export const TOTAL_STEPS = 7
  * @returns {Object|null} Question object or null if quiz is complete
  */
 export function getNextQuestion(answers, currentStep) {
-  const q0 = answers[0]?.val // where stuck
-  const q1 = answers[2]?.val // why stuck (branched on q0)
-  const q2 = answers[3]?.val // direction
-  const q3 = answers[4]?.val // path q1 (branched on q0+q2)
-  const q4 = answers[5]?.val // path q2
+  const stuckAnswer = getAnswerByQuestionId(answers, 'q_stuck')
+  const whyStuckAnswer = getAnswerByQuestionId(answers, 'q_why_stuck')
+  const directionAnswer = getAnswerByQuestionId(answers, 'q_direction')
+  const path1Answer = getAnswerByQuestionId(answers, 'q_path1')
 
   // ── STEP 0: Always the same opening ──
   if (currentStep === 0) {
@@ -53,7 +67,7 @@ export function getNextQuestion(answers, currentStep) {
 
   // ── STEP 2: Branches based on Q0 answer ──
   if (currentStep === 2) {
-    if (q0 === "no_start")
+    if (stuckAnswer === "no_start")
       return {
         id: "q_tried",
         eye: "Starting fresh",
@@ -65,7 +79,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🔄", l: "Yes, but nothing clicked for me", val: "didnt_click" }
         ]
       }
-    if (q0 === "lost")
+    if (stuckAnswer === "lost")
       return {
         id: "q_lost_cause",
         eye: "Finding the block",
@@ -78,7 +92,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "💬", l: "The terms and jargon were confusing", val: "jargon" }
         ]
       }
-    if (q0 === "not_improving")
+    if (stuckAnswer === "not_improving")
       return {
         id: "q_how_long",
         eye: "Progress check",
@@ -90,7 +104,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🗓️", l: "More than 6 months", val: "long" }
         ]
       }
-    if (q0 === "uni_confused")
+    if (stuckAnswer === "uni_confused")
       return {
         id: "q_uni_hard",
         eye: "University struggles",
@@ -103,7 +117,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🗺️", l: "I don't see a career path", val: "career" }
         ]
       }
-    if (q0 === "earning")
+    if (stuckAnswer === "earning")
       return {
         id: "q_earn_tried",
         eye: "Earning ambition",
@@ -121,19 +135,19 @@ export function getNextQuestion(answers, currentStep) {
   if (currentStep === 3) {
     let eye = "Your direction"
     let hint = "Pick the world that excites you most."
-    if (q0 === "no_start" && q1 === "never") {
+    if (stuckAnswer === "no_start" && whyStuckAnswer === "never") {
       eye = "A blank slate"
       hint = "Pick the world you want to enter."
-    } else if (q0 === "lost") {
+    } else if (stuckAnswer === "lost") {
       eye = "Let's redirect you"
       hint = "Which direction do you want to go back to?"
-    } else if (q0 === "not_improving") {
+    } else if (stuckAnswer === "not_improving") {
       eye = "Double down or pivot?"
       hint = "Pick the path you are most committed to."
-    } else if (q0 === "uni_confused") {
+    } else if (stuckAnswer === "uni_confused") {
       eye = "Beyond the classroom"
       hint = "Where do you see yourself after university?"
-    } else if (q0 === "earning") {
+    } else if (stuckAnswer === "earning") {
       eye = "Pick your earning path"
       hint = "What skill do you want to monetize?"
     }
@@ -157,8 +171,8 @@ export function getNextQuestion(answers, currentStep) {
 
   // ── STEP 4: First path question — branches on Q0 + Q2 ──
   if (currentStep === 4) {
-    if (q2 === "web" || q2 === "mobile") {
-      if (q0 === "not_improving")
+    if (directionAnswer === "web" || directionAnswer === "mobile") {
+      if (stuckAnswer === "not_improving")
         return {
           id: "web_stuck",
           eye: "Dev Path",
@@ -171,7 +185,7 @@ export function getNextQuestion(answers, currentStep) {
             { e: "🤷", l: "I don't know what to build next", val: "no_project" }
           ]
         }
-      if (q0 === "earning")
+      if (stuckAnswer === "earning")
         return {
           id: "web_earn_goal",
           eye: "Dev Path",
@@ -195,8 +209,8 @@ export function getNextQuestion(answers, currentStep) {
         ]
       }
     }
-    if (q2 === "ai") {
-      if (q0 === "earning")
+    if (directionAnswer === "ai") {
+      if (stuckAnswer === "earning")
         return {
           id: "ai_earn",
           eye: "AI Path",
@@ -221,7 +235,7 @@ export function getNextQuestion(answers, currentStep) {
         ]
       }
     }
-    if (q2 === "data")
+    if (directionAnswer === "data")
       return {
         id: "data_goal",
         eye: "Data Science",
@@ -234,7 +248,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "💼", l: "Getting a data analyst job", val: "job" }
         ]
       }
-    if (q2 === "cyber")
+    if (directionAnswer === "cyber")
       return {
         id: "cyber_side",
         eye: "Cyber Security",
@@ -247,7 +261,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🤷", l: "I'm not sure yet", val: "curious" }
         ]
       }
-    if (q2 === "freelance")
+    if (directionAnswer === "freelance")
       return {
         id: "free_urgency",
         eye: "Freelance Path",
@@ -259,7 +273,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🎯", l: "I want to plan it carefully first", val: "planned" }
         ]
       }
-    if (q2 === 'design') return {
+    if (directionAnswer === 'design') return {
       id: 'design_exp', eye: "Design Path",
       title: "Where are you at with design right now?",
       hint: "This shapes your starting point completely.",
@@ -270,8 +284,8 @@ export function getNextQuestion(answers, currentStep) {
         { e: "💼", l: "I have designs but no clients or portfolio", val: "no_clients" }
       ]
     }
-    if (q2 === "uni") {
-      if (q1 === "code")
+    if (directionAnswer === "uni") {
+      if (whyStuckAnswer === "code")
         return {
           id: "uni_code_level",
           eye: "University",
@@ -300,8 +314,8 @@ export function getNextQuestion(answers, currentStep) {
 
   // ── STEP 5: Second path question — branches on Q3 answer ──
   if (currentStep === 5) {
-    if (q2 === "web" || q2 === "mobile") {
-      if (q3 === "css" || q3 === "no_project")
+    if (directionAnswer === "web" || directionAnswer === "mobile") {
+      if (path1Answer === "css" || path1Answer === "no_project")
         return {
           id: "web_enjoy",
           eye: "Dev Path",
@@ -325,7 +339,7 @@ export function getNextQuestion(answers, currentStep) {
         ]
       }
     }
-    if (q2 === "ai")
+    if (directionAnswer === "ai")
       return {
         id: "ai_math",
         eye: "AI Path",
@@ -337,7 +351,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🤓", l: "I'm very comfortable with it", val: "love" }
         ]
       }
-    if (q2 === "data")
+    if (directionAnswer === "data")
       return {
         id: "data_math",
         eye: "Data Science",
@@ -349,7 +363,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "😰", l: "Very weak — numbers scare me", val: "weak" }
         ]
       }
-    if (q2 === "cyber")
+    if (directionAnswer === "cyber")
       return {
         id: "cyber_net",
         eye: "Cyber Security",
@@ -361,7 +375,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🤷", l: "Completely new to me", val: "none" }
         ]
       }
-    if (q2 === "freelance")
+    if (directionAnswer === "freelance")
       return {
         id: "free_skill",
         eye: "Freelance Path",
@@ -374,7 +388,7 @@ export function getNextQuestion(answers, currentStep) {
           { e: "🤷", l: "Starting completely from zero", val: "nothing" }
         ]
       }
-    if (q2 === 'design') return {
+    if (directionAnswer === 'design') return {
       id: 'design_goal', eye: "Design Path",
       title: "What kind of thing do you want to design?",
       hint: "This decides which skills to focus on first.",
@@ -385,7 +399,7 @@ export function getNextQuestion(answers, currentStep) {
         { e: "💸", l: "Freelance — design for paying clients", val: "freelance" }
       ]
     }
-    if (q2 === "uni")
+    if (directionAnswer === "uni")
       return {
         id: "uni_coding",
         eye: "University",

@@ -5,14 +5,15 @@
  */
 
 import { CAREER_PATHS, getCareerPath, getCategories, getRoadmap, getDontLearnYet } from "@data/careerPaths";
+import { QUESTION_IDS, getAnswerByQuestionId } from "../data/questions";
 
 /**
  * Answer weight configurations for scoring
  * Each answer value maps to career path preferences with weights
  */
 const ANSWER_WEIGHTS = {
-  // Q0: Where are you stuck
-  q0: {
+  // Where are you stuck
+  q_stuck: {
     no_start: { web: 0.3, freelance: 0.3, design: 0.2, uni: 0.2 },
     lost: { web: 0.4, ai: 0.2, data: 0.2, design: 0.2 },
     not_improving: { web: 0.3, ai: 0.3, data: 0.2, cyber: 0.2 },
@@ -20,8 +21,8 @@ const ANSWER_WEIGHTS = {
     earning: { freelance: 0.5, web: 0.3, ai: 0.1, design: 0.1 }
   },
 
-  // Q2: Direction (strongest signal)
-  q2: {
+  // Direction (strongest signal)
+  q_direction: {
     web: { web: 0.8, mobile: 0.3, freelance: 0.2 },
     ai: { ai: 0.8, data: 0.3 },
     data: { data: 0.8, ai: 0.3 },
@@ -32,8 +33,8 @@ const ANSWER_WEIGHTS = {
     uni: { uni: 0.8, web: 0.2, ai: 0.1, data: 0.1 }
   },
 
-  // Q3: Path-specific questions
-  q3: {
+  // First path-specific question
+  q_path1: {
     // Web path preferences
     css: { web: 0.3 },
     js: { web: 0.3 },
@@ -68,8 +69,8 @@ const ANSWER_WEIGHTS = {
     career: { uni: 0.2, freelance: 0.1 }
   },
 
-  // Q4: Second path question
-  q4: {
+  // Second path-specific question
+  q_path2: {
     frontend: { web: 0.3, design: 0.2 },
     backend: { web: 0.3 },
     fullstack: { web: 0.3, freelance: 0.2 },
@@ -90,8 +91,8 @@ const ANSWER_WEIGHTS = {
     bad: { uni: 0.3 }
   },
 
-  // Q5: Guide style preference
-  q5: {
+  // Guide style preference
+  q_guide_style: {
     fast: { freelance: 0.2, web: 0.1 },
     step: { web: 0.2, uni: 0.2, ai: 0.1, data: 0.1 },
     job: { web: 0.2, data: 0.2, cyber: 0.2, ai: 0.1 },
@@ -237,7 +238,7 @@ export function generateRecommendation(answers) {
     const val = answer?.val;
     if (!val) return;
 
-    const stepKey = `q${stepIndex}`;
+    const stepKey = QUESTION_IDS[stepIndex];
     const weights = ANSWER_WEIGHTS[stepKey];
 
     if (weights && weights[val]) {
@@ -315,7 +316,7 @@ export function generateRecommendation(answers) {
 function generateSummary(career, category, experienceLevel, answers) {
   const careerName = career?.name || "your path";
   const categoryName = category?.name || "";
-  const q0Answer = answers[0]?.val;
+  const stuckAnswer = getAnswerByQuestionId(answers, 'q_stuck');
 
   const openingLines = {
     no_start: `Starting your journey in ${careerName} is an exciting decision.`,
@@ -336,7 +337,7 @@ function generateSummary(career, category, experienceLevel, answers) {
     : "";
 
   return {
-    opening: openingLines[q0Answer] || `Based on your responses, ${careerName} is an excellent fit for you.`,
+    opening: openingLines[stuckAnswer] || `Based on your responses, ${careerName} is an excellent fit for you.`,
     experience: experienceContext[experienceLevel],
     category: categoryContext,
     closing: `Your personalized roadmap includes ${career?.roadmaps?.[experienceLevel]?.length || 5} focused steps to get you started.`

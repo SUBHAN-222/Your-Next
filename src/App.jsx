@@ -1,10 +1,12 @@
 import { useState, useCallback, useEffect } from 'react'
 import LandingPage from '@pages/LandingPage'
 import OnboardingPage from '@pages/OnboardingPage'
+import DurationPage from '@pages/DurationPage'
 import RoadmapPage from '@pages/RoadmapPage'
 import AIRoadmapLoading from '@components/AIRoadmapLoading'
 import FeedbackModal from '@components/FeedbackModal'
 import { generateAIRoadmap, getWelcomeMessage } from '@services/aiRoadmap'
+import { ensureAuthSession, saveQuizAnswers } from '@services/supabaseSync'
 import { getSavedProgress, clearProgress, saveProgress } from '@utils/progressStorage'
 import { getStreakFromStorage } from '@utils/streak'
 import posthog, { initPostHog } from '@lib/posthog'
@@ -19,9 +21,11 @@ function App() {
   const [savedProgress, setSavedProgress] = useState(null)
   const [welcomeMessage, setWelcomeMessage] = useState(null)
   const [quizStartTime, setQuizStartTime] = useState(null)
+  const [durationMonths, setDurationMonths] = useState(null)
 
   useEffect(() => {
     initPostHog()
+    ensureAuthSession()
   }, [])
 
   useEffect(() => {
@@ -49,6 +53,7 @@ function App() {
     setActivePlan(null)
     setRoadmapIndex(0)
     setSavedProgress(null)
+    setDurationMonths(null)
     setQuizSession((n) => n + 1)
     setCurrentScreen('landing')
     posthog.capture('quiz_restarted')
@@ -68,26 +73,30 @@ function App() {
   }, [])
 
   const handleCompleteQuiz = useCallback(() => {
-    setCurrentScreen('generating')
+    setCurrentScreen('duration')
     const timeTakenMs = quizStartTime ? Date.now() - quizStartTime : 0
     const minutes = Math.floor(timeTakenMs / 60000)
     const seconds = Math.floor((timeTakenMs % 60000) / 1000)
     const timeTakenStr = `${minutes}m ${seconds}s`
-    
-    console.log("Firing quiz_completed")
-    posthog.capture('quiz_completed', { 
+
+    posthog.capture('quiz_completed', {
       total_answers: Object.keys(answers).length,
-      score: 100, // Dummy score, since we don't have a real score
+      score: 100,
       time_taken: timeTakenStr
     })
   }, [answers, quizStartTime])
 
+  const handleSelectDuration = useCallback((months) => {
+    setDurationMonths(months)
+    setCurrentScreen('generating')
+    posthog.capture('duration_selected', { months })
+  }, [])
+
   useEffect(() => {
-    if (currentScreen !== 'generating') return
+    if (currentScreen !== 'generating' || !durationMonths) return
 
     let cancelled = false
 
-    // Fire both calls in parallel — welcome message shows as soon as it arrives
     getWelcomeMessage(answers).then((msg) => {
       if (cancelled) return
       if (msg) setWelcomeMessage(msg)
@@ -103,17 +112,19 @@ function App() {
       setSavedProgress(getSavedProgress())
       setWelcomeMessage(null)
       setCurrentScreen('roadmap')
+
+      // Fire-and-forget: save to Supabase without blocking the UI
+      saveQuizAnswers(answers, plan.field)
     })
 
     return () => {
       cancelled = true
     }
-  }, [currentScreen, answers])
+  }, [currentScreen, durationMonths, answers])
 
   useEffect(() => {
     const trackDropOff = () => {
       if (currentScreen === 'onboarding') {
-        console.log("Firing user_dropped_off")
         posthog.capture('user_dropped_off', {
           step: 'quiz',
           answers_so_far: Object.keys(answers).length
@@ -121,19 +132,14 @@ function App() {
       }
     }
 
-    const handleBeforeUnload = () => {
-      trackDropOff()
-    }
-
+    const handleBeforeUnload = () => trackDropOff()
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'hidden') {
-        trackDropOff()
-      }
+      if (document.visibilityState === 'hidden') trackDropOff()
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
     document.addEventListener('visibilitychange', handleVisibilityChange)
-    
+
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
@@ -168,6 +174,10 @@ function App() {
           onAnswer={handleAnswer}
           onComplete={handleCompleteQuiz}
         />
+      )}
+
+      {currentScreen === 'duration' && (
+        <DurationPage onSelect={handleSelectDuration} />
       )}
 
       {currentScreen === 'generating' && <AIRoadmapLoading welcomeMessage={welcomeMessage} />}

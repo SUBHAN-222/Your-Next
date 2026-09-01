@@ -71,6 +71,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Only POST requests are allowed' });
   }
 
+  const apiKey = process.env.QWEN_API_KEY;
+  if (!apiKey) {
+    console.error('QWEN_API_KEY is not set in environment variables');
+    return res.status(500).json({ error: 'AI service not configured — missing API key' });
+  }
+
   const { mode, step, field, answers, history } = req.body || {};
 
   if (mode === 'welcome') {
@@ -80,13 +86,16 @@ export default async function handler(req, res) {
     try {
       const welcomeSystemPrompt = `You are YourNext, a warm mentor for confused beginner tech students in Pakistan. Based on these quiz answers, write ONE short welcome message. STRICT RULES: maximum 2 sentences, each sentence maximum 10 words. Must reference one SPECIFIC detail from their actual answers (their exact struggle, or their field) — not a generic greeting. Use simple, easy words a 15-year-old understands instantly — no complex vocabulary. Use 'we' or 'together' once. It must feel personal, warm, and exciting — like a real mentor is genuinely glad to help THIS specific person. Return ONLY this JSON: { "welcomeMessage": "" }`;
 
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 25000);
+
       const welcomeResponse = await fetch(
         'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.QWEN_API_KEY}`
+            Authorization: `Bearer ${apiKey}`
           },
           body: JSON.stringify({
             model: 'qwen-plus',
@@ -94,9 +103,11 @@ export default async function handler(req, res) {
               { role: 'system', content: welcomeSystemPrompt },
               { role: 'user', content: `Student quiz answers: ${JSON.stringify(answers)}` }
             ]
-          })
+          }),
+          signal: controller.signal
         }
       );
+      clearTimeout(timeout);
 
       if (!welcomeResponse.ok) {
         throw new Error(`Qwen API request failed with status ${welcomeResponse.status}`);
@@ -109,16 +120,23 @@ export default async function handler(req, res) {
         throw new Error('Qwen API returned no content');
       }
 
-      const cleanedWelcome = welcomeContent
-        .replace(/^```json\s*/i, '')
-        .replace(/^```\s*/i, '')
-        .replace(/\s*```$/, '')
-        .trim();
-      const welcomeParsed = JSON.parse(cleanedWelcome);
+      let cleaned = welcomeContent.trim();
+      // Strip markdown code fences if present anywhere
+      const jsonMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        cleaned = jsonMatch[1].trim();
+      } else {
+        // Fallback: try to extract the first { ... } or [ ... ] JSON structure
+        const jsonStart = cleaned.indexOf('{');
+        if (jsonStart > 0) {
+          cleaned = cleaned.slice(jsonStart);
+        }
+      }
+      const welcomeParsed = JSON.parse(cleaned);
 
       return res.status(200).json({ welcomeMessage: welcomeParsed.welcomeMessage || '' });
     } catch (error) {
-      console.error(error);
+      console.error('AI Welcome Message Error:', error.message || error);
       return res.status(500).json({ error: 'Welcome message generation failed' });
     }
   }
@@ -127,13 +145,16 @@ export default async function handler(req, res) {
     try {
       const systemPrompt = `You are YourNext. A student got stuck on this step: ${step?.name || ''} — ${step?.why || ''} — ${step?.task || ''}, in the field ${field || ''}. Give ONE easier version of this same step. Same goal, but simpler and smaller. Return ONLY this JSON, nothing else: { "name": "", "why": "", "task": "" }. Rules: why and task must each be ONE sentence, under 18 words, simple words a 15-year-old understands instantly. Make the task noticeably smaller/easier than the original — break it into a tinier first move.`;
 
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 25000);
+
       const response = await fetch(
         'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.QWEN_API_KEY}`
+            Authorization: `Bearer ${apiKey}`
           },
           body: JSON.stringify({
             model: 'qwen-plus',
@@ -141,9 +162,11 @@ export default async function handler(req, res) {
               { role: 'system', content: systemPrompt },
               { role: 'user', content: `Step: ${step?.name || ''} — ${step?.why || ''} — ${step?.task || ''}` }
             ]
-          })
+          }),
+          signal: controller.signal
         }
       );
+      clearTimeout(timeout);
 
       if (!response.ok) {
         throw new Error(`Qwen API request failed with status ${response.status}`);
@@ -156,12 +179,19 @@ export default async function handler(req, res) {
         throw new Error('Qwen API returned no content');
       }
 
-      const cleanedContent = content
-        .replace(/^```json\s*/i, '')
-        .replace(/^```\s*/i, '')
-        .replace(/\s*```$/, '')
-        .trim();
-      const easierStep = JSON.parse(cleanedContent);
+      let cleaned = content.trim();
+      // Strip markdown code fences if present anywhere
+      const jsonMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        cleaned = jsonMatch[1].trim();
+      } else {
+        // Fallback: try to extract the first { ... } or [ ... ] JSON structure
+        const jsonStart = cleaned.indexOf('{');
+        if (jsonStart > 0) {
+          cleaned = cleaned.slice(jsonStart);
+        }
+      }
+      const easierStep = JSON.parse(cleaned);
 
       return res.status(200).json({
         name: easierStep.name || '',
@@ -169,7 +199,7 @@ export default async function handler(req, res) {
         task: easierStep.task || ''
       });
     } catch (error) {
-      console.error(error);
+      console.error('AI Easier Step Error:', error.message || error);
       return res.status(500).json({ error: 'AI generation failed' });
     }
   }
@@ -179,13 +209,16 @@ export default async function handler(req, res) {
   }
 
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
+
     const response = await fetch(
       'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.QWEN_API_KEY}`
+          Authorization: `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: 'qwen-plus',
@@ -203,9 +236,11 @@ export default async function handler(req, res) {
               return `Student quiz answers: ${JSON.stringify(answers)}\n\nHere is what happened with their previous steps (if any):\n${Array.isArray(history) && history.length > 0 ? history.map(entry => `Step '${entry.stepName || entry.name}' — ${entry.status || entry.stuck ? 'stuck' : 'completed'}`).join('\n') : 'No previous history — this is their first roadmap.'}${aiLine}`;
             })() }
           ]
-        })
+        }),
+        signal: controller.signal
       }
     );
+    clearTimeout(timeout);
 
     if (!response.ok) {
       throw new Error(`Qwen API request failed with status ${response.status}`);
@@ -218,16 +253,23 @@ export default async function handler(req, res) {
       throw new Error('Qwen API returned no roadmap content');
     }
 
-    const cleanedContent = content
-      .replace(/^```json\s*/i, '')
-      .replace(/^```\s*/i, '')
-      .replace(/\s*```$/, '')
-      .trim();
-    const roadmap = JSON.parse(cleanedContent);
+    let cleaned = content.trim();
+    // Strip markdown code fences if present anywhere
+    const jsonMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (jsonMatch) {
+      cleaned = jsonMatch[1].trim();
+    } else {
+      // Fallback: try to extract the first { ... } or [ ... ] JSON structure
+      const jsonStart = cleaned.indexOf('{');
+      if (jsonStart > 0) {
+        cleaned = cleaned.slice(jsonStart);
+      }
+    }
+    const roadmap = JSON.parse(cleaned);
 
     return res.status(200).json(roadmap);
   } catch (error) {
-    console.error(error);
+    console.error('AI Roadmap Generation Error:', error.message || error);
     return res.status(500).json({ error: 'AI generation failed' });
   }
 }

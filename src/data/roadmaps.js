@@ -3,8 +3,10 @@
  * Each path contains steps with resources and practice tasks
  */
 
+import { getAnswerByQuestionId } from './questions'
+
 export function generateRoadmapData(answers) {
-  const interest = answers[2]?.val || 'web'
+  const interest = getAnswerByQuestionId(answers, 'q_direction') || 'web'
 
   if (interest === 'ai') {
     return {
