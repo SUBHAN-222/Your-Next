@@ -5,7 +5,6 @@ const KEYS = {
   streak: 'yn_streak',
   lastComplete: 'yn_last_complete',
   learningHistory: 'yn_learning_history',
-  quizProgress: 'yn_quiz_progress',
 }
 
 export function getSavedProgress() {
@@ -43,24 +42,6 @@ export function saveLearningHistory(record) {
     localStorage.setItem(KEYS.learningHistory, JSON.stringify(history))
   } catch {
     // Learning history should never interrupt the student's roadmap progress.
-  }
-}
-
-export function saveQuizResult({ scoreCount, total, weakTopics }) {
-  try {
-    const saved = JSON.parse(localStorage.getItem(KEYS.quizProgress) || '{}')
-    const quizHistory = Array.isArray(saved?.quizHistory) ? saved.quizHistory : []
-    const date = new Date().toISOString()
-    const topics = Array.isArray(weakTopics) ? weakTopics : []
-    const lastQuizScore = { scoreCount, total, date }
-
-    localStorage.setItem(KEYS.quizProgress, JSON.stringify({
-      lastQuizScore,
-      weakTopics: topics,
-      quizHistory: [...quizHistory, { ...lastQuizScore, weakTopics: topics }],
-    }))
-  } catch {
-    // Quiz persistence should never interrupt the student's roadmap progress.
   }
 }
 

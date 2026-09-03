@@ -1,6 +1,5 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
-import { saveProgress, saveQuizResult } from '@utils/progressStorage'
-import { buildLevelCheckQuiz, scoreQuiz } from '@services/levelCheckEngine'
+import { useState, useCallback, useMemo, useEffect } from 'react'
+import { saveProgress } from '@utils/progressStorage'
 import { getStreakFromStorage, updateStreakOnComplete, getMomentumMessageForStreak } from '@utils/streak'
 
 const DEFAULT_MOMENTUM_MESSAGES = [
@@ -20,9 +19,6 @@ export function useRoadmap(activePlan, initialStepIndex = 0) {
   const [momentumMessage, setMomentumMessage] = useState('')
   const [showMomentum, setShowMomentum] = useState(false)
   const [streak, setStreak] = useState(() => getStreakFromStorage())
-  const [pendingQuiz, setPendingQuiz] = useState(null)
-  const [quizResult, setQuizResult] = useState(null)
-  const tasksSinceCheck = useRef(0)
 
   const roadmapData = activePlan
 
@@ -58,34 +54,9 @@ export function useRoadmap(activePlan, initialStepIndex = 0) {
     setShowMomentum(true)
 
     const nextIndex = currentStepIndex + 1
-    tasksSinceCheck.current += 1
-
-    if (tasksSinceCheck.current >= 2 && !pendingQuiz && roadmapData?.steps?.length) {
-      const completedTasks = roadmapData.steps
-        .slice(0, nextIndex)
-        .map((step) => ({ name: step.name, topic: step.name }))
-      const questions = buildLevelCheckQuiz(completedTasks, roadmapData.steps, 10)
-
-      if (questions.length >= 3) {
-        setPendingQuiz({ questions })
-        tasksSinceCheck.current = 0
-      }
-    }
-
     setCurrentStepIndex(nextIndex)
     persistProgress(nextIndex)
-  }, [currentStepIndex, pendingQuiz, persistProgress, roadmapData])
-
-  const finishQuiz = useCallback((answeredQuestions) => {
-    const result = scoreQuiz(answeredQuestions)
-    saveQuizResult(result)
-    setQuizResult(result)
-    setPendingQuiz(null)
-  }, [])
-
-  const dismissQuizResult = useCallback(() => {
-    setQuizResult(null)
-  }, [])
+  }, [currentStepIndex, persistProgress])
 
   const deferCurrentStep = useCallback(() => {
     persistProgress(currentStepIndex)
@@ -100,9 +71,6 @@ export function useRoadmap(activePlan, initialStepIndex = 0) {
     setCompletedSteps([])
     setMomentumMessage('')
     setShowMomentum(false)
-    setPendingQuiz(null)
-    setQuizResult(null)
-    tasksSinceCheck.current = 0
   }, [])
 
   const getStepStatus = useCallback(
@@ -123,11 +91,7 @@ export function useRoadmap(activePlan, initialStepIndex = 0) {
     streak,
     momentumMessage,
     showMomentum,
-    pendingQuiz,
-    quizResult,
     completeCurrentStep,
-    finishQuiz,
-    dismissQuizResult,
     deferCurrentStep,
     hideMomentum,
     reset,
