@@ -27,20 +27,23 @@ function normalizePlan(raw) {
     tomorrowTeaser: raw.tomorrowTeaser || null,
     futurePath: Array.isArray(raw.futurePath) ? raw.futurePath : [],
     dontLearnYet: singleWarning ? [singleWarning] : [],
-    steps: raw.steps.slice(0, 3).map(normalizeStep),
+    steps: raw.steps.slice(0, 15).map(normalizeStep),
   }
 }
 
-export async function generateAIRoadmap(answers) {
+export async function generateAIRoadmap(answers, durationMonths) {
   try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 12000)
 
-    const history = getLearningHistory()
+    const hasDuration = Number(durationMonths) > 0
+    const requestBody = hasDuration
+      ? { mode: 'multi', answers, durationMonths: Number(durationMonths) }
+      : { answers, history: getLearningHistory() }
     const response = await fetch('/api/generate-roadmap', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers, history }),
+      body: JSON.stringify(requestBody),
       signal: controller.signal,
     })
 

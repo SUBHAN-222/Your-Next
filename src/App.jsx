@@ -7,7 +7,7 @@ import AIRoadmapLoading from '@components/AIRoadmapLoading'
 import FeedbackModal from '@components/FeedbackModal'
 import { generateAIRoadmap, getWelcomeMessage } from '@services/aiRoadmap'
 import { ensureAuthSession, saveQuizAnswers } from '@services/supabaseSync'
-import { getSavedProgress, clearProgress, saveProgress } from '@utils/progressStorage'
+import { getSavedProgress, clearProgress, saveDayProgress, saveProgress } from '@utils/progressStorage'
 import { getStreakFromStorage } from '@utils/streak'
 import posthog, { initPostHog } from '@lib/posthog'
 
@@ -69,6 +69,7 @@ function App() {
     if (!saved) return
     setActivePlan(saved.plan)
     setRoadmapIndex(saved.index)
+    setDurationMonths(saved.durationMonths)
     setCurrentScreen('roadmap')
   }, [])
 
@@ -104,11 +105,19 @@ function App() {
 
     const minDelay = new Promise((resolve) => setTimeout(resolve, 4500))
 
-    Promise.all([generateAIRoadmap(answers), minDelay]).then(([plan]) => {
+    Promise.all([generateAIRoadmap(answers, durationMonths), minDelay]).then(([plan]) => {
       if (cancelled) return
       setActivePlan(plan)
       setRoadmapIndex(0)
-      saveProgress(plan, 0, getStreakFromStorage())
+      saveProgress(plan, 0, getStreakFromStorage(), durationMonths)
+      const now = new Date()
+      const startDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+      saveDayProgress({
+        startDate,
+        currentDay: 1,
+        dayCompletedDate: null,
+        durationMonths,
+      })
       setSavedProgress(getSavedProgress())
       setWelcomeMessage(null)
       setCurrentScreen('roadmap')
@@ -186,6 +195,7 @@ function App() {
         <RoadmapPage
           activePlan={activePlan}
           initialStepIndex={roadmapIndex}
+          durationMonths={durationMonths}
           onRestart={handleRestart}
           onUpdateStep={handleUpdateStep}
         />

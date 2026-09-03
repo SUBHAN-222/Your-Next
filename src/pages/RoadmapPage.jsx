@@ -61,12 +61,19 @@ const Accordion = ({ title, subtitle, icon, badgeText, theme = 'default', childr
   )
 }
 
-function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep }) {
+function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onRestart, onUpdateStep }) {
   const {
     roadmapData,
     currentStep,
     currentStepIndex,
     isComplete,
+    currentDay,
+    totalDays,
+    dayCompleted,
+    todaySteps,
+    tomorrowTeaser,
+    completedTodayCount,
+    totalCompleted,
     streak,
     momentumMessage,
     showMomentum,
@@ -74,7 +81,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
     deferCurrentStep,
     hideMomentum,
     getStepStatus,
-  } = useRoadmap(activePlan, initialStepIndex)
+  } = useRoadmap(activePlan, initialStepIndex, durationMonths)
 
   const [showToast, setShowToast] = useState(false)
   const [completing, setCompleting] = useState(false)
@@ -177,7 +184,10 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
         </div>
       </nav>
 
-      
+      <div style={{ width: 'fit-content', margin: '20px auto 0', padding: '8px 16px', borderRadius: '999px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', color: '#60a5fa', fontSize: '13px', fontWeight: 700, letterSpacing: '0.04em' }}>
+        Day {currentDay} of {totalDays}
+      </div>
+
       <div className="premium-hero-card">
         <div className="ph-left">
           <div className="ph-icon-box">{roadmapData.icon || '🚀'}</div>
@@ -188,11 +198,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
         </div>
         <div className="ph-right">
           <div className="ph-stats">
-            <div className="ph-count"><strong>{Math.min(currentStepIndex, roadmapData?.steps?.length || 0)}</strong> / {roadmapData?.steps?.length || 0} completed</div>
-            <div className="ph-pct">{Math.round((Math.min(currentStepIndex, roadmapData?.steps?.length || 0) / (roadmapData?.steps?.length || 1)) * 100)}%</div>
+            <div className="ph-count">Day {currentDay} • <strong>{completedTodayCount}</strong> / {todaySteps.length} completed</div>
+            <div className="ph-pct">{totalCompleted} / {roadmapData?.steps?.length || 0} total</div>
           </div>
           <div className="ph-progress-bg">
-            <div className="ph-progress-fill" style={{ width: `${(Math.min(currentStepIndex, roadmapData?.steps?.length || 0) / (roadmapData?.steps?.length || 1)) * 100}%` }}></div>
+            <div className="ph-progress-fill" style={{ width: `${(totalCompleted / (roadmapData?.steps?.length || 1)) * 100}%` }}></div>
           </div>
           <div className="ph-trust-row">
             <span className="ph-save-status">✓ Progress saved automatically</span>
@@ -202,7 +212,24 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
       </div>
 
       <div className="premium-main-grid">
-        {isFinished ? (
+        {dayCompleted ? (
+          <div className="premium-task-card active-step-card yn-scale-in" style={{ textAlign: 'center', padding: '40px 24px' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
+            <h2 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '8px' }}>Day {currentDay} done!</h2>
+            <p style={{ color: '#64748b', fontSize: '15px', lineHeight: 1.6, marginBottom: '16px' }}>
+              Come back tomorrow to unlock your next steps.
+            </p>
+            {tomorrowTeaser && (
+              <p style={{ color: '#3b82f6', fontStyle: 'italic', fontSize: '14px', marginBottom: '24px' }}>
+                Tomorrow's hint: {tomorrowTeaser}
+              </p>
+            )}
+            <div style={{ background: '#f1f5f9', borderRadius: '12px', padding: '16px 20px', color: '#0f172a' }}>
+              <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px' }}>Your streak</div>
+              <div style={{ fontSize: '28px', fontWeight: 700 }}>🔥 {streak} day{streak !== 1 ? 's' : ''}</div>
+            </div>
+          </div>
+        ) : isFinished ? (
           <div className="premium-task-card finished-task-card">
             <div className="pt-header">
               <span className="pt-dot-label"><span className="pt-dot" style={{ background: '#22c55e' }}></span> Progress Summary</span>
@@ -213,7 +240,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
                 You're on your way.
               </h3>
               <p style={{ color: '#64748b', fontSize: '15px', lineHeight: '1.5', marginBottom: '24px' }}>
-                3 steps down. You already know more than you did yesterday — and there's more waiting for you.
+                {totalCompleted} steps down. You already know more than you did yesterday — and there's more waiting for you.
               </p>
 
               <div style={{ marginBottom: '24px', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -375,15 +402,19 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
         >
           <div className="p-full-roadmap-list">
             {roadmapData?.steps?.map((step, index) => {
-              const status = getStepStatus(index);
+              const status = getStepStatus(index)
+              const stepDay = Math.floor(index / 3) + 1
+              const isFutureDay = stepDay > currentDay
               return (
                 <div key={index} className={`p-roadmap-step-item ${status}`}>
                   <div className="p-step-icon">
-                    {status === 'done' ? '✓' : status === 'current' ? '→' : '○'}
+                    {status === 'done' ? '✓' : status === 'current' ? '→' : isFutureDay ? '🔒' : '○'}
                   </div>
                   <div className="p-step-details">
                     <div className="p-step-item-name">{step.name}</div>
-                    {status === 'current' && <div className="p-step-item-meta">Current task</div>}
+                    <div className="p-step-item-meta">
+                      Day {stepDay}{status === 'current' ? ' • Current task' : isFutureDay ? ' • Locked' : status === 'done' ? ' • Completed' : ' • Up next'}
+                    </div>
                   </div>
                 </div>
               )
