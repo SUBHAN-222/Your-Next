@@ -12,11 +12,12 @@ function LevelCheckQuiz({ questions, onFinish }) {
   const isLast = qIndex === questions.length - 1
 
   const handleSubmit = () => {
-    if (!selected || submitted) return
+    if (selected === null || submitted) return
     setSubmitted(true)
   }
 
   const handleNext = () => {
+    if (!submitted) return
     const wasCorrect = selected === current.correctAnswer
     const updated = [...answered, { ...current, selected, wasCorrect }]
     setAnswered(updated)
@@ -52,8 +53,11 @@ function LevelCheckQuiz({ questions, onFinish }) {
                   ? { borderColor: '#10b981', background: '#ecfdf5' }
                   : isWrongPick
                   ? { borderColor: '#ef4444', background: '#fef2f2' }
+                  : isPicked
+                  ? { borderColor: '#2563eb', background: '#eff6ff' }
                   : undefined
               }
+              aria-pressed={isPicked}
               onClick={() => !submitted && setSelected(opt)}
               disabled={submitted}
             >
@@ -65,8 +69,16 @@ function LevelCheckQuiz({ questions, onFinish }) {
         })}
       </div>
 
+      {submitted && (
+        <p role="status" aria-live="polite" style={{ margin: '16px 0 0', color: selected === current.correctAnswer ? '#047857' : '#b91c1c', fontWeight: 700 }}>
+          {selected === current.correctAnswer
+            ? 'Correct!'
+            : `Not quite. The correct answer is ${current.correctAnswer}.`}
+        </p>
+      )}
+
       {!submitted ? (
-        <button type="button" className="complete-btn" style={{ marginTop: 20 }} onClick={handleSubmit} disabled={!selected}>
+        <button type="button" className="complete-btn" style={{ marginTop: 20 }} onClick={handleSubmit} disabled={selected === null}>
           Submit Answer
         </button>
       ) : (
