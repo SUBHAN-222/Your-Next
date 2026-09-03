@@ -147,6 +147,24 @@ export function useRoadmap(activePlan, initialStepIndex = 0, durationMonths = nu
     setDayCompletedDate(null)
   }, [])
 
+  const startNextDay = useCallback(() => {
+    const nextDay = Math.min(currentDay + 1, totalDays)
+    const nextDayStart = (nextDay - 1) * STEPS_PER_DAY
+    setCurrentDay(nextDay)
+    setDayCompleted(false)
+    setDayCompletedDate(null)
+    setCurrentStepIndex(nextDayStart)
+    const today = getLocalDateKey()
+    const saved = getDayProgress()
+    saveDayProgress({
+      startDate: saved?.startDate || today,
+      currentDay: nextDay,
+      dayCompletedDate: null,
+      durationMonths: Number(durationMonths) || saved?.durationMonths || null,
+    })
+    persistProgress(nextDayStart)
+  }, [currentDay, totalDays, durationMonths, persistProgress])
+
   const getStepStatus = useCallback(
     (index) => {
       if (index < currentStepIndex) return 'done'
@@ -175,6 +193,7 @@ export function useRoadmap(activePlan, initialStepIndex = 0, durationMonths = nu
     showMomentum,
     completeCurrentStep,
     deferCurrentStep,
+    startNextDay,
     hideMomentum,
     reset,
     getStepStatus,

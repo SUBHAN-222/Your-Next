@@ -79,6 +79,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
     showMomentum,
     completeCurrentStep,
     deferCurrentStep,
+    startNextDay,
     hideMomentum,
     getStepStatus,
   } = useRoadmap(activePlan, initialStepIndex, durationMonths)
@@ -145,7 +146,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
   }, [currentStepIndex, currentStep, roadmapData, completeCurrentStep, onUpdateStep])
 
   const fieldLabel = roadmapData.field || 'learning'
-  const streakLabel = `${streak} Day${streak === 1 ? '' : 's'} Streak`
+  const streakLabel = `${streak} Task${streak === 1 ? '' : 's'} Completed`
   const careerId = getCareerIdFromPlan(roadmapData?.field)
   const avoidItems = (
     roadmapData?.dontLearnYet ||
@@ -176,7 +177,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
         </button>
         <div className="res-nav-end">
           {streak > 0 && (
-            <span className="nav-streak" aria-label={`${streak} day streak`}>
+            <span className="nav-streak" aria-label={`${streak} tasks completed`}>
               🔥 {streak}
             </span>
           )}
@@ -198,7 +199,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
         </div>
         <div className="ph-right">
           <div className="ph-stats">
-            <div className="ph-count">Day {currentDay} • <strong>{completedTodayCount}</strong> / {todaySteps.length} completed</div>
+            <div className="ph-count">Day {currentDay} • <strong>{completedTodayCount}</strong> completed</div>
             <div className="ph-pct">{totalCompleted} / {roadmapData?.steps?.length || 0} total</div>
           </div>
           <div className="ph-progress-bg">
@@ -224,10 +225,20 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
                 Tomorrow's hint: {tomorrowTeaser}
               </p>
             )}
-            <div style={{ background: '#f1f5f9', borderRadius: '12px', padding: '16px 20px', color: '#0f172a' }}>
-              <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px' }}>Your streak</div>
-              <div style={{ fontSize: '28px', fontWeight: 700 }}>🔥 {streak} day{streak !== 1 ? 's' : ''}</div>
+            <div style={{ background: '#f1f5f9', borderRadius: '12px', padding: '16px 20px', color: '#0f172a', marginBottom: '24px' }}>
+              <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px' }}>Tasks Completed</div>
+              <div style={{ fontSize: '28px', fontWeight: 700 }}>🔥 {streak} task{streak !== 1 ? 's' : ''}</div>
             </div>
+            {currentDay < totalDays && (
+              <button
+                type="button"
+                className="pt-complete-btn"
+                style={{ width: '100%', justifyContent: 'center', fontSize: '16px', fontWeight: 700, padding: '14px 24px' }}
+                onClick={startNextDay}
+              >
+                Start Day {currentDay + 1}
+              </button>
+            )}
           </div>
         ) : isFinished ? (
           <div className="premium-task-card finished-task-card">
@@ -258,9 +269,9 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
               </div>
 
               <p style={{ fontWeight: '700', color: '#f97316', fontSize: '14px', marginBottom: '12px' }}>
-                {streak > 1
-                  ? `🔥 You're on a ${streak} day streak — don't lose it`
-                  : '🔥 Start your streak tomorrow'}
+                {streak > 0
+                  ? `🔥 ${streak} tasks completed so far`
+                  : '🔥 Start your learning journey today'}
               </p>
 
               <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '24px', fontWeight: '500' }}>
@@ -398,7 +409,8 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
         <Accordion 
           theme="default"
           icon="📁"
-          title="Full Roadmap"
+          title="Full Learning Roadmap Path"
+          defaultOpen={true}
         >
           <div className="p-full-roadmap-list">
             {roadmapData?.steps?.map((step, index) => {
@@ -412,7 +424,8 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
                   </div>
                   <div className="p-step-details">
                     <div className="p-step-item-name">{step.name}</div>
-                    <div className="p-step-item-meta">
+                    {step.why && <div style={{ fontSize: '13px', color: '#64748b', marginTop: '2px' }}>{step.why}</div>}
+                    <div className="p-step-item-meta" style={{ marginTop: '4px' }}>
                       Day {stepDay}{status === 'current' ? ' • Current task' : isFutureDay ? ' • Locked' : status === 'done' ? ' • Completed' : ' • Up next'}
                     </div>
                   </div>
