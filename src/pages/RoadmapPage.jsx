@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
 import ProgressToast from '@components/ProgressToast'
+import LevelCheckQuiz from '@components/LevelCheckQuiz'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
 import { saveLearningHistory } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
@@ -70,7 +71,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
     streak,
     momentumMessage,
     showMomentum,
+    pendingQuiz,
+    quizResult,
     completeCurrentStep,
+    finishQuiz,
+    dismissQuizResult,
     deferCurrentStep,
     hideMomentum,
     getStepStatus,
@@ -160,6 +165,61 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, onRestart, onUpdateStep
   }
 
   const isFinished = isComplete || (roadmapData?.steps && currentStepIndex >= roadmapData.steps.length)
+
+  if (pendingQuiz?.questions?.length > 0) {
+    return (
+      <section className="screen active roadmap-screen" id="s-res">
+        <div style={{ maxWidth: '640px', margin: '0 auto', padding: '72px 24px' }}>
+          <LevelCheckQuiz questions={pendingQuiz.questions} onFinish={finishQuiz} />
+        </div>
+      </section>
+    )
+  }
+
+  if (quizResult) {
+    const hasWeakTopics = quizResult.weakTopics.length > 0
+
+    return (
+      <section className="screen active roadmap-screen" id="s-res">
+        <div
+          className="premium-task-card yn-scale-in"
+          role="status"
+          aria-live="polite"
+          style={{ maxWidth: '560px', margin: '72px auto', padding: '40px', textAlign: 'center' }}
+        >
+          <span className="pt-step-badge">Personal progress check</span>
+          <h2 style={{ margin: '20px 0 10px', color: '#0f172a', fontSize: '28px' }}>
+            Quick Check-In Complete!
+          </h2>
+          <p style={{ margin: 0, color: '#64748b', fontSize: '16px' }}>
+            You got <strong style={{ color: '#0f172a' }}>{quizResult.scoreCount} / {quizResult.total}</strong> correct.
+          </p>
+
+          {hasWeakTopics ? (
+            <div style={{ margin: '28px 0', padding: '20px', borderRadius: '14px', background: 'rgba(249, 115, 22, 0.08)' }}>
+              <p style={{ margin: '0 0 12px', color: '#9a3412', fontWeight: 700 }}>Areas to focus on</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
+                {quizResult.weakTopics.map((topic) => (
+                  <span key={topic} className="pt-meta-tag">{topic}</span>
+                ))}
+              </div>
+              <p style={{ margin: '14px 0 0', color: '#64748b', fontSize: '14px' }}>
+                This is useful feedback, not a pass or fail. Your roadmap is ready when you are.
+              </p>
+            </div>
+          ) : (
+            <p style={{ margin: '28px 0', color: '#15803d', fontWeight: 600 }}>
+              Strong recall across the topics you have covered so far.
+            </p>
+          )}
+
+          <button type="button" className="pt-complete-btn" onClick={dismissQuizResult}>
+            Continue to Roadmap
+          </button>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="screen active roadmap-screen" id="s-res">

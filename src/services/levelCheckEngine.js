@@ -41,7 +41,7 @@ function uniqueBy(arr, key) {
 
 /**
  * recentTasks: recently completed task objects { name, topic }.
- * macroSteps: the 5 authored milestones { name, why, task }.
+ * macroSteps: the authored milestones { name, why, task }.
  * Builds up to `count` multiple-choice questions, mixing two types:
  *   A) "Which topic does this description belong to?" (why -> topic)
  *   B) "Which of these did you recently work on?" (task recall)
@@ -56,8 +56,8 @@ export function buildLevelCheckQuiz(recentTasks, macroSteps, count = 10) {
   )
   coveredSteps.forEach((step) => {
     if (questions.length >= count || !step.why) return
-    const distractors = shuffle(allTopics.filter((t) => t !== step.name)).slice(0, 3)
-    if (distractors.length < 3) return
+    const distractors = shuffle(allTopics.filter((t) => t !== step.name)).slice(0, 2)
+    if (distractors.length < 2) return
     questions.push({
       question: `Which topic does this describe: "${step.why}"?`,
       options: shuffle([step.name, ...distractors]),
@@ -71,8 +71,8 @@ export function buildLevelCheckQuiz(recentTasks, macroSteps, count = 10) {
   for (let i = uniqueTasks.length - 1; i >= 0 && questions.length < count; i--) {
     const target = uniqueTasks[i]
     const pool = uniqueTasks.filter((t) => t.name !== target.name)
-    if (pool.length < 3) continue
-    const distractors = shuffle(pool).slice(0, 3).map((t) => t.name)
+    if (pool.length < 2) continue
+    const distractors = shuffle(pool).slice(0, 2).map((t) => t.name)
     questions.push({
       question: 'Which of these did you recently work on?',
       options: shuffle([target.name, ...distractors]),
@@ -83,10 +83,10 @@ export function buildLevelCheckQuiz(recentTasks, macroSteps, count = 10) {
 
   // Type C — fill any remaining slots by cycling macro-step "task" recall.
   let idx = 0
-  while (questions.length < count && macroSteps.length >= 4 && idx < 20) {
+  while (questions.length < count && macroSteps.length > 0 && idx < 20) {
     const step = macroSteps[idx % macroSteps.length]
-    const distractors = shuffle(allTopics.filter((t) => t !== step.name)).slice(0, 3)
-    if (distractors.length === 3) {
+    const distractors = shuffle(allTopics.filter((t) => t !== step.name)).slice(0, 2)
+    if (distractors.length >= 2) {
       questions.push({
         question: `Which milestone covers: "${step.task || step.name}"?`,
         options: shuffle([step.name, ...distractors]),
