@@ -414,20 +414,61 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
         >
           <div className="p-full-roadmap-list">
             {roadmapData?.steps?.map((step, index) => {
-              const status = getStepStatus(index)
-              const stepDay = Math.floor(index / 3) + 1
-              const isFutureDay = stepDay > currentDay
+              const isComplete = index < currentStepIndex
+              const isCurrent = index === currentStepIndex
+              const isLocked = index > currentStepIndex
               return (
-                <div key={index} className={`p-roadmap-step-item ${status}`}>
-                  <div className="p-step-icon">
-                    {status === 'done' ? '✓' : status === 'current' ? '→' : isFutureDay ? '🔒' : '○'}
+                <div key={index} style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '14px',
+                  padding: '16px 18px',
+                  borderRadius: '14px',
+                  marginBottom: '8px',
+                  opacity: isLocked ? '0.45' : '1',
+                  background: isCurrent ? '#eff6ff' : isComplete ? '#f0fdf4' : '#fafafa',
+                  border: `1.5px solid ${isCurrent ? '#bfdbfe' : isComplete ? '#bbf7d0' : '#f0f0f0'}`,
+                }}>
+                  {/* Icon Circle */}
+                  <div style={{
+                    width: '36px', height: '36px',
+                    borderRadius: '50%', flexShrink: 0,
+                    display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: '16px',
+                    background: isCurrent ? '#dbeafe' : isComplete ? '#dcfce7' : '#f0f0f0',
+                  }}>
+                    {isComplete ? '✅' : isCurrent ? '📍' : '🔒'}
                   </div>
-                  <div className="p-step-details">
-                    <div className="p-step-item-name">{step.name}</div>
-                    {step.why && <div style={{ fontSize: '13px', color: '#64748b', marginTop: '2px' }}>{step.why}</div>}
-                    <div className="p-step-item-meta" style={{ marginTop: '4px' }}>
-                      Day {stepDay}{status === 'current' ? ' • Current task' : isFutureDay ? ' • Locked' : status === 'done' ? ' • Completed' : ' • Up next'}
+
+                  {/* Content */}
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{
+                        fontSize: '10px', fontWeight: '700',
+                        letterSpacing: '1px', padding: '2px 8px',
+                        borderRadius: '100px',
+                        background: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#e5e7eb',
+                        color: isCurrent || isComplete ? '#fff' : '#999',
+                      }}>DAY {index + 1}</span>
+                      <span style={{
+                        fontSize: '10px', fontWeight: '600',
+                        color: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#bbb',
+                      }}>
+                        {isComplete ? 'COMPLETE' : isCurrent ? 'CURRENT TASK' : 'LOCKED'}
+                      </span>
                     </div>
+
+                    <div style={{
+                      fontSize: '14px', fontWeight: '600',
+                      color: isLocked ? '#bbb' : '#111',
+                      lineHeight: '1.4', marginBottom: '3px',
+                    }}>{step.name}</div>
+
+                    {!isLocked && (
+                      <div style={{ fontSize: '12px', color: '#888', lineHeight: '1.4' }}>
+                        {step.why}
+                      </div>
+                    )}
                   </div>
                 </div>
               )
