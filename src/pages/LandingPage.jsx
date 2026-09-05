@@ -65,7 +65,7 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
         {/* How it works */}
         <div style={{
           maxWidth: '600px',
-          margin: '80px auto 0',
+          margin: '24px auto 0',
           padding: '0 24px',
           textAlign: 'center',
         }}>
@@ -78,78 +78,67 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
             marginBottom: '40px',
           }}>How it works</p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '16px',
+            maxWidth: '680px',
+            margin: '32px auto 0',
+            padding: '0 24px',
+          }}>
             {[
               {
                 step: '01',
                 title: "Tell us where you're stuck",
-                desc: 'Answer 4 quick questions. No signup. No overwhelm.',
+                desc: 'Answer 4 quick questions. No signup.',
                 icon: '🎯',
               },
               {
                 step: '02',
                 title: 'Get your exact next 3 steps',
-                desc: 'Not a generic roadmap. Your specific path based on your situation.',
+                desc: 'Your specific path, not a generic roadmap.',
                 icon: '🗺️',
               },
               {
                 step: '03',
                 title: 'Complete one task at a time',
-                desc: 'Each day unlocks as you go. Focus on one thing. Ignore the rest.',
+                desc: 'Each day unlocks as you finish.',
                 icon: '🔓',
               },
             ].map((item, i) => (
               <div key={i} style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '20px',
-                padding: '28px 0',
-                borderBottom: i < 2 ? '1px solid #f0f0f0' : 'none',
-                textAlign: 'left',
+                background: '#fff',
+                border: '1px solid #f0f0f0',
+                borderRadius: '16px',
+                padding: '20px 16px',
+                textAlign: 'center',
               }}>
                 <div style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '12px',
-                  background: '#f4f4f5',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '20px',
-                  flexShrink: 0,
+                  fontSize: '24px',
+                  marginBottom: '10px',
                 }}>{item.icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{
-                    fontSize: '11px',
-                    fontWeight: '700',
-                    letterSpacing: '1px',
-                    color: '#2563eb',
-                    marginBottom: '4px',
-                  }}>STEP {item.step}</div>
-                  <div style={{
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    color: '#111',
-                    marginBottom: '4px',
-                    letterSpacing: '-0.3px',
-                  }}>{item.title}</div>
-                  <div style={{
-                    fontSize: '14px',
-                    color: '#888',
-                    lineHeight: '1.5',
-                  }}>{item.desc}</div>
-                </div>
+                <div style={{
+                  fontSize: '10px',
+                  fontWeight: '700',
+                  letterSpacing: '1px',
+                  color: '#2563eb',
+                  marginBottom: '6px',
+                }}>STEP {item.step}</div>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  color: '#111',
+                  marginBottom: '6px',
+                  lineHeight: '1.3',
+                }}>{item.title}</div>
+                <div style={{
+                  fontSize: '12px',
+                  color: '#888',
+                  lineHeight: '1.4',
+                }}>{item.desc}</div>
               </div>
             ))}
           </div>
-
-          <p style={{
-            marginTop: '40px',
-            marginBottom: '60px',
-            fontSize: '13px',
-            color: '#aaa',
-            fontStyle: 'italic',
-          }}>2 minutes · no signup · completely free</p>
         </div>
 
       </div>

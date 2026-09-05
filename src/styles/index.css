@@ -81,7 +81,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 48px 24px;
+  padding: 24px 24px;
   background: #f9f8f6;
   position: relative;
   overflow: hidden;
@@ -157,7 +157,7 @@ body {
   letter-spacing: 1.4px;
   text-transform: uppercase;
   color: #888;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   opacity: 0;
   animation: riseUp .6s ease forwards .25s;
   animation-play-state: paused;
@@ -186,13 +186,13 @@ body {
 
 .land-h1 {
   font-family: 'Sora', sans-serif;
-  font-size: clamp(28px, 6vw, 52px);
+  font-size: clamp(22px, 4vw, 36px);
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -1.5px;
+  line-height: 1.15;
+  letter-spacing: -1px;
   color: #0a0a0a;
   max-width: 680px;
-  margin: 0 auto 36px;
+  margin: 0 auto 16px;
   opacity: 0;
   animation: riseUp .7s ease forwards .38s;
   animation-play-state: paused;
@@ -245,7 +245,7 @@ body {
   gap: 12px;
   background: #0a0a0a;
   color: #fff;
-  padding: 18px 40px;
+  padding: 14px 32px;
   border-radius: 100px;
   font-family: 'Sora', sans-serif;
   font-size: 15px;
