@@ -8,10 +8,63 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-1YXLmMrQ.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-ezBn1MS5.css">
+    <script type="module" crossorigin src="/assets/index-B6GZhVQv.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BWMUS1Ut.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
+    <script>
+function renderPreviewList() {
+  const list = document.getElementById('previewList');
+  list.innerHTML = activePlan.steps.map((s, idx) => {
+    const isComplete = idx < currentRoadmapIndex;
+    const isCurrent  = idx === currentRoadmapIndex;
+    const isLocked   = idx > currentRoadmapIndex;
+
+    let icon  = isComplete ? '✅' : isCurrent ? '📍' : '🔒';
+    let label = isComplete ? 'COMPLETE' : isCurrent ? 'CURRENT TASK' : 'LOCKED';
+    let statusClass = isComplete ? 'done' : isCurrent ? 'current' : '';
+
+    return `
+      <div class="preview-item ${statusClass}" style="
+        opacity: ${isLocked ? '0.45' : '1'};
+        pointer-events: none;
+        position: relative;
+      ">
+        <div style="
+          position: absolute;
+          top: 12px; right: 12px;
+          font-size: 10px;
+          font-weight: 700;
+          color: ${isCurrent ? '#2563eb' : '#aaa'};
+          letter-spacing: 1px;
+        ">DAY ${idx + 1}</div>
+
+        <div class="preview-icon">${icon}</div>
+
+        <div style="text-align:left; flex:1;">
+          <div style="
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: ${isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#aaa'};
+            margin-bottom: 4px;
+          ">${label}</div>
+          <div style="
+            font-size: 14px;
+            font-weight: 600;
+            color: ${isLocked ? '#999' : '#111'};
+          ">${s.name}</div>
+          <div style="
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 3px;
+            display: ${isLocked ? 'none' : 'block'};
+          ">${s.why}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+    </script>
   </body>
 </html>
