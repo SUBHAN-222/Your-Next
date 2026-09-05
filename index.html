@@ -14,53 +14,28 @@
     <script>
 function renderPreviewList() {
   const list = document.getElementById('previewList');
+  if (!activePlan) return;
   list.innerHTML = activePlan.steps.map((s, idx) => {
     const isComplete = idx < currentRoadmapIndex;
     const isCurrent  = idx === currentRoadmapIndex;
     const isLocked   = idx > currentRoadmapIndex;
+    const dayNum     = idx + 1;
 
-    let icon  = isComplete ? '✅' : isCurrent ? '📍' : '🔒';
-    let label = isComplete ? 'COMPLETE' : isCurrent ? 'CURRENT TASK' : 'LOCKED';
-    let statusClass = isComplete ? 'done' : isCurrent ? 'current' : '';
-
-    return `
-      <div class="preview-item ${statusClass}" style="
-        opacity: ${isLocked ? '0.45' : '1'};
-        pointer-events: none;
-        position: relative;
-      ">
-        <div style="
-          position: absolute;
-          top: 12px; right: 12px;
-          font-size: 10px;
-          font-weight: 700;
-          color: ${isCurrent ? '#2563eb' : '#aaa'};
-          letter-spacing: 1px;
-        ">DAY ${idx + 1}</div>
-
-        <div class="preview-icon">${icon}</div>
-
-        <div style="text-align:left; flex:1;">
-          <div style="
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: ${isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#aaa'};
-            margin-bottom: 4px;
-          ">${label}</div>
-          <div style="
-            font-size: 14px;
-            font-weight: 600;
-            color: ${isLocked ? '#999' : '#111'};
-          ">${s.name}</div>
-          <div style="
-            font-size: 12px;
-            color: #aaa;
-            margin-top: 3px;
-            display: ${isLocked ? 'none' : 'block'};
-          ">${s.why}</div>
+    return `<div class="preview-item ${isComplete ? 'done' : isCurrent ? 'current' : ''}"
+      style="opacity:${isLocked ? '0.4' : '1'}; pointer-events:none;">
+      <div class="preview-icon">${isComplete ? '✅' : isCurrent ? '📍' : '🔒'}</div>
+      <div style="text-align:left; flex:1;">
+        <div style="font-size:10px; font-weight:700; letter-spacing:1px; 
+          color:${isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#aaa'}; 
+          margin-bottom:4px;">
+          DAY ${dayNum} · ${isComplete ? 'COMPLETE' : isCurrent ? 'CURRENT TASK' : 'LOCKED'}
         </div>
-      </div>`;
+        <div style="font-size:14px; font-weight:600; 
+          color:${isLocked ? '#bbb' : '#111'};">
+          ${s.name}
+        </div>
+      </div>
+    </div>`;
   }).join('');
 }
     </script>
