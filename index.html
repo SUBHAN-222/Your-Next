@@ -19,7 +19,7 @@ function renderPreviewList() {
     const isComplete = idx < currentRoadmapIndex;
     const isCurrent  = idx === currentRoadmapIndex;
     const isLocked   = idx > currentRoadmapIndex;
-    const dayNum     = idx + 1;
+    const dayNum     = Math.floor(idx / 3) + 1;
 
     return `
       <div style="

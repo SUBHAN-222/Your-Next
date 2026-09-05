@@ -38,6 +38,8 @@ export function useRoadmap(activePlan, initialStepIndex = 0, durationMonths = nu
   const dayStartIndex = (currentDay - 1) * STEPS_PER_DAY
   const dayEndIndex = Math.min(currentDay * STEPS_PER_DAY, totalSteps)
 
+  console.log('[useRoadmap] currentStepIndex:', currentStepIndex, 'dayEndIndex:', dayEndIndex, 'currentDay:', currentDay, 'totalSteps:', totalSteps)
+
   useEffect(() => {
     if (!totalSteps) return
 
@@ -111,23 +113,24 @@ export function useRoadmap(activePlan, initialStepIndex = 0, durationMonths = nu
     setMomentumMessage(getMomentumMessageForStreak(newStreak, defaultMsg))
     setShowMomentum(true)
 
-    const nextIndex = currentStepIndex + 1
-    setCurrentStepIndex(nextIndex)
-    persistProgress(nextIndex)
-
-    if (nextIndex >= dayEndIndex) {
-      const today = getLocalDateKey()
-      const saved = getDayProgress()
-      setDayCompleted(true)
-      setDayCompletedDate(today)
-      saveDayProgress({
-        startDate: saved?.startDate || today,
-        currentDay,
-        dayCompletedDate: today,
-        durationMonths: Number(durationMonths) || saved?.durationMonths || null,
-      })
-    }
-  }, [currentDay, currentStep, currentStepIndex, dayEndIndex, durationMonths, persistProgress])
+    setCurrentStepIndex((prevIndex) => {
+      const nextIndex = prevIndex + 1
+      persistProgress(nextIndex)
+      if (nextIndex >= dayEndIndex) {
+        const today = getLocalDateKey()
+        const saved = getDayProgress()
+        setDayCompleted(true)
+        setDayCompletedDate(today)
+        saveDayProgress({
+          startDate: saved?.startDate || today,
+          currentDay,
+          dayCompletedDate: today,
+          durationMonths: Number(durationMonths) || saved?.durationMonths || null,
+        })
+      }
+      return nextIndex
+    })
+  }, [currentDay, currentStep, dayEndIndex, durationMonths, persistProgress])
 
   const deferCurrentStep = useCallback(() => {
     persistProgress(currentStepIndex)

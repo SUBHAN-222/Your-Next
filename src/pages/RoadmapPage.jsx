@@ -113,37 +113,43 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
   }, [deferCurrentStep, currentStepIndex, currentStep?.name])
 
   const handleCompletionFeedback = useCallback(async (status) => {
-    saveLearningHistory({
-      stepIndex: currentStepIndex,
-      stepName: currentStep?.name || 'Current step',
-      status,
-      timestamp: new Date().toISOString(),
-    })
-
-    if (status === 'completed') {
-      posthog.capture('roadmap_step_completed', {
-        step_id: currentStepIndex + 1,
-        step_name: currentStep?.name,
-        field: roadmapData?.field,
+    if (completing) return
+    setCompleting(true)
+    try {
+      saveLearningHistory({
+        stepIndex: currentStepIndex,
+        stepName: currentStep?.name || 'Current step',
+        status,
+        timestamp: new Date().toISOString(),
       })
-      completeCurrentStep()
-      setShowCompletionFeedback(false)
-    } else if (status === 'stuck') {
-      setShowEasierMessage(true)
-      setShowCompletionFeedback(false)
-      const easier = await getEasierStep(currentStep, roadmapData?.field)
-      if (easier) {
-        onUpdateStep?.(currentStepIndex, {
-          name: easier.name,
-          why: easier.why,
-          task: easier.task,
+
+      if (status === 'completed') {
+        posthog.capture('roadmap_step_completed', {
+          step_id: currentStepIndex + 1,
+          step_name: currentStep?.name,
+          field: roadmapData?.field,
         })
+        completeCurrentStep()
+        setShowCompletionFeedback(false)
+      } else if (status === 'stuck') {
+        setShowEasierMessage(true)
+        setShowCompletionFeedback(false)
+        const easier = await getEasierStep(currentStep, roadmapData?.field)
+        if (easier) {
+          onUpdateStep?.(currentStepIndex, {
+            name: easier.name,
+            why: easier.why,
+            task: easier.task,
+          })
+        }
+      } else {
+        // For 'not_started', just close feedback without advancing
+        setShowCompletionFeedback(false)
       }
-    } else {
-      // For 'not_started', just close feedback without advancing
-      setShowCompletionFeedback(false)
+    } finally {
+      setCompleting(false)
     }
-  }, [currentStepIndex, currentStep, roadmapData, completeCurrentStep, onUpdateStep])
+  }, [completing, currentStepIndex, currentStep, roadmapData, completeCurrentStep, onUpdateStep])
 
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Task${streak === 1 ? '' : 's'} Completed`
@@ -414,6 +420,8 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
         >
           <div className="p-full-roadmap-list">
             {roadmapData?.steps?.map((step, index) => {
+              const STEPS_PER_DAY = 3
+              const stepDay = Math.floor(index / STEPS_PER_DAY) + 1
               const isComplete = index < currentStepIndex
               const isCurrent = index === currentStepIndex
               const isLocked = index > currentStepIndex
@@ -449,7 +457,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
                         borderRadius: '100px',
                         background: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#e5e7eb',
                         color: isCurrent || isComplete ? '#fff' : '#999',
-                      }}>DAY {index + 1}</span>
+                      }}>DAY {stepDay}</span>
                       <span style={{
                         fontSize: '10px', fontWeight: '600',
                         color: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#bbb',
