@@ -257,31 +257,78 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
 
       <div className="premium-main-grid">
         {dayCompleted ? (
-          <div className="premium-task-card active-step-card yn-scale-in" style={{ textAlign: 'center', padding: '40px 24px' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, marginBottom: '8px' }}>Day {currentDay} done!</h2>
-            <p style={{ color: '#64748b', fontSize: '15px', lineHeight: 1.6, marginBottom: '16px' }}>
-              Come back tomorrow to unlock your next steps.
+          <div style={{
+            textAlign: 'center',
+            padding: '40px 24px',
+            background: '#fff',
+            borderRadius: '24px',
+            border: '1px solid rgba(0,0,0,0.06)',
+            boxShadow: '0 12px 48px rgba(0,0,0,0.04)',
+          }}>
+            <div style={{ fontSize: '52px', marginBottom: '16px' }}>🎓</div>
+            <h2 style={{
+              fontFamily: 'Sora, sans-serif',
+              fontSize: '26px', fontWeight: '800',
+              color: '#111', marginBottom: '8px',
+            }}>You finished your roadmap!</h2>
+            <p style={{ fontSize: '15px', color: '#666', marginBottom: '32px', lineHeight: '1.6' }}>
+              Most beginners never get this far. You did.
             </p>
-            {tomorrowTeaser && (
-              <p style={{ color: '#3b82f6', fontStyle: 'italic', fontSize: '14px', marginBottom: '24px' }}>
-                Tomorrow's hint: {tomorrowTeaser}
-              </p>
-            )}
-            <div style={{ background: '#f1f5f9', borderRadius: '12px', padding: '16px 20px', color: '#0f172a', marginBottom: '24px' }}>
-              <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '4px' }}>Tasks Completed</div>
-              <div style={{ fontSize: '28px', fontWeight: 700 }}>🔥 {streak} task{streak !== 1 ? 's' : ''}</div>
+
+            {/* Stats */}
+            <div style={{
+              display: 'flex', gap: '12px',
+              justifyContent: 'center', marginBottom: '32px', flexWrap: 'wrap',
+            }}>
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '16px', padding: '16px 24px' }}>
+                <div style={{ fontSize: '28px', fontWeight: '800', color: '#2563eb' }}>{totalSteps || 9}</div>
+                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>Tasks Done</div>
+              </div>
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '16px 24px' }}>
+                <div style={{ fontSize: '28px', fontWeight: '800', color: '#16a34a' }}>3</div>
+                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>Days Completed</div>
+              </div>
+              <div style={{ background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '16px', padding: '16px 24px' }}>
+                <div style={{ fontSize: '28px', fontWeight: '800', color: '#ea580c' }}>🔥 {streak || 0}</div>
+                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>Day Streak</div>
+              </div>
             </div>
-            {currentDay < totalDays && (
-              <button
-                type="button"
-                className="pt-complete-btn"
-                style={{ width: '100%', justifyContent: 'center', fontSize: '16px', fontWeight: 700, padding: '14px 24px' }}
-                onClick={startNextDay}
-              >
-                Start Day {currentDay + 1}
-              </button>
-            )}
+
+            {/* Next suggestions */}
+            <div style={{
+              background: '#fafafa', border: '1px solid #f0f0f0',
+              borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'left',
+            }}>
+              <div style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '1px', color: '#2563eb', marginBottom: '12px' }}>
+                🗺️ WHAT TO LEARN NEXT
+              </div>
+              {[
+                { icon: '🤖', label: 'Explore AI & Machine Learning' },
+                { icon: '📊', label: 'Level up with Data Science' },
+                { icon: '💸', label: 'Start Freelancing with your skills' },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  padding: '12px 16px', background: '#fff', borderRadius: '12px',
+                  border: '1px solid #f0f0f0', cursor: 'pointer',
+                  fontSize: '14px', fontWeight: '600', color: '#111',
+                  marginBottom: '8px',
+                }} onClick={onRestart}>
+                  <span>{s.icon}</span>
+                  <span>{s.label}</span>
+                  <span style={{ marginLeft: 'auto', color: '#2563eb' }}>→</span>
+                </div>
+              ))}
+            </div>
+
+            <button onClick={onRestart} style={{
+              width: '100%', padding: '16px',
+              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+              color: '#fff', border: 'none', borderRadius: '14px',
+              fontSize: '15px', fontWeight: '700', cursor: 'pointer',
+            }}>
+              Start a New Path →
+            </button>
           </div>
         ) : isFinished ? (
           <div style={{
