@@ -186,13 +186,13 @@ body {
 
 .land-h1 {
   font-family: 'Sora', sans-serif;
-  font-size: clamp(32px, 8vw, 64px);
+  font-size: clamp(28px, 6vw, 52px);
   font-weight: 800;
-  line-height: 1.04;
-  letter-spacing: -2px;
+  line-height: 1.12;
+  letter-spacing: -1.5px;
   color: #0a0a0a;
-  max-width: 640px;
-  margin: 0 auto 20px;
+  max-width: 680px;
+  margin: 0 auto 36px;
   opacity: 0;
   animation: riseUp .7s ease forwards .38s;
   animation-play-state: paused;
@@ -204,7 +204,10 @@ body {
 
 .land-h1 i {
   font-style: normal;
-  color: #2563eb;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .land-sub {

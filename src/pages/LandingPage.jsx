@@ -23,17 +23,13 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
       <div className="land-inner">
         <div className={`land-logo ${isVisible ? 'visible' : ''}`}>Your<b>Next</b></div>
         <p className={`land-tag ${isVisible ? 'visible' : ''}`}>
-          Clarity for confused tech students
-        </p>
-        <p className={`land-intro ${isVisible ? 'visible' : ''}`}>
-          Confused isn't a problem with you. It's a problem with having too many options. We fix that.
+          For confused tech students
         </p>
         <h1 className={`land-h1 ${isVisible ? 'visible' : ''}`}>
-          No more guessing.<br />Just your <i>next clear step</i>.
+          Confused isn't a problem with you.<br />
+          It's a problem with having too many options.<br />
+          <i>We fix that.</i>
         </h1>
-        <p className={`land-sub ${isVisible ? 'visible' : ''}`}>
-          YourNext understands where you are stuck and guides you step-by-step without overwhelm.
-        </p>
         <div className={`cta-outer ${isVisible ? 'visible' : ''}`}>
           {showBanner && savedProgress && (
             <div className="continue-banner-wrap">
