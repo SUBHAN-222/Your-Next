@@ -422,63 +422,97 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
             {roadmapData?.steps?.map((step, index) => {
               const STEPS_PER_DAY = 3
               const stepDay = Math.floor(index / STEPS_PER_DAY) + 1
+              const completedDays = Math.floor(currentStepIndex / STEPS_PER_DAY)
+              const isDayUnlocked = stepDay <= completedDays + 1
+              const isDayStart = index % STEPS_PER_DAY === 0
+
               const currentDayStart = Math.floor(currentStepIndex / STEPS_PER_DAY) * STEPS_PER_DAY
               const stepDayStart = Math.floor(index / STEPS_PER_DAY) * STEPS_PER_DAY
               const isLocked = stepDayStart > currentDayStart
               const isComplete = index < currentStepIndex
               const isCurrent = !isComplete && !isLocked
-              return (
-                <div key={index} style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '14px',
-                  padding: '16px 18px',
-                  borderRadius: '14px',
-                  marginBottom: '8px',
-                  opacity: isLocked ? '0.45' : '1',
-                  background: isCurrent ? '#eff6ff' : isComplete ? '#f0fdf4' : '#fafafa',
-                  border: `1.5px solid ${isCurrent ? '#bfdbfe' : isComplete ? '#bbf7d0' : '#f0f0f0'}`,
-                }}>
-                  {/* Icon Circle */}
-                  <div style={{
-                    width: '36px', height: '36px',
-                    borderRadius: '50%', flexShrink: 0,
-                    display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', fontSize: '16px',
-                    background: isCurrent ? '#dbeafe' : isComplete ? '#dcfce7' : '#f0f0f0',
-                  }}>
-                    {isComplete ? '✅' : isCurrent ? '📍' : '🔒'}
-                  </div>
 
-                  {/* Content */}
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+              return (
+                <div key={index}>
+                  {isDayStart && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      margin: index === 0 ? '0 0 10px' : '20px 0 10px',
+                    }}>
                       <span style={{
-                        fontSize: '10px', fontWeight: '700',
-                        letterSpacing: '1px', padding: '2px 8px',
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        letterSpacing: '1.5px',
+                        color: isDayUnlocked ? '#2563eb' : '#bbb',
+                        background: isDayUnlocked ? '#eff6ff' : '#f5f5f5',
+                        padding: '4px 12px',
                         borderRadius: '100px',
-                        background: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#e5e7eb',
-                        color: isCurrent || isComplete ? '#fff' : '#999',
+                        border: `1px solid ${isDayUnlocked ? '#bfdbfe' : '#eee'}`,
                       }}>DAY {stepDay}</span>
-                      <span style={{
-                        fontSize: '10px', fontWeight: '600',
-                        color: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#bbb',
-                      }}>
-                        {isComplete ? 'COMPLETE' : isCurrent ? 'CURRENT TASK' : 'LOCKED'}
-                      </span>
+                      <div style={{
+                        flex: 1, height: '1px',
+                        background: isDayUnlocked ? '#bfdbfe' : '#eee'
+                      }}/>
+                      {!isDayUnlocked && <span style={{fontSize:'12px', color:'#bbb'}}>🔒 Locked</span>}
+                      {isDayUnlocked && stepDay <= completedDays && 
+                        <span style={{fontSize:'12px', color:'#16a34a', fontWeight:'600'}}>✅ Day Complete</span>}
+                    </div>
+                  )}
+
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '14px',
+                    padding: '16px 18px',
+                    borderRadius: '14px',
+                    marginBottom: '8px',
+                    opacity: isLocked ? '0.45' : '1',
+                    background: isCurrent ? '#eff6ff' : isComplete ? '#f0fdf4' : '#fafafa',
+                    border: `1.5px solid ${isCurrent ? '#bfdbfe' : isComplete ? '#bbf7d0' : '#f0f0f0'}`,
+                  }}>
+                    {/* Icon Circle */}
+                    <div style={{
+                      width: '36px', height: '36px',
+                      borderRadius: '50%', flexShrink: 0,
+                      display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', fontSize: '16px',
+                      background: isCurrent ? '#dbeafe' : isComplete ? '#dcfce7' : '#f0f0f0',
+                    }}>
+                      {isComplete ? '✅' : isCurrent ? '📍' : '🔒'}
                     </div>
 
-                    <div style={{
-                      fontSize: '14px', fontWeight: '600',
-                      color: isLocked ? '#bbb' : '#111',
-                      lineHeight: '1.4', marginBottom: '3px',
-                    }}>{step.name}</div>
-
-                    {!isLocked && (
-                      <div style={{ fontSize: '12px', color: '#888', lineHeight: '1.4' }}>
-                        {step.why}
+                    {/* Content */}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{
+                          fontSize: '10px', fontWeight: '700',
+                          letterSpacing: '1px', padding: '2px 8px',
+                          borderRadius: '100px',
+                          background: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#e5e7eb',
+                          color: isCurrent || isComplete ? '#fff' : '#999',
+                        }}>DAY {stepDay}</span>
+                        <span style={{
+                          fontSize: '10px', fontWeight: '600',
+                          color: isCurrent ? '#2563eb' : isComplete ? '#16a34a' : '#bbb',
+                        }}>
+                          {isComplete ? 'COMPLETE' : isCurrent ? 'CURRENT TASK' : 'LOCKED'}
+                        </span>
                       </div>
-                    )}
+
+                      <div style={{
+                        fontSize: '14px', fontWeight: '600',
+                        color: isLocked ? '#bbb' : '#111',
+                        lineHeight: '1.4', marginBottom: '3px',
+                      }}>{step.name}</div>
+
+                      {!isLocked && (
+                        <div style={{ fontSize: '12px', color: '#888', lineHeight: '1.4' }}>
+                          {step.why}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )
