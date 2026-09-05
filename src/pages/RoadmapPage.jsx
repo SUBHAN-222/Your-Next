@@ -61,7 +61,22 @@ const Accordion = ({ title, subtitle, icon, badgeText, theme = 'default', childr
   )
 }
 
+function getNextRoadmapSuggestions(currentField) {
+  const all = [
+    { field: 'web', icon: '🌐', label: 'Go deeper into React & Full Stack' },
+    { field: 'ai', icon: '🤖', label: 'Explore AI & Machine Learning' },
+    { field: 'data', icon: '📊', label: 'Level up with Data Science' },
+    { field: 'cyber', icon: '🔒', label: 'Try Cyber Security' },
+    { field: 'freelance', icon: '💸', label: 'Start Freelancing with your skills' },
+  ]
+  return all.filter(s => s.field !== currentField).slice(0, 3)
+}
+
 function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onRestart, onUpdateStep }) {
+  const handleRestartWithField = useCallback((targetField) => {
+    onRestart?.()
+  }, [onRestart])
+
   const {
     roadmapData,
     currentStep,
@@ -269,72 +284,108 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
             )}
           </div>
         ) : isFinished ? (
-          <div className="premium-task-card finished-task-card">
-            <div className="pt-header">
-              <span className="pt-dot-label"><span className="pt-dot" style={{ background: '#22c55e' }}></span> Progress Summary</span>
-              <span className="pt-step-badge">Completed 🎉</span>
-            </div>
-            <div style={{ padding: '24px' }}>
-              <h3 style={{ fontSize: '22px', fontWeight: '700', color: '#0f172a', marginBottom: '8px' }}>
-                You're on your way.
-              </h3>
-              <p style={{ color: '#64748b', fontSize: '15px', lineHeight: '1.5', marginBottom: '24px' }}>
-                {totalCompleted} steps down. You already know more than you did yesterday — and there's more waiting for you.
-              </p>
+          <div style={{
+            textAlign: 'center',
+            padding: '40px 24px',
+            background: '#fff',
+            borderRadius: '24px',
+            border: '1px solid rgba(0,0,0,0.06)',
+            boxShadow: '0 12px 48px rgba(0,0,0,0.04)',
+          }}>
 
-              <div style={{ marginBottom: '24px', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '600', color: '#64748b', marginBottom: '12px' }}>
-                  What's Ahead
+            {/* Celebration */}
+            <div style={{ fontSize: '52px', marginBottom: '16px' }}>🎓</div>
+            <h2 style={{
+              fontFamily: 'Sora, sans-serif',
+              fontSize: '26px', fontWeight: '800',
+              color: '#111', marginBottom: '8px',
+              letterSpacing: '-0.5px',
+            }}>You finished your roadmap!</h2>
+            <p style={{ fontSize: '15px', color: '#666', marginBottom: '32px', lineHeight: '1.6' }}>
+              Most beginners never get this far. You did.
+            </p>
+
+            {/* Stats Row */}
+            <div style={{
+              display: 'flex', gap: '12px',
+              justifyContent: 'center',
+              marginBottom: '32px',
+              flexWrap: 'wrap',
+            }}>
+              <div style={{
+                background: '#eff6ff', border: '1px solid #bfdbfe',
+                borderRadius: '16px', padding: '16px 24px', textAlign: 'center',
+              }}>
+                <div style={{ fontSize: '28px', fontWeight: '800', color: '#2563eb' }}>
+                  {totalSteps}
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  {upcomingStages.map((stage, idx) => (
-                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '14px', opacity: 0.75 }}>
-                      <span>🔒</span>
-                      <span>{typeof stage === 'string' ? stage : stage?.name || 'Unlocks tomorrow'}</span>
-                    </div>
-                  ))}
+                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
+                  Tasks Done
                 </div>
               </div>
-
-              <p style={{ fontWeight: '700', color: '#f97316', fontSize: '14px', marginBottom: '12px' }}>
-                {streak > 0
-                  ? `🔥 ${streak} tasks completed so far`
-                  : '🔥 Start your learning journey today'}
-              </p>
-
-              <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '24px', fontWeight: '500' }}>
-                {roadmapData?.tomorrowTeaser
-                  ? `Tomorrow: ${roadmapData.tomorrowTeaser}`
-                  : "Come back tomorrow and we'll pick up right where you left off."}
-              </p>
-
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <button
-                  type="button"
-                  className="pt-resource-btn"
-                  style={{ width: '100%', justifyContent: 'center', textAlign: 'center', cursor: 'pointer' }}
-                  onClick={handleScrollToCompleted}
-                >
-                  See what I completed
-                </button>
-                <button
-                  type="button"
-                  onClick={onRestart}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#94a3b8',
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    textDecoration: 'underline',
-                    marginTop: '14px',
-                    padding: '4px 8px'
-                  }}
-                >
-                  Or start a completely new path
-                </button>
+              <div style={{
+                background: '#f0fdf4', border: '1px solid #bbf7d0',
+                borderRadius: '16px', padding: '16px 24px', textAlign: 'center',
+              }}>
+                <div style={{ fontSize: '28px', fontWeight: '800', color: '#16a34a' }}>
+                  {Math.ceil(totalSteps / 3)}
+                </div>
+                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
+                  Days Completed
+                </div>
+              </div>
+              <div style={{
+                background: '#fff7ed', border: '1px solid #fed7aa',
+                borderRadius: '16px', padding: '16px 24px', textAlign: 'center',
+              }}>
+                <div style={{ fontSize: '28px', fontWeight: '800', color: '#ea580c' }}>
+                  🔥 {streak || 0}
+                </div>
+                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
+                  Day Streak
+                </div>
               </div>
             </div>
+
+            {/* Next Roadmap Suggestion */}
+            <div style={{
+              background: '#fafafa', border: '1px solid #f0f0f0',
+              borderRadius: '16px', padding: '20px',
+              marginBottom: '24px', textAlign: 'left',
+            }}>
+              <div style={{
+                fontSize: '11px', fontWeight: '700',
+                letterSpacing: '1px', color: '#2563eb',
+                marginBottom: '12px',
+              }}>🗺️ WHAT TO LEARN NEXT</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {getNextRoadmapSuggestions(activePlan?.field).map((s, i) => (
+                  <div key={i} style={{
+                    display: 'flex', alignItems: 'center',
+                    gap: '10px', padding: '12px 16px',
+                    background: '#fff', borderRadius: '12px',
+                    border: '1px solid #f0f0f0', cursor: 'pointer',
+                    fontSize: '14px', fontWeight: '600', color: '#111',
+                  }} onClick={() => handleRestartWithField(s.field)}>
+                    <span>{s.icon}</span>
+                    <span>{s.label}</span>
+                    <span style={{ marginLeft: 'auto', color: '#2563eb' }}>→</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Restart Button */}
+            <button onClick={onRestart} style={{
+              width: '100%', padding: '16px',
+              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+              color: '#fff', border: 'none',
+              borderRadius: '14px', fontSize: '15px',
+              fontWeight: '700', cursor: 'pointer',
+              fontFamily: 'Sora, sans-serif',
+            }}>
+              Start a New Path →
+            </button>
           </div>
         ) : (
           <div className="premium-task-card">
