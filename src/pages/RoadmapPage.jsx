@@ -61,6 +61,64 @@ const Accordion = ({ title, subtitle, icon, badgeText, theme = 'default', childr
   )
 }
 
+function getAINextLevelRecommendation(field) {
+  const f = String(field || '').toLowerCase()
+  if (f.includes('web')) {
+    return {
+      title: 'Build an Independent Full-Stack Capstone',
+      description: 'Now that you understand frontend basics and APIs, build a full-stack SaaS app with React, Supabase, and User Authentication.',
+      nextTier: 'Advanced React & Full-Stack Engineering'
+    }
+  }
+  if (f.includes('ai') || f.includes('machine')) {
+    return {
+      title: 'Fine-Tune & Deploy an Autonomous AI Agent',
+      description: 'Take your API knowledge further by building an autonomous RAG (Retrieval-Augmented Generation) agent that reads custom PDFs.',
+      nextTier: 'Autonomous AI Agents & PyTorch'
+    }
+  }
+  if (f.includes('data')) {
+    return {
+      title: 'Publish an Interactive End-to-End Data Dashboard',
+      description: 'Clean a messy 10,000-row real dataset from Kaggle and deploy a live Streamlit dashboard with predictive insights.',
+      nextTier: 'Machine Learning & Predictive Modeling'
+    }
+  }
+  if (f.includes('cyber') || f.includes('security')) {
+    return {
+      title: 'Tackle Real-World Bug Bounties & CTFs',
+      description: 'Apply your networking and Linux skills to complete 5 intermediate rooms on TryHackMe and write formal pentest audit reports.',
+      nextTier: 'Offensive Security & Web App Pentesting'
+    }
+  }
+  if (f.includes('mobile')) {
+    return {
+      title: 'Publish a Cross-Platform Mobile App to Stores',
+      description: 'Connect your React Native app to a live Supabase backend, set up push notifications, and build a standalone APK.',
+      nextTier: 'Full Mobile App Architecture & Expo Deployment'
+    }
+  }
+  if (f.includes('design') || f.includes('ui')) {
+    return {
+      title: 'Publish an Interactive 3-Case-Study Figma Portfolio',
+      description: 'Design a scalable design system with Auto Layout and component variants, then document your full UX process in a Behance case study.',
+      nextTier: 'Design Systems & Product Strategy'
+    }
+  }
+  if (f.includes('freelance')) {
+    return {
+      title: 'Land Your First Paid Retainer Client',
+      description: 'Optimize your Upwork/LinkedIn profiles, reach out to 10 prospective businesses with personalized video audits, and close a monthly retainer.',
+      nextTier: 'High-Ticket Client Acquisition & Agency Scaling'
+    }
+  }
+  return {
+    title: 'Build a Real Capstone Project',
+    description: 'Combine all your new skills into one portfolio-grade project that solves a real problem for real users.',
+    nextTier: 'Advanced Specialization & Portfolio Showcase'
+  }
+}
+
 function getNextRoadmapSuggestions(currentField) {
   const all = [
     { field: 'web', icon: '🌐', label: 'Go deeper into React & Full Stack' },
@@ -103,6 +161,18 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
   const [completing, setCompleting] = useState(false)
   const [showCompletionFeedback, setShowCompletionFeedback] = useState(false)
   const [showEasierMessage, setShowEasierMessage] = useState(false)
+  const [copiedStreak, setCopiedStreak] = useState(false)
+
+  const handleShareStreak = useCallback(() => {
+    const fieldName = roadmapData?.field || 'Tech'
+    const totalCount = roadmapData?.steps?.length || 9
+    const shareText = `🏆 I just finished my ${fieldName} roadmap on YourNext! Completed ${totalCount}/${totalCount} steps with a 🔥 ${streak || 1}-task streak. Escaped Tutorial Hell 🚀`
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(shareText)
+    }
+    setCopiedStreak(true)
+    setTimeout(() => setCopiedStreak(false), 3000)
+  }, [roadmapData?.field, roadmapData?.steps?.length, streak])
 
   const [expandedDays, setExpandedDays] = useState(() => {
     const initial = {}
@@ -190,6 +260,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
 
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Task${streak === 1 ? '' : 's'} Completed`
+  const totalSteps = roadmapData?.steps?.length || 9
   const careerId = getCareerIdFromPlan(roadmapData?.field)
   const avoidItems = (
     roadmapData?.dontLearnYet ||
@@ -256,182 +327,218 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
       </div>
 
       <div className="premium-main-grid">
-        {dayCompleted ? (
+        {isFinished ? (
+          /* ── FULL COMPLETION SCREEN ── */
           <div style={{
             textAlign: 'center',
             padding: '40px 24px',
-            background: '#fff',
-            borderRadius: '24px',
-            border: '1px solid rgba(0,0,0,0.06)',
-            boxShadow: '0 12px 48px rgba(0,0,0,0.04)',
+            background: 'linear-gradient(160deg, #fff 60%, #eff6ff 100%)',
+            borderRadius: '28px',
+            border: '1px solid rgba(37,99,235,0.12)',
+            boxShadow: '0 20px 64px rgba(37,99,235,0.08)',
           }}>
-            <div style={{ fontSize: '52px', marginBottom: '16px' }}>🎓</div>
+
+            {/* Celebration hero */}
+            <div style={{ fontSize: '64px', marginBottom: '12px', lineHeight: 1 }}>🎓</div>
+            <div style={{
+              display: 'inline-block',
+              fontSize: '11px', fontWeight: '800', letterSpacing: '2px',
+              color: '#2563eb', background: '#eff6ff',
+              border: '1px solid #bfdbfe',
+              padding: '4px 14px', borderRadius: '100px',
+              marginBottom: '16px',
+            }}>TUTORIAL HELL ESCAPED 🚀</div>
             <h2 style={{
               fontFamily: 'Sora, sans-serif',
-              fontSize: '26px', fontWeight: '800',
-              color: '#111', marginBottom: '8px',
-            }}>You finished your roadmap!</h2>
-            <p style={{ fontSize: '15px', color: '#666', marginBottom: '32px', lineHeight: '1.6' }}>
-              Most beginners never get this far. You did.
+              fontSize: '28px', fontWeight: '800',
+              color: '#111', marginBottom: '10px',
+              letterSpacing: '-0.5px', lineHeight: '1.2',
+            }}>You finished your {fieldLabel} roadmap!</h2>
+            <p style={{ fontSize: '15px', color: '#555', marginBottom: '8px', lineHeight: '1.65', maxWidth: '360px', margin: '0 auto 8px' }}>
+              Most beginners never get this far. You did — and that separates you from 90% of passive learners.
             </p>
-
-            {/* Stats */}
-            <div style={{
-              display: 'flex', gap: '12px',
-              justifyContent: 'center', marginBottom: '32px', flexWrap: 'wrap',
-            }}>
-              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '16px', padding: '16px 24px' }}>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: '#2563eb' }}>{totalSteps || 9}</div>
-                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>Tasks Done</div>
-              </div>
-              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '16px', padding: '16px 24px' }}>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: '#16a34a' }}>3</div>
-                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>Days Completed</div>
-              </div>
-              <div style={{ background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '16px', padding: '16px 24px' }}>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: '#ea580c' }}>🔥 {streak || 0}</div>
-                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>Day Streak</div>
-              </div>
-            </div>
-
-            {/* Next suggestions */}
-            <div style={{
-              background: '#fafafa', border: '1px solid #f0f0f0',
-              borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'left',
-            }}>
-              <div style={{ fontSize: '11px', fontWeight: '700', letterSpacing: '1px', color: '#2563eb', marginBottom: '12px' }}>
-                🗺️ WHAT TO LEARN NEXT
-              </div>
-              {[
-                { icon: '🤖', label: 'Explore AI & Machine Learning' },
-                { icon: '📊', label: 'Level up with Data Science' },
-                { icon: '💸', label: 'Start Freelancing with your skills' },
-              ].map((s, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'center', gap: '10px',
-                  padding: '12px 16px', background: '#fff', borderRadius: '12px',
-                  border: '1px solid #f0f0f0', cursor: 'pointer',
-                  fontSize: '14px', fontWeight: '600', color: '#111',
-                  marginBottom: '8px',
-                }} onClick={onRestart}>
-                  <span>{s.icon}</span>
-                  <span>{s.label}</span>
-                  <span style={{ marginLeft: 'auto', color: '#2563eb' }}>→</span>
-                </div>
-              ))}
-            </div>
-
-            <button onClick={onRestart} style={{
-              width: '100%', padding: '16px',
-              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-              color: '#fff', border: 'none', borderRadius: '14px',
-              fontSize: '15px', fontWeight: '700', cursor: 'pointer',
-            }}>
-              Start a New Path →
-            </button>
-          </div>
-        ) : isFinished ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '40px 24px',
-            background: '#fff',
-            borderRadius: '24px',
-            border: '1px solid rgba(0,0,0,0.06)',
-            boxShadow: '0 12px 48px rgba(0,0,0,0.04)',
-          }}>
-
-            {/* Celebration */}
-            <div style={{ fontSize: '52px', marginBottom: '16px' }}>🎓</div>
-            <h2 style={{
-              fontFamily: 'Sora, sans-serif',
-              fontSize: '26px', fontWeight: '800',
-              color: '#111', marginBottom: '8px',
-              letterSpacing: '-0.5px',
-            }}>You finished your roadmap!</h2>
-            <p style={{ fontSize: '15px', color: '#666', marginBottom: '32px', lineHeight: '1.6' }}>
-              Most beginners never get this far. You did.
+            <p style={{ fontSize: '13px', color: '#888', marginBottom: '32px', lineHeight: '1.6', maxWidth: '340px', margin: '0 auto 32px' }}>
+              You didn't just watch tutorials. You completed real hands-on tasks. That's how real skills are built.
             </p>
 
             {/* Stats Row */}
             <div style={{
               display: 'flex', gap: '12px',
               justifyContent: 'center',
-              marginBottom: '32px',
+              marginBottom: '28px',
               flexWrap: 'wrap',
             }}>
               <div style={{
                 background: '#eff6ff', border: '1px solid #bfdbfe',
-                borderRadius: '16px', padding: '16px 24px', textAlign: 'center',
+                borderRadius: '18px', padding: '18px 26px', textAlign: 'center',
+                minWidth: '90px',
               }}>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: '#2563eb' }}>
-                  {totalSteps}
-                </div>
-                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
-                  Tasks Done
-                </div>
+                <div style={{ fontSize: '30px', fontWeight: '900', color: '#2563eb' }}>{totalSteps}</div>
+                <div style={{ fontSize: '11px', color: '#6b7280', fontWeight: '700', letterSpacing: '0.5px', marginTop: '2px' }}>TASKS DONE</div>
               </div>
               <div style={{
                 background: '#f0fdf4', border: '1px solid #bbf7d0',
-                borderRadius: '16px', padding: '16px 24px', textAlign: 'center',
+                borderRadius: '18px', padding: '18px 26px', textAlign: 'center',
+                minWidth: '90px',
               }}>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: '#16a34a' }}>
-                  {Math.ceil(totalSteps / 3)}
-                </div>
-                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
-                  Days Completed
-                </div>
+                <div style={{ fontSize: '30px', fontWeight: '900', color: '#16a34a' }}>{Math.ceil(totalSteps / 3)}</div>
+                <div style={{ fontSize: '11px', color: '#6b7280', fontWeight: '700', letterSpacing: '0.5px', marginTop: '2px' }}>DAYS DONE</div>
               </div>
               <div style={{
                 background: '#fff7ed', border: '1px solid #fed7aa',
-                borderRadius: '16px', padding: '16px 24px', textAlign: 'center',
+                borderRadius: '18px', padding: '18px 26px', textAlign: 'center',
+                minWidth: '90px',
               }}>
-                <div style={{ fontSize: '28px', fontWeight: '800', color: '#ea580c' }}>
-                  🔥 {streak || 0}
-                </div>
-                <div style={{ fontSize: '12px', color: '#666', fontWeight: '600' }}>
-                  Day Streak
-                </div>
+                <div style={{ fontSize: '30px', fontWeight: '900', color: '#ea580c' }}>🔥 {streak || totalSteps}</div>
+                <div style={{ fontSize: '11px', color: '#6b7280', fontWeight: '700', letterSpacing: '0.5px', marginTop: '2px' }}>TASK STREAK</div>
               </div>
             </div>
 
-            {/* Next Roadmap Suggestion */}
+            {/* AI Next-Level Recommendation */}
+            {(() => {
+              const rec = getAINextLevelRecommendation(roadmapData?.field)
+              return (
+                <div style={{
+                  background: 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)',
+                  borderRadius: '20px', padding: '24px',
+                  marginBottom: '20px', textAlign: 'left',
+                  boxShadow: '0 8px 32px rgba(37,99,235,0.25)',
+                }}>
+                  <div style={{
+                    fontSize: '10px', fontWeight: '800', letterSpacing: '2px',
+                    color: '#93c5fd', marginBottom: '10px',
+                  }}>🤖 AI NEXT-LEVEL RECOMMENDATION</div>
+                  <div style={{
+                    fontSize: '16px', fontWeight: '800', color: '#fff',
+                    marginBottom: '8px', lineHeight: '1.3',
+                  }}>{rec.title}</div>
+                  <div style={{
+                    fontSize: '13px', color: '#bfdbfe',
+                    lineHeight: '1.6', marginBottom: '14px',
+                  }}>{rec.description}</div>
+                  <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    background: 'rgba(255,255,255,0.15)',
+                    borderRadius: '100px', padding: '5px 14px',
+                    fontSize: '11px', fontWeight: '700', color: '#fff',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                  }}>🎯 Next Tier: {rec.nextTier}</div>
+                </div>
+              )
+            })()}
+
+            {/* Next Roadmap Suggestions */}
             <div style={{
               background: '#fafafa', border: '1px solid #f0f0f0',
-              borderRadius: '16px', padding: '20px',
-              marginBottom: '24px', textAlign: 'left',
+              borderRadius: '18px', padding: '20px',
+              marginBottom: '20px', textAlign: 'left',
             }}>
               <div style={{
-                fontSize: '11px', fontWeight: '700',
-                letterSpacing: '1px', color: '#2563eb',
-                marginBottom: '12px',
+                fontSize: '11px', fontWeight: '800',
+                letterSpacing: '1.5px', color: '#2563eb',
+                marginBottom: '14px',
               }}>🗺️ WHAT TO LEARN NEXT</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {getNextRoadmapSuggestions(activePlan?.field).map((s, i) => (
                   <div key={i} style={{
                     display: 'flex', alignItems: 'center',
-                    gap: '10px', padding: '12px 16px',
-                    background: '#fff', borderRadius: '12px',
-                    border: '1px solid #f0f0f0', cursor: 'pointer',
+                    gap: '12px', padding: '14px 16px',
+                    background: '#fff', borderRadius: '14px',
+                    border: '1px solid #e5e7eb', cursor: 'pointer',
                     fontSize: '14px', fontWeight: '600', color: '#111',
+                    transition: 'border-color 0.2s',
                   }} onClick={() => handleRestartWithField(s.field)}>
-                    <span>{s.icon}</span>
-                    <span>{s.label}</span>
-                    <span style={{ marginLeft: 'auto', color: '#2563eb' }}>→</span>
+                    <span style={{ fontSize: '20px' }}>{s.icon}</span>
+                    <span style={{ flex: 1 }}>{s.label}</span>
+                    <span style={{ color: '#2563eb', fontWeight: '700' }}>→</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Restart Button */}
-            <button onClick={onRestart} style={{
-              width: '100%', padding: '16px',
-              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-              color: '#fff', border: 'none',
-              borderRadius: '14px', fontSize: '15px',
-              fontWeight: '700', cursor: 'pointer',
+            {/* CTAs */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <button onClick={onRestart} style={{
+                width: '100%', padding: '17px',
+                background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                color: '#fff', border: 'none',
+                borderRadius: '16px', fontSize: '15px',
+                fontWeight: '700', cursor: 'pointer',
+                fontFamily: 'Sora, sans-serif',
+                boxShadow: '0 6px 24px rgba(37,99,235,0.3)',
+                letterSpacing: '0.02em',
+              }}>
+                🚀 Generate Next Roadmap
+              </button>
+              <button onClick={handleShareStreak} style={{
+                width: '100%', padding: '14px',
+                background: copiedStreak ? '#f0fdf4' : '#f9fafb',
+                color: copiedStreak ? '#16a34a' : '#374151',
+                border: `1px solid ${copiedStreak ? '#bbf7d0' : '#e5e7eb'}`,
+                borderRadius: '14px', fontSize: '14px',
+                fontWeight: '600', cursor: 'pointer',
+                fontFamily: 'Sora, sans-serif',
+                transition: 'all 0.25s',
+              }}>
+                {copiedStreak ? '✅ Copied to clipboard!' : '📋 Copy & Share My Streak'}
+              </button>
+            </div>
+          </div>
+        ) : dayCompleted ? (
+          /* ── INTER-DAY COMPLETION SCREEN ── */
+          <div style={{
+            textAlign: 'center',
+            padding: '40px 24px',
+            background: '#fff',
+            borderRadius: '24px',
+            border: '1px solid rgba(0,0,0,0.06)',
+            boxShadow: '0 12px 48px rgba(0,0,0,0.04)',
+          }}>
+            <div style={{ fontSize: '52px', marginBottom: '12px' }}>🌟</div>
+            <h2 style={{
               fontFamily: 'Sora, sans-serif',
+              fontSize: '24px', fontWeight: '800',
+              color: '#111', marginBottom: '8px',
+            }}>Day {currentDay} Complete!</h2>
+            <p style={{ fontSize: '14px', color: '#666', marginBottom: '28px', lineHeight: '1.65' }}>
+              Excellent work — you finished all {completedTodayCount || 3} tasks for today.
+              Come back tomorrow to unlock Day {currentDay + 1}.
+            </p>
+
+            <div style={{
+              display: 'flex', gap: '10px',
+              justifyContent: 'center', marginBottom: '28px', flexWrap: 'wrap',
             }}>
-              Start a New Path →
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '14px', padding: '14px 20px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: '#2563eb' }}>{completedTodayCount || 3}</div>
+                <div style={{ fontSize: '11px', color: '#666', fontWeight: '600' }}>Tasks Done</div>
+              </div>
+              <div style={{ background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '14px', padding: '14px 20px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '800', color: '#ea580c' }}>🔥 {streak || 0}</div>
+                <div style={{ fontSize: '11px', color: '#666', fontWeight: '600' }}>Task Streak</div>
+              </div>
+            </div>
+
+            <div style={{
+              background: '#f0fdf4', border: '1px solid #bbf7d0',
+              borderRadius: '14px', padding: '16px 20px',
+              marginBottom: '24px',
+              fontSize: '14px', color: '#166534', fontWeight: '600',
+              display: 'flex', alignItems: 'center', gap: '8px',
+              justifyContent: 'center',
+            }}>
+              <span>📅</span>
+              <span>Day {currentDay + 1} unlocks tomorrow. Stay consistent!</span>
+            </div>
+
+            <button onClick={onRestart} style={{
+              width: '100%', padding: '14px',
+              background: '#f9fafb', color: '#374151',
+              border: '1px solid #e5e7eb',
+              borderRadius: '14px', fontSize: '14px',
+              fontWeight: '600', cursor: 'pointer',
+            }}>
+              ← Back to Home
             </button>
           </div>
         ) : (
