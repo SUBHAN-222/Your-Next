@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-VxHLqqqU.js"></script>
+    <script type="module" crossorigin src="/assets/index-6DOmBg3f.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-BWMUS1Ut.css">
   </head>
   <body>
@@ -18,10 +18,13 @@ function renderPreviewList() {
   const list = document.getElementById('previewList');
   if (!activePlan) return;
   list.innerHTML = activePlan.steps.map((s, idx) => {
-    const isComplete = idx < currentRoadmapIndex;
-    const isCurrent  = idx === currentRoadmapIndex;
-    const isLocked   = idx > currentRoadmapIndex;
-    const dayNum     = Math.floor(idx / 3) + 1;
+    const STEPS_PER_DAY = 3;
+    const dayNum        = Math.floor(idx / STEPS_PER_DAY) + 1;
+    const currentDayStart = Math.floor(currentRoadmapIndex / STEPS_PER_DAY) * STEPS_PER_DAY;
+    const stepDayStart    = Math.floor(idx / STEPS_PER_DAY) * STEPS_PER_DAY;
+    const isLocked        = stepDayStart > currentDayStart;
+    const isComplete      = idx < currentRoadmapIndex;
+    const isCurrent       = !isComplete && !isLocked;
 
     return `
       <div style="

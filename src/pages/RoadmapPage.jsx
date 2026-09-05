@@ -422,9 +422,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
             {roadmapData?.steps?.map((step, index) => {
               const STEPS_PER_DAY = 3
               const stepDay = Math.floor(index / STEPS_PER_DAY) + 1
+              const currentDayStart = Math.floor(currentStepIndex / STEPS_PER_DAY) * STEPS_PER_DAY
+              const stepDayStart = Math.floor(index / STEPS_PER_DAY) * STEPS_PER_DAY
+              const isLocked = stepDayStart > currentDayStart
               const isComplete = index < currentStepIndex
-              const isCurrent = index === currentStepIndex
-              const isLocked = index > currentStepIndex
+              const isCurrent = !isComplete && !isLocked
               return (
                 <div key={index} style={{
                   display: 'flex',
