@@ -501,8 +501,8 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
               color: '#111', marginBottom: '8px',
             }}>Day {currentDay} Complete!</h2>
             <p style={{ fontSize: '14px', color: '#666', marginBottom: '28px', lineHeight: '1.65' }}>
-              Excellent work — you finished all {completedTodayCount || 3} tasks for today.
-              Come back tomorrow to unlock Day {currentDay + 1}.
+              Excellent work — you crushed all {completedTodayCount || 3} tasks for today.
+              Ready to keep the momentum going?
             </p>
 
             <div style={{
@@ -519,23 +519,33 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
               </div>
             </div>
 
-            <div style={{
-              background: '#f0fdf4', border: '1px solid #bbf7d0',
-              borderRadius: '14px', padding: '16px 20px',
-              marginBottom: '24px',
-              fontSize: '14px', color: '#166534', fontWeight: '600',
-              display: 'flex', alignItems: 'center', gap: '8px',
-              justifyContent: 'center',
-            }}>
-              <span>📅</span>
-              <span>Day {currentDay + 1} unlocks tomorrow. Stay consistent!</span>
-            </div>
+            {/* Primary CTA — advance to next day immediately */}
+            {currentDay < totalDays ? (
+              <button
+                id="start-next-day-btn"
+                onClick={startNextDay}
+                style={{
+                  width: '100%', padding: '17px',
+                  background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                  color: '#fff', border: 'none',
+                  borderRadius: '16px', fontSize: '15px',
+                  fontWeight: '700', cursor: 'pointer',
+                  fontFamily: 'Sora, sans-serif',
+                  boxShadow: '0 6px 24px rgba(37,99,235,0.28)',
+                  letterSpacing: '0.02em',
+                  marginBottom: '10px',
+                  display: 'block',
+                }}
+              >
+                🚀 Start Day {currentDay + 1} →
+              </button>
+            ) : null}
 
             <button onClick={onRestart} style={{
-              width: '100%', padding: '14px',
-              background: '#f9fafb', color: '#374151',
+              width: '100%', padding: '13px',
+              background: 'transparent', color: '#9ca3af',
               border: '1px solid #e5e7eb',
-              borderRadius: '14px', fontSize: '14px',
+              borderRadius: '14px', fontSize: '13px',
               fontWeight: '600', cursor: 'pointer',
             }}>
               ← Back to Home
