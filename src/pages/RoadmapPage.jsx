@@ -132,7 +132,7 @@ function getNextRoadmapSuggestions(currentField) {
   return all.filter(s => s.field !== currentField).slice(0, 3)
 }
 
-function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onRestart, onUpdateStep }) {
+function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHome, onRestart, onUpdateStep }) {
   const handleRestartWithField = useCallback((targetField) => {
     onRestart?.()
   }, [onRestart])
@@ -298,7 +298,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
   return (
     <section className="screen active roadmap-screen" id="s-res">
       <nav className="res-nav">
-        <button className="nav-logo" onClick={onRestart} type="button" aria-label="Go home">
+        <button className="nav-logo" onClick={onGoHome} type="button" aria-label="Go home">
           Your<b>Next</b>
         </button>
         <div className="res-nav-end">
@@ -451,7 +451,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
                     border: '1px solid #e5e7eb', cursor: 'pointer',
                     fontSize: '14px', fontWeight: '600', color: '#111',
                     transition: 'border-color 0.2s',
-                  }} onClick={() => handleRestartWithField(s.field)}>
+                  }} onClick={() => {
+                    if (window.confirm('This will erase your saved progress. Start over?')) {
+                      handleRestartWithField(s.field)
+                    }
+                  }}>
                     <span style={{ fontSize: '20px' }}>{s.icon}</span>
                     <span style={{ flex: 1 }}>{s.label}</span>
                     <span style={{ color: '#2563eb', fontWeight: '700' }}>→</span>
@@ -462,7 +466,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
 
             {/* CTAs */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <button onClick={onRestart} style={{
+              <button onClick={() => {
+                if (window.confirm('This will erase your saved progress. Start over?')) {
+                  onRestart()
+                }
+              }} style={{
                 width: '100%', padding: '17px',
                 background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
                 color: '#fff', border: 'none',
@@ -545,7 +553,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
               </button>
             ) : null}
 
-            <button onClick={onRestart} style={{
+            <button onClick={onGoHome} style={{
               width: '100%', padding: '13px',
               background: 'transparent', color: '#9ca3af',
               border: '1px solid #e5e7eb',

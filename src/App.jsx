@@ -47,6 +47,12 @@ function App() {
     }))
   }, [])
 
+  // Casual navigation back to landing — does NOT touch saved progress.
+  const handleGoHome = useCallback(() => {
+    setCurrentScreen('landing')
+  }, [])
+
+  // Keep as-is — only for genuine "start a brand new roadmap" actions.
   const handleRestart = useCallback(() => {
     clearProgress()
     setAnswers({})
@@ -196,6 +202,7 @@ function App() {
           activePlan={activePlan}
           initialStepIndex={roadmapIndex}
           durationMonths={durationMonths}
+          onGoHome={handleGoHome}
           onRestart={handleRestart}
           onUpdateStep={handleUpdateStep}
         />
