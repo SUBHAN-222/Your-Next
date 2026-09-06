@@ -63,12 +63,7 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
         </div>
 
         {/* How it works */}
-        <div style={{
-          maxWidth: '600px',
-          margin: '24px auto 0',
-          padding: '0 24px',
-          textAlign: 'center',
-        }}>
+        <div className="hiw-wrap">
           <p style={{
             fontSize: '11px',
             fontWeight: '700',
@@ -78,14 +73,7 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
             marginBottom: '40px',
           }}>How it works</p>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '16px',
-            maxWidth: '680px',
-            margin: '32px auto 0',
-            padding: '0 24px',
-          }}>
+          <div className="hiw-grid">
             {[
               {
                 step: '01',
@@ -106,13 +94,7 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
                 icon: '🔓',
               },
             ].map((item, i) => (
-              <div key={i} style={{
-                background: '#fff',
-                border: '1px solid #f0f0f0',
-                borderRadius: '16px',
-                padding: '20px 16px',
-                textAlign: 'center',
-              }}>
+              <div key={i} className="hiw-card">
                 <div style={{
                   fontSize: '24px',
                   marginBottom: '10px',

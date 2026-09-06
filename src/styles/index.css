@@ -312,6 +312,31 @@ body {
   font-style: italic;
 }
 
+/* ── How It Works (desktop base values, mirrored 1:1 from LandingPage inline styles) ── */
+.hiw-wrap {
+  max-width: 600px;
+  margin: 24px auto 0;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.hiw-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 680px;
+  margin: 32px auto 0;
+  padding: 0 24px;
+}
+
+.hiw-card {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+}
+
 @keyframes riseUp {
   from {
     opacity: 0;
@@ -1412,9 +1437,25 @@ body {
    ════════════════════════════════════════════ */
 @media (max-width: 768px) {
   /* Landing */
-  #s-land { padding: 80px 12px 40px; }
-  .land-logo { left: 16px; top: 20px; font-size: 16px; }
+  #s-land { padding: 84px 20px 100px; }
+  .land-inner { width: 100%; }
+  .land-logo { left: 20px; top: 20px; font-size: 16px; }
+  .land-h1 { font-size: clamp(21px, 4.5vw, 30px); letter-spacing: -0.5px; line-height: 1.2; }
+  .cta-outer { width: 100%; max-width: 420px; margin: 0 auto; }
   .cta { width: 100%; justify-content: center; padding: 18px 24px; font-size: 16px; }
+
+  /* How It Works — stack into one centered column */
+  .hiw-wrap { margin-top: 48px; }
+  .hiw-grid { grid-template-columns: 1fr; gap: 20px; justify-items: center; padding: 0; }
+  .hiw-card { width: 100%; max-width: 340px; padding: 24px 20px; }
+
+  /* Floating feedback button — smaller + safe-area aware */
+  .feedback-btn-floating {
+    bottom: max(16px, env(safe-area-inset-bottom));
+    right: max(16px, env(safe-area-inset-right));
+    padding: 8px 14px;
+    font-size: 12px;
+  }
   
   /* Roadmap Result */
   .res-nav { padding: 0 12px; height: 60px; }
@@ -1473,8 +1514,17 @@ body {
   }
 }
 
+@media (max-width: 480px) {
+  /* Landing hero precision tuning */
+  .land-h1 { font-size: clamp(18px, 5.6vw, 22px); letter-spacing: -0.4px; line-height: 1.22; margin-bottom: 20px; }
+  .land-tag { letter-spacing: 1px; }
+  .hiw-wrap { padding: 0 18px; }
+  .hiw-card { padding: 22px 18px; }
+  .cta { padding: 16px 20px; font-size: 15px; }
+}
+
 @media (max-width: 360px) {
-  .land-h1 { font-size: 28px; }
+  .land-h1 { font-size: 18px; }
   .step-name { font-size: 17px; }
 }
 
