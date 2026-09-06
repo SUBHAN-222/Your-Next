@@ -25,6 +25,8 @@ const PATH_AVOID_ITEMS = {
   ],
 }
 
+const STEPS_PER_DAY = 3
+
 const getCareerIdFromPlan = (field) => (
   Object.keys(CAREER_PATHS).find(
     key => CAREER_PATHS[key].name === field
@@ -162,6 +164,8 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
   const [showCompletionFeedback, setShowCompletionFeedback] = useState(false)
   const [showEasierMessage, setShowEasierMessage] = useState(false)
   const [copiedStreak, setCopiedStreak] = useState(false)
+  const [startedStepIndex, setStartedStepIndex] = useState(null)
+  const [showAllAvoids, setShowAllAvoids] = useState(false)
 
   const handleShareStreak = useCallback(() => {
     const fieldName = roadmapData?.field || 'Tech'
@@ -199,6 +203,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
     setShowEasierMessage(false)
+    setStartedStepIndex(null)
   }, [currentStepIndex])
 
   useEffect(() => {
@@ -238,6 +243,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
         })
         completeCurrentStep()
         setShowCompletionFeedback(false)
+        setShowToast(true)
       } else if (status === 'stuck') {
         setShowEasierMessage(true)
         setShowCompletionFeedback(false)
@@ -261,12 +267,18 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Task${streak === 1 ? '' : 's'} Completed`
   const totalSteps = roadmapData?.steps?.length || 9
+  const todayProgressPct = todaySteps.length
+    ? Math.min(100, Math.round((completedTodayCount / todaySteps.length) * 100))
+    : 0
   const careerId = getCareerIdFromPlan(roadmapData?.field)
   const avoidItems = (
     roadmapData?.dontLearnYet ||
     PATH_AVOID_ITEMS[careerId] ||
     getDontLearnYet(careerId, 'beginner')
   ).slice(0, 4).map(cleanAvoidItem)
+  const avoidPrimary = avoidItems.length
+    ? avoidItems[Math.min(currentStepIndex, avoidItems.length - 1)]
+    : "Don't rush into advanced tools yet"
 
   const upcomingStages = (
     roadmapData?.futurePath && roadmapData.futurePath.length >= 2
@@ -299,10 +311,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
         </div>
       </nav>
 
-      <div style={{ width: 'fit-content', margin: '20px auto 0', padding: '8px 16px', borderRadius: '999px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', color: '#60a5fa', fontSize: '13px', fontWeight: 700, letterSpacing: '0.04em' }}>
-        Day {currentDay} of {totalDays}
-      </div>
-
       <div className="premium-hero-card">
         <div className="ph-left">
           <div className="ph-icon-box">{roadmapData.icon || '🚀'}</div>
@@ -312,16 +320,12 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
           </div>
         </div>
         <div className="ph-right">
-          <div className="ph-stats">
-            <div className="ph-count">Day {currentDay} • <strong>{completedTodayCount}</strong> completed</div>
-            <div className="ph-pct">{totalCompleted} / {roadmapData?.steps?.length || 0} total</div>
-          </div>
+          <div className="ph-day-label">Day {currentDay} of {totalDays}</div>
           <div className="ph-progress-bg">
-            <div className="ph-progress-fill" style={{ width: `${(totalCompleted / (roadmapData?.steps?.length || 1)) * 100}%` }}></div>
-          </div>
-          <div className="ph-trust-row">
-            <span className="ph-save-status">✓ Progress saved automatically</span>
-            {streak > 0 && <span className="ph-streak">🔥 {streakLabel}</span>}
+            <div
+              className="ph-progress-fill"
+              style={{ width: `${todayProgressPct}%` }}
+            ></div>
           </div>
         </div>
       </div>
@@ -555,7 +559,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
           <div className="premium-task-card">
             <div className="pt-header">
               <span className="pt-dot-label"><span className="pt-dot"></span> Current Task</span>
-              <span className="pt-step-badge">Step {currentStepIndex + 1} of {roadmapData?.steps?.length || 0}</span>
+              <span className="pt-step-badge">Step {(currentStepIndex % STEPS_PER_DAY) + 1} of {todaySteps.length || STEPS_PER_DAY}</span>
             </div>
             {showEasierMessage && (
               <div style={{ margin: '12px 24px 0', padding: '12px 16px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '10px', color: '#60a5fa', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -576,7 +580,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
                 </div>
               </div>
             </div>
-            <p className="pt-action-hint">Start the activity first. When you return, mark it complete.</p>
+            <p className="pt-action-hint">
+              {startedStepIndex === currentStepIndex
+                ? 'Done with the activity? Mark it complete.'
+                : "Open the resource first — then come back and mark it complete."}
+            </p>
             {showCompletionFeedback && (
               <div className="completion-feedback" role="group" aria-label="How did it go?">
                 <p className="completion-feedback-title">How did it go?</p>
@@ -594,17 +602,34 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
               </div>
             )}
             <div className="pt-actions">
-              {!completing && (
-                <a href={currentStep?.resourceUrl} className="pt-resource-btn" target="_blank" rel="noopener noreferrer">Start Learning</a>
-              )}
               {completing ? (
                 <div className="pt-loading">Saving progress...</div>
-              ) : (
+              ) : startedStepIndex === currentStepIndex ? (
                 <button type="button" className="pt-complete-btn" onClick={handleComplete} disabled={showCompletionFeedback}>
                   <span className="pt-check">✓</span> Mark Complete
                 </button>
+              ) : (
+                <a
+                  href={currentStep?.resourceUrl}
+                  className="pt-resource-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setStartedStepIndex(currentStepIndex)}
+                >
+                  Start Learning →
+                </a>
               )}
             </div>
+            {startedStepIndex === currentStepIndex && !completing && currentStep?.resourceUrl && (
+              <a
+                className="pt-reopen-link"
+                href={currentStep.resourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                ↗ Open the resource again
+              </a>
+            )}
           </div>
         )}
 
@@ -617,13 +642,24 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
             </div>
           </div>
           <div className="pn-list avoid-list">
-            {avoidItems.map((item, idx) => (
-              <div key={idx} className="pn-item avoid-item">
-                <span className="avoid-check">!</span>
-                <span className="avoid-text">{item}</span>
-              </div>
-            ))}
+            <div className="pn-item avoid-item">
+              <span className="avoid-check">!</span>
+              <span className="avoid-text">{avoidPrimary}</span>
+            </div>
+            {showAllAvoids && avoidItems
+              .filter((_, idx) => idx !== Math.min(currentStepIndex, avoidItems.length - 1))
+              .map((item, idx) => (
+                <div key={idx} className="pn-item avoid-item">
+                  <span className="avoid-check">!</span>
+                  <span className="avoid-text">{item}</span>
+                </div>
+              ))}
           </div>
+          {avoidItems.length > 1 && (
+            <button type="button" className="avoid-more-btn" onClick={() => setShowAllAvoids(!showAllAvoids)}>
+              {showAllAvoids ? '− Show less' : `+${avoidItems.length - 1} more`}
+            </button>
+          )}
           <div className="avoid-note">
             Focus on one thing. Ignore the rest for now.
           </div>
@@ -653,7 +689,8 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
           theme="default"
           icon="📁"
           title="Full Learning Roadmap Path"
-          defaultOpen={true}
+          subtitle="Tap to see all days →"
+          defaultOpen={false}
         >
           <div className="p-full-roadmap-list">
             {roadmapData?.steps?.map((step, index) => {
@@ -779,6 +816,13 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onResta
           </div>
         </Accordion>
       </div>
+
+      {showToast && (
+        <ProgressToast
+          message="✓ Progress saved automatically"
+          onDone={() => setShowToast(false)}
+        />
+      )}
     </section>
   )
 }
