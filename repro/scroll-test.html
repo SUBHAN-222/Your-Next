@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: sans-serif; overflow-x: hidden; }
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+.ai-roadmap-loading { background: #0a0a0a; align-items: center; justify-content: center; min-height: 100vh; }
+.ai-load-inner { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.ai-welcome-card { width: 100%; max-width: 540px; box-sizing: border-box; padding: 28px 32px; }
+.ai-welcome-text { font-size: 17px; line-height: 1.65; }
+</style>
+</head>
+<body>
+<div id="root">
+  <section class="screen active ai-roadmap-loading">
+    <div class="ai-load-inner">
+      <div class="ai-load-ring" style="width:48px;height:48px;border-radius:50%;background:#333"></div>
+      <div class="ai-welcome-card">
+        <p class="ai-welcome-text">
+          I know you feel lost trying to learn Web Development, and that's totally normal.
+          Most people get stuck because they jump between tutorials without a real plan. We'll fix that
+          step by step together, one small daily task at a time. I know you feel lost trying to learn
+          Web Development, and that's totally normal. Most people get stuck because they jump between
+          tutorials without a real plan. We'll fix that step by step together, one small daily task at a
+          time. I know you feel lost trying to learn Web Development, and that's totally normal. Most
+          people get stuck because they jump between tutorials without a real plan. We'll fix that step
+          by step together, one small daily task at a time. I know you feel lost trying to learn Web
+          Development, and that's totally normal. Most people get stuck because they jump between
+          tutorials without a real plan. We'll fix that step by step together, one small daily task at a
+          time. I know you feel lost trying to learn Web Development, and that's totally normal. Most
+          people get stuck because they jump between tutorials without a real plan. We'll fix that step
+          by step together, one small daily task at a time. I know you feel lost trying to learn Web
+          Development, and that's totally normal. Most people get stuck because they jump between
+          tutorials without a real plan. We'll fix that step by step together, one small daily task at a
+          time. I know you feel lost trying to learn Web Development, and that's totally normal. Most
+          people get stuck because they jump between tutorials without a real plan. We'll fix that step
+          by step together, one small daily task at a time.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

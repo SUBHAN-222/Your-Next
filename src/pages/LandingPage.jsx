@@ -26,7 +26,7 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
           For confused tech students
         </p>
         <h1 className={`land-h1 ${isVisible ? 'visible' : ''}`}>
-          Confused isn't a problem with you.<br />
+          Confusion isn't a problem with you.<br />
           <i>It's too many options.</i>
         </h1>
         <div className={`cta-outer ${isVisible ? 'visible' : ''}`}>

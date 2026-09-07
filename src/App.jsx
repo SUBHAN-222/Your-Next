@@ -99,6 +99,13 @@ function App() {
     posthog.capture('duration_selected', { months })
   }, [])
 
+  // "Your Pace" is the 6th and final step, shown after the 5-question quiz.
+  // Back returns the user to the last quiz question (answers are preserved in App state).
+  const handleDurationBack = useCallback(() => {
+    setQuizSession((n) => n + 1)
+    setCurrentScreen('onboarding')
+  }, [])
+
   useEffect(() => {
     if (currentScreen !== 'generating' || !durationMonths) return
 
@@ -192,7 +199,7 @@ function App() {
       )}
 
       {currentScreen === 'duration' && (
-        <DurationPage onSelect={handleSelectDuration} />
+        <DurationPage onSelect={handleSelectDuration} onBack={handleDurationBack} />
       )}
 
       {currentScreen === 'generating' && <AIRoadmapLoading welcomeMessage={welcomeMessage} />}

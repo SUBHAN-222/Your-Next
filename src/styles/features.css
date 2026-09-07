@@ -1,11 +1,18 @@
 /* ── Feature additions only (AI loading, continue banner, defer, toast, streak) ── */
 
 /* AI roadmap loading */
+/* Safe centering: using `margin: auto` on the inner wrapper instead of
+   `justify-content: center` on the container means that when the welcome
+   message is taller than the viewport, overflow is anchored to the TOP of
+   the content (fully reachable) instead of being clipped above the scroll
+   origin — which was what made the screen feel "stuck/pinned at the top"
+   on desktop. `100svh` (not `100vh`) keeps it correct on mobile where the
+   dynamic address bar changes the viewport height. */
 .ai-roadmap-loading {
   background: #0a0a0a;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: 100svh;
 }
 
 .ai-load-inner {
@@ -13,6 +20,9 @@
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  width: 100%;
+  max-width: 560px;
+  margin: auto;
 }
 
 .ai-load-ring {

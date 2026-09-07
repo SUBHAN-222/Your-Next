@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { DURATION_OPTIONS } from '@data/durationOptions'
 
-function DurationPage({ onSelect }) {
+function DurationPage({ onSelect, onBack }) {
   const [showCustom, setShowCustom] = useState(false)
   const [customValue, setCustomValue] = useState('')
 
@@ -10,6 +10,10 @@ function DurationPage({ onSelect }) {
     if (!months || months < 1 || months > 36) return
     onSelect(months)
   }
+
+  const TOTAL_STEPS = 6
+  const currentStep = 6
+  const progress = 100
 
   return (
     <section className="screen active onboarding-screen" id="s-ob">
@@ -20,6 +24,38 @@ function DurationPage({ onSelect }) {
       </div>
 
       <div className="ob-shell">
+        <header className="ob-top">
+          <button
+            type="button"
+            className="ob-back on"
+            onClick={onBack}
+            aria-label="Go back"
+          >
+            ←
+          </button>
+
+          <div className="ob-progress-wrap">
+            <div className="ob-progress-meta">
+              <span className="ob-progress-label">Question {currentStep}</span>
+              <span className="ob-count">of {TOTAL_STEPS}</span>
+            </div>
+            <div
+              className="ob-bar"
+              role="progressbar"
+              aria-valuenow={currentStep}
+              aria-valuemin={1}
+              aria-valuemax={TOTAL_STEPS}
+              aria-label={`Question ${currentStep} of ${TOTAL_STEPS}`}
+            >
+              <div className="ob-fill" style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+
+          <div className="ob-logo-sm">
+            Your<b className="gradient-text">Next</b>
+          </div>
+        </header>
+
         <div className="ob-q">
           <header className="ob-q-header">
             <p className="ob-eyebrow fade-up">YOUR PACE</p>
@@ -31,6 +67,7 @@ function DurationPage({ onSelect }) {
               you'll only ever see one at a time.
             </p>
           </header>
+
 
           {!showCustom ? (
             <div className="ob-opts yn-stagger fade-up" style={{ animationDelay: '.2s' }}>

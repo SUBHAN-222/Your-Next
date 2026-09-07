@@ -271,6 +271,8 @@
 #s-ob .quiz-card-body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 #s-ob .quiz-card-title {
@@ -278,6 +280,15 @@
   font-weight: 500;
   color: var(--quiz-text);
   line-height: 1.35;
+}
+
+#s-ob .quiz-card-sub {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--quiz-text-secondary);
+  line-height: 1.4;
+  margin-top: 2px;
 }
 
 #s-ob .quiz-card-desc {
