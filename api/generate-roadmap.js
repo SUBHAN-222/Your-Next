@@ -153,6 +153,7 @@ export default async function handler(req, res) {
 
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 25000);
+      const _qwenStart = Date.now();
 
       const response = await fetch(
         'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
@@ -179,6 +180,7 @@ export default async function handler(req, res) {
       }
 
       const data = await response.json();
+      console.log('[generate-roadmap] multi-mode Qwen response time:', Date.now() - _qwenStart, 'ms');
       const content = data.choices?.[0]?.message?.content;
 
       if (!content) {
@@ -340,6 +342,7 @@ Return ONLY this JSON, nothing before or after it:
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 25000);
+    const _qwenStart = Date.now();
 
     const response = await fetch(
       'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
@@ -376,6 +379,7 @@ Return ONLY this JSON, nothing before or after it:
     }
 
     const data = await response.json();
+    console.log('[generate-roadmap] default-mode Qwen response time:', Date.now() - _qwenStart, 'ms');
     const content = data.choices?.[0]?.message?.content;
 
     if (!content) {

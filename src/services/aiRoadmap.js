@@ -34,7 +34,7 @@ function normalizePlan(raw) {
 export async function generateAIRoadmap(answers, durationMonths) {
   try {
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 12000)
+    const timeout = setTimeout(() => controller.abort(), 25000)
 
     const hasDuration = Number(durationMonths) > 0
     const requestBody = hasDuration
