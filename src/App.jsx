@@ -6,7 +6,7 @@ import RoadmapPage from '@pages/RoadmapPage'
 import AIRoadmapLoading from '@components/AIRoadmapLoading'
 import FeedbackModal from '@components/FeedbackModal'
 import { generateAIRoadmap, getWelcomeMessage } from '@services/aiRoadmap'
-import { ensureAuthSession, saveQuizAnswers } from '@services/supabaseSync'
+import { ensureAuthSession, saveQuizAnswers, saveAiRoadmap } from '@services/supabaseSync'
 import { getSavedProgress, clearProgress, saveDayProgress, saveProgress } from '@utils/progressStorage'
 import { getStreakFromStorage } from '@utils/streak'
 import posthog, { initPostHog } from '@lib/posthog'
@@ -123,6 +123,10 @@ function App() {
       setActivePlan(plan)
       setRoadmapIndex(0)
       saveProgress(plan, 0, getStreakFromStorage(), durationMonths)
+      // Fire-and-forget: persist the generated roadmap to Supabase alongside localStorage
+      saveAiRoadmap(plan, durationMonths).catch((err) =>
+        console.warn('[Supabase] saveAiRoadmap failed:', err?.message || err)
+      )
       const now = new Date()
       const startDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
       saveDayProgress({

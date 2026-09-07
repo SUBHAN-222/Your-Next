@@ -1,0 +1,16 @@
+PRE-COMMITTED EXECUTION PLAN — DO NOT RE-VERIFY, JUST EXECUTE:
+
+1. FIX src/services/supabaseSync.js (my session's added functions) to match supabase/schema.sql:
+   - roadmaps insert payload: { user_id, field } ONLY.
+     (schema.sql roadmaps = id, user_id, field, is_active, created_at — NO duration_months, NO pace.
+      Inserting unknown columns fails silently in Supabase.)
+   - roadmap_steps insert payload: { roadmap_id, step_index, name, why, task, completed: false }.
+     (schema.sql roadmap_steps uses step_index — NO day_number column.)
+   - Step completion update: use the REAL column(s) from schema.sql roadmap_steps block
+     (e.g. completed = true / completed_at / status — match exactly what's defined).
+   - user_id: reuse the exact same id helper the working profiles insert uses (same file).
+   - Keep fire-and-forget console.warn error handling. No behavior change to the app.
+2. src/App.jsx + src/hooks/useRoadmap.js wiring already applied — leave untouched.
+3. npm run build — must pass.
+4. Final summary: list what was added, the column mapping used, and note that
+   roadmaps lacks duration/pace columns (optional ALTER TABLE shown for the demo).

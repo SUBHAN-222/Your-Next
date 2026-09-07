@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import { getDayProgress, saveDayProgress, saveProgress } from '@utils/progressStorage'
 import { getStreakFromStorage, updateStreakOnComplete, getMomentumMessageForStreak } from '@utils/streak'
+import { saveStepComplete } from '@services/supabaseSync'
 
 const STEPS_PER_DAY = 3
 
@@ -104,6 +105,11 @@ export function useRoadmap(activePlan, initialStepIndex = 0, durationMonths = nu
     if (!currentStep) return
 
     setCompletedSteps((prev) => prev.includes(currentStepIndex) ? prev : [...prev, currentStepIndex])
+
+    // Fire-and-forget: mark this step complete in Supabase alongside local state
+    saveStepComplete(currentStepIndex).catch((err) =>
+      console.warn('[Supabase] saveStepComplete failed:', err?.message || err)
+    )
 
     const newStreak = updateStreakOnComplete()
     setStreak(newStreak)

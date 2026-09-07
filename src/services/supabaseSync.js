@@ -43,6 +43,79 @@ export async function saveQuizAnswers(answers, careerField) {
 }
 
 /**
+ * Saves the AI-generated (or fallback) roadmap to Supabase: one row in
+ * `roadmaps` + one row per step in `roadmap_steps`. Reuses the same
+ * user.id from ensureAuthSession() that saveQuizAnswers uses for the
+ * profiles row, so rows link to the existing profile.
+ */
+export async function saveAiRoadmap(plan, durationMonths) {
+  const user = await ensureAuthSession()
+  if (!user || !plan?.steps?.length) return null
+
+  try {
+    await supabase.from('roadmaps').update({ is_active: false }).eq('user_id', user.id)
+
+    const { data: roadmap, error: roadmapErr } = await supabase
+      .from('roadmaps')
+      .insert({
+        user_id: user.id,
+        field: plan.field,
+        is_active: true,
+        duration_months: Number(durationMonths) > 0 ? durationMonths : null,
+      })
+      .select()
+      .single()
+    if (roadmapErr) throw roadmapErr
+
+    const stepRows = plan.steps.map((step, i) => ({
+      roadmap_id: roadmap.id,
+      step_index: i,
+      day_number: Math.floor(i / 3) + 1,
+      name: step.name,
+      why: step.why,
+      time_estimate: step.time,
+      resource_url: step.resourceUrl,
+      status: i === 0 ? 'current' : 'locked',
+    }))
+
+    const { error: stepsErr } = await supabase.from('roadmap_steps').insert(stepRows)
+    if (stepsErr) throw stepsErr
+
+    return { roadmapId: roadmap.id, stepCount: stepRows.length }
+  } catch (err) {
+    console.warn('[Supabase] saveAiRoadmap failed:', err.message || err)
+    return null
+  }
+}
+
+/**
+ * Marks the given step index complete in the user's active roadmap
+ * (status='done' + completed_at=now()). Called alongside the local
+ * completion that useRoadmap already performs — this only adds the
+ * Supabase write, it does not replace local state or localStorage.
+ */
+export async function saveStepComplete(stepIndex) {
+  const user = await ensureAuthSession()
+  if (!user || stepIndex == null) return null
+
+  const { data: roadmap } = await supabase
+    .from('roadmaps')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .maybeSingle()
+  if (!roadmap?.id) return null
+
+  const { error } = await supabase
+    .from('roadmap_steps')
+    .update({ status: 'done', completed_at: new Date().toISOString() })
+    .eq('roadmap_id', roadmap.id)
+    .eq('step_index', stepIndex)
+  if (error) console.warn('[Supabase] saveStepComplete failed:', error.message)
+  return error ? null : true
+}
+
+/**
  * Creates a duration-based roadmap and inserts the first week's daily
  * tasks (day 1 unlocked as 'current', everything else 'locked').
  * `days` is the output of dailyTaskEngine.generateWeekBatch for week 1.
