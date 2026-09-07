@@ -190,9 +190,11 @@ function OnboardingPage({ answers, onAnswer, onComplete }) {
             <h1 className="ob-title fade-up" style={{ animationDelay: '.07s' }}>
               {renderGradientTitle(currentQuestion.title)}
             </h1>
-            <p className="ob-hint fade-up" style={{ animationDelay: '.14s' }}>
-              {currentQuestion.hint}
-            </p>
+            {currentQuestion.hint && (
+              <p className="ob-hint fade-up" style={{ animationDelay: '.14s' }}>
+                {currentQuestion.hint}
+              </p>
+            )}
           </header>
 
           <div className="ob-opts fade-up" style={{ animationDelay: '.2s' }}>

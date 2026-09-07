@@ -27,8 +27,7 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
         </p>
         <h1 className={`land-h1 ${isVisible ? 'visible' : ''}`}>
           Confused isn't a problem with you.<br />
-          It's a problem with having too many options.<br />
-          <i>We fix that.</i>
+          <i>It's too many options.</i>
         </h1>
         <div className={`cta-outer ${isVisible ? 'visible' : ''}`}>
           {showBanner && savedProgress && (
@@ -78,19 +77,16 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
               {
                 step: '01',
                 title: "Tell us where you're stuck",
-                desc: 'Answer 4 quick questions. No signup.',
                 icon: '🎯',
               },
               {
                 step: '02',
-                title: 'Get your exact next 3 steps',
-                desc: 'Your specific path, not a generic roadmap.',
+                title: 'Get your 3 steps',
                 icon: '🗺️',
               },
               {
                 step: '03',
-                title: 'Complete one task at a time',
-                desc: 'Each day unlocks as you finish.',
+                title: 'Complete one at a time',
                 icon: '🔓',
               },
             ].map((item, i) => (
@@ -110,14 +106,8 @@ function LandingPage({ onStart, savedProgress, onContinue, onStartFresh }) {
                   fontSize: '13px',
                   fontWeight: '700',
                   color: '#111',
-                  marginBottom: '6px',
                   lineHeight: '1.3',
                 }}>{item.title}</div>
-                <div style={{
-                  fontSize: '12px',
-                  color: '#888',
-                  lineHeight: '1.4',
-                }}>{item.desc}</div>
               </div>
             ))}
           </div>
