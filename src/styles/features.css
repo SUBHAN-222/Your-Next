@@ -31,11 +31,23 @@
   border: 3px solid rgba(255, 255, 255, 0.1);
   border-top-color: #6366f1;
   border-radius: 50%;
+  display: block;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  transform-origin: 50% 50%;
+  -webkit-animation: aiRingSpin 0.9s linear infinite;
   animation: aiRingSpin 0.9s linear infinite;
+  will-change: transform;
+}
+
+@-webkit-keyframes aiRingSpin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
 }
 
 @keyframes aiRingSpin {
-  to { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .ai-load-message {

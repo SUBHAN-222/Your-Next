@@ -201,9 +201,11 @@ body {
 .yn-stagger > *:nth-child(5) { animation-delay: .33s; }
 .yn-stagger > *:nth-child(6) { animation-delay: .40s; }
 
-/* Respect users who've asked for reduced motion */
+/* Respect users who've asked for reduced motion while keeping essential loading spinners active */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *:not(.ai-load-ring):not(.loading-spinner):not(.btn-spinner),
+  *:not(.ai-load-ring):not(.loading-spinner):not(.btn-spinner)::before,
+  *:not(.ai-load-ring):not(.loading-spinner):not(.btn-spinner)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
