@@ -79,6 +79,17 @@ function App() {
     setCurrentScreen('roadmap')
   }, [])
 
+  // BUG FIX: A page refresh resets `currentScreen` to its default, so users were
+  // always sent back to the landing screen even with an active roadmap. On initial
+  // app load, auto-restore saved progress by reusing the exact same logic as
+  // "Continue Journey" (sets activePlan/roadmapIndex/durationMonths and shows the
+  // roadmap). Runs exactly once on mount — no saved progress means handleContinueJourney
+  // is a no-op and new users still land on the landing screen as before. Mid-quiz
+  // progress is intentionally NOT restored (out of scope).
+  useEffect(() => {
+    handleContinueJourney()
+  }, [])
+
   const handleCompleteQuiz = useCallback(() => {
     setCurrentScreen('duration')
     const timeTakenMs = quizStartTime ? Date.now() - quizStartTime : 0
