@@ -745,6 +745,61 @@ body {
   text-decoration: none;
   box-shadow: 0 14px 28px rgba(37, 99, 235, 0.34), 0 4px 10px rgba(15, 23, 42, 0.12);
 }
+
+.resource-type-picker {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 24px 12px;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.resource-choice {
+  margin: 0 24px 12px;
+}
+
+.resource-choice-title {
+  margin: 0 0 3px;
+  color: #172554;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.resource-choice-help {
+  margin: 0 0 8px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.resource-choice .resource-type-picker {
+  margin: 0;
+}
+
+.resource-type-picker button {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  border-radius: 7px;
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.resource-type-picker button.active {
+  background: #fff;
+  color: #2563eb;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, .12);
+}
+
+.pt-resource-error {
+  margin: 0 24px 12px;
+  color: #b45309;
+  font-size: 13px;
+  line-height: 1.4;
+}
 .pt-resource-btn:focus,
 .pt-resource-btn:focus-visible {
   text-decoration: none;

@@ -42,13 +42,13 @@ Your ONLY job is to return a roadmap in this exact structure, written in the exa
    - A short step name (one line, max 10 words, using a dash for a reassuring second half when it fits naturally)
    - why: ONE confident sentence, maximum 18 words
    - task: ONE concrete sentence, maximum 20 words, specific and sometimes a small question
-   - One resource link (see rule 9 below)
+   - resourceTitle and resourceUrl as empty strings; verified learning resources are resolved separately
 4. The "Don't Do This Yet" reason must be ONE confident sentence, maximum 20 words, based on their actual answers.
 5. Use ALL of the student's answers together, not just their chosen field. Two students in the same field with different struggles must get different Step 1s.
 6. WRITING LEVEL: Simple, plain words a 15-year-old understands instantly. No jargon like "programming," "framework," "implementation," "utilize."
 7. Do NOT give extra advice, extra options, or long explanations. One idea per sentence.
 8. Keep it Pakistan-friendly where relevant, but equally short.
-9. RESOURCE LINKS: Only use these real platforms: freeCodeCamp, The Odin Project, Kaggle Learn, TryHackMe, MDN Web Docs, W3Schools, Coursera, Harvard CS50, or YouTube (channel/topic search only, never an invented specific video URL). Never invent a URL, WhatsApp group, or community link you are not certain is real.
+9. Never create or guess any resource URL, video ID, resource title, date, or provider. Return empty strings for resourceTitle and resourceUrl. The app's verified resource resolver will fill them later.
 10. "field" must be a proper display name (e.g. "Web Development", "Artificial Intelligence") — never a lowercase code like "web" or "ai".
 11. If the student mentions they got overwhelmed or didn't know what to do next after trying AI tools before, make Step 1 feel deliberately smaller and more specific than usual, and consider referencing in the 'why' text that this is intentionally narrower than what a generic AI chat would give them.
 12. Also write a tomorrowTeaser: ONE short, specific, exciting sentence (max 15 words) hinting at what comes AFTER these steps — based on the student's field and situation. Make it feel like a genuine reason to come back, not generic. Example style: 'Next, you'll connect this to a real button that actually works.' Do NOT reveal exact step names, just create curiosity about direction.
@@ -253,13 +253,13 @@ Notice the pattern in these examples:
 
 Rules:
 1. Give exactly ${stepCount} steps, in logical learning order, each building on the last.
-2. Each step must include: name (one line, max 10 words), why (ONE sentence, max 18 words), task (ONE sentence, max 20 words), resourceTitle, resourceUrl.
+2. Each step must include: name (one line, max 10 words), why (ONE sentence, max 18 words), task (ONE sentence, max 20 words), resourceTitle, resourceUrl. Always return empty strings for resourceTitle and resourceUrl: resource URLs are found and validated by a separate service, never by you.
 3. Give exactly ONE overall "Don't Do This Yet" warning for the very beginning of this journey, with a warning (max 8 words) and reason (ONE sentence, max 20 words), based on their actual answers.
 4. "field" must be a proper display name (e.g. "Web Development", "Artificial Intelligence") — never a lowercase code like "web" or "ai".
 5. WRITING LEVEL: Simple, plain words a 15-year-old understands instantly. No jargon like "programming," "framework," "implementation," "utilize."
 6. Do NOT give extra advice, extra options, or long explanations. One idea per sentence.
 7. Keep it Pakistan-friendly where relevant, but equally short.
-8. RESOURCE LINKS: Only use these real platforms: freeCodeCamp, The Odin Project, Kaggle Learn, TryHackMe, MDN Web Docs, W3Schools, Coursera, Harvard CS50, or YouTube (channel/topic search only, never an invented specific video URL). Never invent a URL, WhatsApp group, or community link you are not certain is real.
+8. Do not invent or suggest resource URLs, video IDs, titles, dates, or providers. Keep resourceTitle and resourceUrl empty.
 9. Use ALL of the student's answers together, not just their chosen field.
 
 Return ONLY this JSON, nothing before or after it:
@@ -328,6 +328,8 @@ Return ONLY this JSON, nothing before or after it:
         }
       }
 
+      // Resource discovery is a separate verified-search path. Never surface model-invented links.
+      multiRoadmap.steps = (multiRoadmap.steps || []).map((step) => ({ ...step, resourceTitle: '', resourceUrl: '' }));
       return res.status(200).json(multiRoadmap);
     } catch (error) {
       console.error('AI Multi-Step Roadmap Error:', error.message || error);
@@ -400,6 +402,8 @@ Return ONLY this JSON, nothing before or after it:
     }
     const roadmap = JSON.parse(cleaned);
 
+    // Resource discovery is a separate verified-search path. Never surface model-invented links.
+    roadmap.steps = (roadmap.steps || []).map((step) => ({ ...step, resourceTitle: '', resourceUrl: '' }));
     return res.status(200).json(roadmap);
   } catch (error) {
     console.error('AI Roadmap Generation Error:', error.message || error);

@@ -101,3 +101,7 @@ This architecture supports:
 MIT
 
 Testing hackathon branch deployment.
+
+## Video-learning resource search
+
+Set `YOUTUBE_API_KEY` in the deployment environment to enable verified, task-specific Video Learning results. The server uses the YouTube Data API to search and validate public videos before returning a URL; it never asks the roadmap AI to make up a video link. Resolved resources are cached in the browser for 14 days and revalidated after expiry.

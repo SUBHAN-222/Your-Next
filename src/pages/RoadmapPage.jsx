@@ -4,7 +4,7 @@ import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
 import { saveLearningHistory } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
-import { getEasierStep } from '@services/aiRoadmap'
+import { resolveTaskResource } from '@services/taskResourceResolver'
 
 const PATH_AVOID_ITEMS = {
   data: [
@@ -161,11 +161,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
 
   const [showToast, setShowToast] = useState(false)
   const [completing, setCompleting] = useState(false)
-  const [showCompletionFeedback, setShowCompletionFeedback] = useState(false)
-  const [showEasierMessage, setShowEasierMessage] = useState(false)
   const [copiedStreak, setCopiedStreak] = useState(false)
   const [startedStepIndex, setStartedStepIndex] = useState(null)
   const [showAllAvoids, setShowAllAvoids] = useState(false)
+  const [resourceType, setResourceType] = useState('video')
+  const [resourceState, setResourceState] = useState({ loading: false, error: '', resource: null })
 
   const handleShareStreak = useCallback(() => {
     const fieldName = roadmapData?.field || 'Tech'
@@ -202,9 +202,31 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    setShowEasierMessage(false)
     setStartedStepIndex(null)
+    setResourceState({ loading: false, error: '', resource: null })
   }, [currentStepIndex])
+
+  const handleStartLearning = useCallback(async () => {
+    if (!currentStep || resourceState.loading) return
+    setResourceState({ loading: true, error: '', resource: null })
+    // Opening the blank tab inside the click handler preserves popup permission while lookup runs.
+    const learningWindow = window.open('about:blank', '_blank')
+    try {
+      const resource = await resolveTaskResource({
+        task: currentStep, field: roadmapData?.field, level: 'beginner', resourceType,
+      })
+      if (learningWindow) learningWindow.location.href = resource.url
+      else window.open(resource.url, '_blank', 'noopener,noreferrer')
+      setStartedStepIndex(currentStepIndex)
+      setResourceState({ loading: false, error: '', resource })
+      posthog.capture('roadmap_resource_opened', {
+        step_name: currentStep.name, resource_type: resourceType, provider: resource.provider,
+      })
+    } catch (error) {
+      if (learningWindow) learningWindow.close()
+      setResourceState({ loading: false, error: error?.message || 'Resource unavailable.', resource: null })
+    }
+  }, [currentStep, currentStepIndex, resourceState.loading, resourceType, roadmapData?.field])
 
   useEffect(() => {
     if (!showMomentum) return
@@ -212,9 +234,27 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
     return () => clearTimeout(timer)
   }, [showMomentum, hideMomentum])
 
-  const handleComplete = useCallback(() => {
-    setShowCompletionFeedback(true)
-  }, [])
+  const handleComplete = useCallback(async () => {
+    if (completing) return
+    setCompleting(true)
+    try {
+      saveLearningHistory({
+        stepIndex: currentStepIndex,
+        stepName: currentStep?.name || 'Current step',
+        status: 'completed',
+        timestamp: new Date().toISOString(),
+      })
+      posthog.capture('roadmap_step_completed', {
+        step_id: currentStepIndex + 1,
+        step_name: currentStep?.name,
+        field: roadmapData?.field,
+      })
+      completeCurrentStep()
+      setShowToast(true)
+    } finally {
+      setCompleting(false)
+    }
+  }, [completing, currentStepIndex, currentStep, roadmapData?.field, completeCurrentStep])
 
   const handleDefer = useCallback(() => {
     posthog.capture('roadmap_step_deferred', {
@@ -223,46 +263,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
     })
     deferCurrentStep()
   }, [deferCurrentStep, currentStepIndex, currentStep?.name])
-
-  const handleCompletionFeedback = useCallback(async (status) => {
-    if (completing) return
-    setCompleting(true)
-    try {
-      saveLearningHistory({
-        stepIndex: currentStepIndex,
-        stepName: currentStep?.name || 'Current step',
-        status,
-        timestamp: new Date().toISOString(),
-      })
-
-      if (status === 'completed') {
-        posthog.capture('roadmap_step_completed', {
-          step_id: currentStepIndex + 1,
-          step_name: currentStep?.name,
-          field: roadmapData?.field,
-        })
-        completeCurrentStep()
-        setShowCompletionFeedback(false)
-        setShowToast(true)
-      } else if (status === 'stuck') {
-        setShowEasierMessage(true)
-        setShowCompletionFeedback(false)
-        const easier = await getEasierStep(currentStep, roadmapData?.field)
-        if (easier) {
-          onUpdateStep?.(currentStepIndex, {
-            name: easier.name,
-            why: easier.why,
-            task: easier.task,
-          })
-        }
-      } else {
-        // For 'not_started', just close feedback without advancing
-        setShowCompletionFeedback(false)
-      }
-    } finally {
-      setCompleting(false)
-    }
-  }, [completing, currentStepIndex, currentStep, roadmapData, completeCurrentStep, onUpdateStep])
 
   const fieldLabel = roadmapData.field || 'learning'
   const streakLabel = `${streak} Task${streak === 1 ? '' : 's'} Completed`
@@ -569,12 +569,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
               <span className="pt-dot-label"><span className="pt-dot"></span> Current Task</span>
               <span className="pt-step-badge">Step {(currentStepIndex % STEPS_PER_DAY) + 1} of {todaySteps.length || STEPS_PER_DAY}</span>
             </div>
-            {showEasierMessage && (
-              <div style={{ margin: '12px 24px 0', padding: '12px 16px', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '10px', color: '#60a5fa', fontSize: '14px', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>💙</span>
-                <span>No worries — here's an easier version of this step</span>
-              </div>
-            )}
             <div className="pt-body">
               <div className="pt-icon-large">
                 <span>{roadmapData?.icon || '🎯'}</span>
@@ -593,49 +587,40 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
                 ? 'Done with the activity? Mark it complete.'
                 : "Open the resource first — then come back and mark it complete."}
             </p>
-            {showCompletionFeedback && (
-              <div className="completion-feedback" role="group" aria-label="How did it go?">
-                <p className="completion-feedback-title">How did it go?</p>
-                <div className="completion-feedback-options">
-                  <button type="button" onClick={() => handleCompletionFeedback('completed')}>
-                    🟢 I completed it
-                  </button>
-                  <button type="button" onClick={() => handleCompletionFeedback('stuck')}>
-                    🟡 I got stuck
-                  </button>
-                  <button type="button" onClick={() => handleCompletionFeedback('not_started')}>
-                    🔴 I couldn't start
-                  </button>
-                </div>
+            <div className="resource-choice">
+              <p className="resource-choice-title">How would you like to learn this?</p>
+              <p className="resource-choice-help">Choose one format before starting.</p>
+              <div className="resource-type-picker" role="group" aria-label="Choose your learning resource type">
+                <button type="button" className={resourceType === 'video' ? 'active' : ''} onClick={() => setResourceType('video')}>
+                  ▶ Video Learning
+                </button>
+                <button type="button" className={resourceType === 'documentation' ? 'active' : ''} onClick={() => setResourceType('documentation')}>
+                  📖 Documentation
+                </button>
               </div>
-            )}
+            </div>
+            {resourceState.error && <p className="pt-resource-error" role="alert">{resourceState.error}</p>}
             <div className="pt-actions">
               {completing ? (
                 <div className="pt-loading">Saving progress...</div>
               ) : startedStepIndex === currentStepIndex ? (
-                <button type="button" className="pt-complete-btn" onClick={handleComplete} disabled={showCompletionFeedback}>
+                <button type="button" className="pt-complete-btn" onClick={handleComplete}>
                   <span className="pt-check">✓</span> Mark Complete
                 </button>
               ) : (
-                <a
-                  href={currentStep?.resourceUrl}
-                  className="pt-resource-btn"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setStartedStepIndex(currentStepIndex)}
-                >
-                  Start Learning →
-                </a>
+                <button type="button" className="pt-resource-btn" onClick={handleStartLearning} disabled={resourceState.loading}>
+                  {resourceState.loading ? 'Finding the best learning resource…' : 'Start Learning →'}
+                </button>
               )}
             </div>
-            {startedStepIndex === currentStepIndex && !completing && currentStep?.resourceUrl && (
+            {startedStepIndex === currentStepIndex && !completing && resourceState.resource?.url && (
               <a
                 className="pt-reopen-link"
-                href={currentStep.resourceUrl}
+                href={resourceState.resource.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                ↗ Open the resource again
+                ↗ Open {resourceState.resource.title || 'the resource'} again
               </a>
             )}
           </div>
