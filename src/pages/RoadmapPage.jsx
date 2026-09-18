@@ -3,7 +3,7 @@ import { useRoadmap } from '@hooks/useRoadmap'
 import LearningStyleModal from '@components/LearningStyleModal'
 import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
-import { getResourcePreference, hasResourcePreference, saveLearningHistory, saveResourcePreference } from '@utils/progressStorage'
+import { getResourcePreference, getStoredResourcePreference, saveLearningHistory, saveResourcePreference } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
 import { resolveTaskResource } from '@services/taskResourceResolver'
 
@@ -166,7 +166,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
   const [startedStepIndex, setStartedStepIndex] = useState(null)
   const [showAllAvoids, setShowAllAvoids] = useState(false)
   const [resourceType, setResourceType] = useState(() => getResourcePreference())
-  const [showLearningStyleModal, setShowLearningStyleModal] = useState(() => !hasResourcePreference())
+  const [showLearningStyleModal, setShowLearningStyleModal] = useState(false)
   const [resourceState, setResourceState] = useState({ loading: false, error: '', resource: null })
 
   const handleShareStreak = useCallback(() => {
@@ -188,6 +188,13 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
     }
     return initial
   })
+
+  useEffect(() => {
+    const storedPreference = getStoredResourcePreference()
+    const hasRoadmap = Boolean(activePlan?.steps?.length)
+    console.log('[LearningStyleModal] trigger check', { hasRoadmap, storedPreference })
+    setShowLearningStyleModal(hasRoadmap && !storedPreference)
+  }, [activePlan])
 
   useEffect(() => {
     setExpandedDays((prev) => {
@@ -235,7 +242,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
   }, [])
 
   const handleLearningStyleConfirmed = useCallback((preference) => {
-    setResourceType(preference)
+    setResourceType(saveResourcePreference(preference))
     setShowLearningStyleModal(false)
   }, [])
 

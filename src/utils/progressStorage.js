@@ -70,9 +70,7 @@ export function saveLearningHistory(record) {
 }
 
 export function clearProgress() {
-  Object.entries(KEYS)
-    .filter(([name]) => name !== 'resourcePreference')
-    .forEach(([, key]) => localStorage.removeItem(key))
+  Object.values(KEYS).forEach((key) => localStorage.removeItem(key))
 }
 
 export { KEYS }
@@ -88,13 +86,16 @@ export function getLearningHistory() {
 }
 
 export function getResourcePreference() {
-  const preference = localStorage.getItem(KEYS.resourcePreference)
-  return preference === 'documentation' ? 'documentation' : 'video'
+  return getStoredResourcePreference() || 'video'
 }
 
 export function hasResourcePreference() {
+  return Boolean(getStoredResourcePreference())
+}
+
+export function getStoredResourcePreference() {
   const preference = localStorage.getItem(KEYS.resourcePreference)
-  return preference === 'video' || preference === 'documentation'
+  return preference === 'video' || preference === 'documentation' ? preference : null
 }
 
 export function saveResourcePreference(preference) {
