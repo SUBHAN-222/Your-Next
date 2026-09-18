@@ -92,6 +92,11 @@ export function getResourcePreference() {
   return preference === 'documentation' ? 'documentation' : 'video'
 }
 
+export function hasResourcePreference() {
+  const preference = localStorage.getItem(KEYS.resourcePreference)
+  return preference === 'video' || preference === 'documentation'
+}
+
 export function saveResourcePreference(preference) {
   const value = preference === 'documentation' ? 'documentation' : 'video'
   localStorage.setItem(KEYS.resourcePreference, value)

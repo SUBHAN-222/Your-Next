@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
+import LearningStyleModal from '@components/LearningStyleModal'
 import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
-import { getResourcePreference, saveLearningHistory, saveResourcePreference } from '@utils/progressStorage'
+import { getResourcePreference, hasResourcePreference, saveLearningHistory, saveResourcePreference } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
 import { resolveTaskResource } from '@services/taskResourceResolver'
 
@@ -165,6 +166,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
   const [startedStepIndex, setStartedStepIndex] = useState(null)
   const [showAllAvoids, setShowAllAvoids] = useState(false)
   const [resourceType, setResourceType] = useState(() => getResourcePreference())
+  const [showLearningStyleModal, setShowLearningStyleModal] = useState(() => !hasResourcePreference())
   const [resourceState, setResourceState] = useState({ loading: false, error: '', resource: null })
 
   const handleShareStreak = useCallback(() => {
@@ -230,6 +232,11 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
 
   const handleResourcePreferenceChange = useCallback((preference) => {
     setResourceType(saveResourcePreference(preference))
+  }, [])
+
+  const handleLearningStyleConfirmed = useCallback((preference) => {
+    setResourceType(preference)
+    setShowLearningStyleModal(false)
   }, [])
 
   useEffect(() => {
@@ -301,6 +308,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
+      {showLearningStyleModal && <LearningStyleModal onConfirmed={handleLearningStyleConfirmed} />}
       <nav className="res-nav">
         <button className="nav-logo" onClick={onGoHome} type="button" aria-label="Go home">
           Your<b>Next</b>
