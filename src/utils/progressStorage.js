@@ -7,6 +7,7 @@ const KEYS = {
   learningHistory: 'yn_learning_history',
   durationMonths: 'yn_duration_months',
   dayProgress: 'yn_day_progress',
+  resourcePreference: 'yn_resource_preference',
 }
 
 export function getSavedProgress() {
@@ -69,7 +70,9 @@ export function saveLearningHistory(record) {
 }
 
 export function clearProgress() {
-  Object.values(KEYS).forEach((key) => localStorage.removeItem(key))
+  Object.entries(KEYS)
+    .filter(([name]) => name !== 'resourcePreference')
+    .forEach(([, key]) => localStorage.removeItem(key))
 }
 
 export { KEYS }
@@ -82,4 +85,15 @@ export function getLearningHistory() {
   } catch {
     return []
   }
+}
+
+export function getResourcePreference() {
+  const preference = localStorage.getItem(KEYS.resourcePreference)
+  return preference === 'documentation' ? 'documentation' : 'video'
+}
+
+export function saveResourcePreference(preference) {
+  const value = preference === 'documentation' ? 'documentation' : 'video'
+  localStorage.setItem(KEYS.resourcePreference, value)
+  return value
 }

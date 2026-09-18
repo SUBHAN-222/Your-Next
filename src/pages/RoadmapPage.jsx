@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
 import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
-import { saveLearningHistory } from '@utils/progressStorage'
+import { getResourcePreference, saveLearningHistory, saveResourcePreference } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
 import { resolveTaskResource } from '@services/taskResourceResolver'
 
@@ -164,7 +164,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
   const [copiedStreak, setCopiedStreak] = useState(false)
   const [startedStepIndex, setStartedStepIndex] = useState(null)
   const [showAllAvoids, setShowAllAvoids] = useState(false)
-  const [resourceType, setResourceType] = useState('video')
+  const [resourceType, setResourceType] = useState(() => getResourcePreference())
   const [resourceState, setResourceState] = useState({ loading: false, error: '', resource: null })
 
   const handleShareStreak = useCallback(() => {
@@ -227,6 +227,10 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
       setResourceState({ loading: false, error: error?.message || 'Resource unavailable.', resource: null })
     }
   }, [currentStep, currentStepIndex, resourceState.loading, resourceType, roadmapData?.field])
+
+  const handleResourcePreferenceChange = useCallback((preference) => {
+    setResourceType(saveResourcePreference(preference))
+  }, [])
 
   useEffect(() => {
     if (!showMomentum) return
@@ -308,6 +312,24 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
             </span>
           )}
           <span className="nav-label">Your Roadmap</span>
+          <div className="nav-resource-switch" role="group" aria-label="Learning resource preference">
+            <button
+              type="button"
+              className={resourceType === 'video' ? 'active' : ''}
+              aria-pressed={resourceType === 'video'}
+              onClick={() => handleResourcePreferenceChange('video')}
+            >
+              🎥 Video
+            </button>
+            <button
+              type="button"
+              className={resourceType === 'documentation' ? 'active' : ''}
+              aria-pressed={resourceType === 'documentation'}
+              onClick={() => handleResourcePreferenceChange('documentation')}
+            >
+              📄 Text
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -587,46 +609,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
                 ? 'Done with the activity? Mark it complete.'
                 : "Open the resource first — then come back and mark it complete."}
             </p>
-            <div className="resource-choice">
-              <p className="resource-choice-eyebrow">✨ Choose your learning path</p>
-              <h4 className="resource-choice-title">How do you want to learn this?</h4>
-              <p className="resource-choice-help">Pick the format that works best for you.</p>
-              <div className="resource-paths" role="radiogroup" aria-label="Choose your learning path">
-                <button
-                  type="button"
-                  role="radio"
-                  aria-checked={resourceType === 'video'}
-                  className={`resource-path-card ${resourceType === 'video' ? 'active' : ''}`}
-                  onClick={() => setResourceType('video')}
-                >
-                  <span className="resource-path-icon" aria-hidden="true">🎥</span>
-                  <span className="resource-path-content">
-                    <span className="resource-path-heading">Watch &amp; Learn <span className="resource-path-badge">Recommended</span></span>
-                    <span className="resource-path-description">Follow a guided video lesson for this task.</span>
-                  </span>
-                  <span className="resource-path-check" aria-hidden="true">✓</span>
-                </button>
-                <button
-                  type="button"
-                  role="radio"
-                  aria-checked={resourceType === 'documentation'}
-                  className={`resource-path-card ${resourceType === 'documentation' ? 'active' : ''}`}
-                  onClick={() => setResourceType('documentation')}
-                >
-                  <span className="resource-path-icon" aria-hidden="true">📚</span>
-                  <span className="resource-path-content">
-                    <span className="resource-path-heading">Read &amp; Learn</span>
-                    <span className="resource-path-description">Learn from a focused guide or documentation.</span>
-                  </span>
-                  <span className="resource-path-check" aria-hidden="true">✓</span>
-                </button>
-              </div>
-              <p className="resource-choice-confirmation" aria-live="polite">
-                ✓ {resourceType === 'video'
-                  ? "Video selected — we'll find the best resource for this task."
-                  : "Reading selected — we'll provide a focused resource for this task."}
-              </p>
-            </div>
             {resourceState.error && <p className="pt-resource-error" role="alert">{resourceState.error}</p>}
             <div className="pt-actions">
               {completing ? (
