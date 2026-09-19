@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
+// DO NOT REMOVE: LearningStyleModal — required first-run popup, see 2026-09-19
 import LearningStyleModal from '@components/LearningStyleModal'
 import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
@@ -318,6 +319,7 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
+      {/* DO NOT REMOVE: LearningStyleModal — required first-run popup, see 2026-09-19 */}
       {showLearningStyleModal && <LearningStyleModal onConfirmed={handleLearningStyleConfirmed} />}
       <nav className="res-nav">
         <button className="nav-logo" onClick={onGoHome} type="button" aria-label="Go home">
