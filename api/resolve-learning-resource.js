@@ -14,6 +14,19 @@ function cleanText(value, max = 240) {
   return String(value || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, max)
 }
 
+// ISO 8601 duration parser e.g. "PT4M13S", "PT1H2M10S", "PT45S" -> seconds
+function parseIso8601Duration(isoDuration) {
+  if (!isoDuration) return 0
+  const regex = /P(?:(\d+)D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/
+  const matches = isoDuration.match(regex)
+  if (!matches) return 0
+  const days = parseInt(matches[1] || '0', 10)
+  const hours = parseInt(matches[2] || '0', 10)
+  const minutes = parseInt(matches[3] || '0', 10)
+  const seconds = parseInt(matches[4] || '0', 10)
+  return (days * 86400) + (hours * 3600) + (minutes * 60) + seconds
+}
+
 // Roadmap titles are motivational copy, not search terms. Convert each into a teachable objective first.
 function learningObjective(body) {
   const name = cleanText(body?.task?.name, 120)
@@ -51,20 +64,47 @@ function score(candidate, context) {
 }
 
 async function apiYoutubeCandidates(context, apiKey) {
-  const searchParams = new URLSearchParams({ key: apiKey, part: 'snippet', type: 'video', q: context.queries[0], maxResults: '12', videoEmbeddable: 'true', videoSyndicated: 'true', order: 'relevance', videoDuration: 'medium', regionCode: 'US' })
+  const searchParams = new URLSearchParams({
+    key: apiKey,
+    part: 'snippet',
+    type: 'video',
+    q: context.queries[0],
+    maxResults: '12',
+    videoEmbeddable: 'true',
+    videoSyndicated: 'true',
+    order: 'relevance',
+    videoDuration: 'medium', // 4 to 20 minutes
+    regionCode: 'US'
+  })
   const search = await fetch(`${YOUTUBE_SEARCH}?${searchParams}`, { signal: AbortSignal.timeout(8000) })
   if (!search.ok) throw new Error(`YouTube API search returned ${search.status}`)
   const ids = ((await search.json()).items || []).map((item) => item.id?.videoId).filter(Boolean)
   if (!ids.length) return []
   const details = await fetch(`${YOUTUBE_VIDEOS}?${new URLSearchParams({ key: apiKey, part: 'snippet,contentDetails,status', id: ids.join(',') })}`, { signal: AbortSignal.timeout(8000) })
   if (!details.ok) throw new Error(`YouTube API validation returned ${details.status}`)
-  return ((await details.json()).items || []).filter((item) => item.status?.privacyStatus === 'public' && item.status?.embeddable !== false).map((item) => ({
-    title: cleanText(item.snippet?.title), url: `https://www.youtube.com/watch?v=${item.id}`,
-    provider: cleanText(item.snippet?.channelTitle), type: 'video', isFree: true,
-    publishedAt: item.snippet?.publishedAt || null, updatedAt: null, technology: context.technology,
-    version: context.version || null, level: context.level, duration: item.contentDetails?.duration || null,
-    description: cleanText(item.snippet?.description, 500),
-  }))
+  
+  return ((await details.json()).items || [])
+    .filter((item) => {
+      if (item.status?.privacyStatus !== 'public' || item.status?.embeddable === false) return false
+      const seconds = parseIso8601Duration(item.contentDetails?.duration)
+      // Safety net: Reject any video under 4 minutes (240s)
+      return seconds >= 240
+    })
+    .map((item) => ({
+      title: cleanText(item.snippet?.title),
+      url: `https://www.youtube.com/watch?v=${item.id}`,
+      provider: cleanText(item.snippet?.channelTitle),
+      type: 'video',
+      isFree: true,
+      publishedAt: item.snippet?.publishedAt || null,
+      updatedAt: null,
+      technology: context.technology,
+      version: context.version || null,
+      level: context.level,
+      duration: item.contentDetails?.duration || null,
+      durationSeconds: parseIso8601Duration(item.contentDetails?.duration),
+      description: cleanText(item.snippet?.description, 500),
+    }))
 }
 
 async function publicYoutubeCandidates(context) {
@@ -81,6 +121,10 @@ async function publicYoutubeCandidates(context) {
     const response = await fetch(`${YOUTUBE_OEMBED}?${new URLSearchParams({ url, format: 'json' })}`, { signal: AbortSignal.timeout(6000) })
     if (!response.ok) throw new Error('Video is no longer public')
     const data = await response.json()
+    // Reject titles containing "#shorts", "short", etc. if present in web fallback
+    if (/#shorts|\bshorts\b|\bshort\b/i.test(data.title)) {
+      throw new Error('Video is a YouTube Short')
+    }
     return { title: cleanText(data.title), url, provider: cleanText(data.author_name), type: 'video', isFree: true, publishedAt: null, updatedAt: null, technology: context.technology, version: context.version || null, level: context.level, duration: null, description: '' }
   }))
   return validated.flatMap((result) => result.status === 'fulfilled' ? [result.value] : [])
@@ -95,7 +139,10 @@ export default async function handler(req, res) {
     if (process.env.YOUTUBE_API_KEY) discovery.push(apiYoutubeCandidates(context, process.env.YOUTUBE_API_KEY))
     const results = await Promise.allSettled(discovery)
     const candidates = [...new Map(results.flatMap((result) => result.status === 'fulfilled' ? result.value : []).map((candidate) => [candidate.url, candidate])).values()]
-    const best = candidates.filter((candidate) => candidate.isFree && candidate.url && candidate.title).map((candidate) => ({ ...candidate, rank: score(candidate, context) })).sort((a, b) => b.rank - a.rank)[0]
+    const best = candidates
+      .filter((candidate) => candidate.isFree && candidate.url && candidate.title)
+      .map((candidate) => ({ ...candidate, rank: score(candidate, context) }))
+      .sort((a, b) => b.rank - a.rank)[0]
     if (!best) return res.status(502).json({ error: 'We could not finish searching for a suitable video. Please retry.', code: 'RESOURCE_DISCOVERY_FAILED' })
     delete best.rank
     return res.status(200).json({ resource: { ...best, lastValidatedAt: new Date().toISOString() }, objective: { technology: context.technology, topic: context.topic, level: context.level } })

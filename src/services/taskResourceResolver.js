@@ -37,35 +37,35 @@ const TECHNOLOGIES = [
 
 const CURATED_DOCS = [
   // HTML
-  { tech: 'html', keywords: ['form', 'input'], url: 'https://developer.mozilla.org/en-US/docs/Learn/Forms/Your_first_form' },
-  { tech: 'html', keywords: ['table'], url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML/Tables/Basics' },
-  { tech: 'html', keywords: ['link', 'anchor'], url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Creating_hyperlinks' },
-  { tech: 'html', keywords: ['semantic', 'structure', 'tag'], url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Document_and_website_structure' },
-  { tech: 'html', keywords: ['image', 'img'], url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Images_in_HTML' },
-  { tech: 'html', keywords: ['basic', 'fundamental', 'start', 'intro'], url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML/Introduction_to_HTML/Getting_started' },
+  { tech: 'html', keywords: ['form', 'input'], url: 'https://www.w3schools.com/html/html_forms.asp' },
+  { tech: 'html', keywords: ['table'], url: 'https://www.w3schools.com/html/html_tables.asp' },
+  { tech: 'html', keywords: ['link', 'anchor'], url: 'https://www.w3schools.com/html/html_links.asp' },
+  { tech: 'html', keywords: ['semantic', 'structure', 'tag'], url: 'https://www.w3schools.com/html/html5_semantic_elements.asp' },
+  { tech: 'html', keywords: ['image', 'img'], url: 'https://www.w3schools.com/html/html_images.asp' },
+  { tech: 'html', keywords: ['basic', 'fundamental', 'start', 'intro'], url: 'https://www.w3schools.com/html/html_intro.asp' },
 
   // CSS
-  { tech: 'css', keywords: ['flexbox', 'flex'], url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox' },
-  { tech: 'css', keywords: ['grid'], url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Grids' },
-  { tech: 'css', keywords: ['box model', 'margin', 'padding'], url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model' },
-  { tech: 'css', keywords: ['color', 'background'], url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/color_value' },
-  { tech: 'css', keywords: ['text', 'font', 'typography'], url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/Styling_text/Fundamentals' },
-  { tech: 'css', keywords: ['selector', 'class', 'id'], url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Selectors' },
-  { tech: 'css', keywords: ['layout', 'position'], url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Positioning' },
-  { tech: 'css', keywords: ['basic', 'fundamental', 'start', 'intro'], url: 'https://developer.mozilla.org/en-US/docs/Learn/CSS/First_steps/Getting_started' },
+  { tech: 'css', keywords: ['flexbox', 'flex'], url: 'https://www.w3schools.com/css/css3_flexbox.asp' },
+  { tech: 'css', keywords: ['grid'], url: 'https://www.w3schools.com/css/css_grid.asp' },
+  { tech: 'css', keywords: ['box model', 'margin', 'padding'], url: 'https://www.w3schools.com/css/css_boxmodel.asp' },
+  { tech: 'css', keywords: ['color', 'background'], url: 'https://www.w3schools.com/css/css_colors.asp' },
+  { tech: 'css', keywords: ['text', 'font', 'typography'], url: 'https://www.w3schools.com/css/css_font.asp' },
+  { tech: 'css', keywords: ['selector', 'class', 'id'], url: 'https://www.w3schools.com/css/css_selectors.asp' },
+  { tech: 'css', keywords: ['layout', 'position'], url: 'https://www.w3schools.com/css/css_positioning.asp' },
+  { tech: 'css', keywords: ['basic', 'fundamental', 'start', 'intro'], url: 'https://www.w3schools.com/css/css_intro.asp' },
 
   // JavaScript
-  { tech: 'javascript', keywords: ['array', 'list'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps/Arrays' },
-  { tech: 'javascript', keywords: ['object', 'dictionary'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Basics' },
-  { tech: 'javascript', keywords: ['function'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Functions' },
-  { tech: 'javascript', keywords: ['variable', 'let', 'const'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps/Variables' },
-  { tech: 'javascript', keywords: ['loop', 'for', 'while', 'iterate'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Looping_code' },
-  { tech: 'javascript', keywords: ['condition', 'if', 'else', 'logic'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/conditionals' },
-  { tech: 'javascript', keywords: ['dom', 'element', 'document'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Manipulating_documents' },
-  { tech: 'javascript', keywords: ['event', 'listener', 'click'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events' },
-  { tech: 'javascript', keywords: ['promise', 'async', 'await', 'fetch', 'api'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises' },
-  { tech: 'javascript', keywords: ['basic', 'fundamental', 'start', 'intro', 'think'], url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps/What_is_JavaScript' },
-  
+  { tech: 'javascript', keywords: ['array', 'list'], url: 'https://www.w3schools.com/js/js_arrays.asp' },
+  { tech: 'javascript', keywords: ['object', 'dictionary'], url: 'https://www.w3schools.com/js/js_objects.asp' },
+  { tech: 'javascript', keywords: ['function'], url: 'https://www.w3schools.com/js/js_functions.asp' },
+  { tech: 'javascript', keywords: ['variable', 'let', 'const'], url: 'https://www.w3schools.com/js/js_variables.asp' },
+  { tech: 'javascript', keywords: ['loop', 'for', 'while', 'iterate'], url: 'https://www.w3schools.com/js/js_loop_for.asp' },
+  { tech: 'javascript', keywords: ['condition', 'if', 'else', 'logic'], url: 'https://www.w3schools.com/js/js_if_else.asp' },
+  { tech: 'javascript', keywords: ['dom', 'element', 'document'], url: 'https://www.w3schools.com/js/js_htmldom.asp' },
+  { tech: 'javascript', keywords: ['event', 'listener', 'click'], url: 'https://www.w3schools.com/js/js_events.asp' },
+  { tech: 'javascript', keywords: ['promise', 'async', 'await', 'fetch', 'api'], url: 'https://www.w3schools.com/js/js_async.asp' },
+  { tech: 'javascript', keywords: ['basic', 'fundamental', 'start', 'intro', 'think'], url: 'https://www.w3schools.com/js/js_intro.asp' },
+
   // React
   { tech: 'react', keywords: ['component'], url: 'https://react.dev/learn/your-first-component' },
   { tech: 'react', keywords: ['state', 'usestate'], url: 'https://react.dev/learn/state-a-components-memory' },
@@ -122,14 +122,14 @@ const CURATED_DOCS = [
   
   // Cybersecurity / Pentesting
   { tech: 'cybersecurity', keywords: ['linux', 'command', 'terminal'], url: 'https://ubuntu.com/tutorials/command-line-for-beginners' },
-  { tech: 'cybersecurity', keywords: ['network', 'protocol'], url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview' },
-  { tech: 'cybersecurity', keywords: ['web', 'security', 'owasp'], url: 'https://developer.mozilla.org/en-US/docs/Web/Security' }
+  { tech: 'cybersecurity', keywords: ['network', 'protocol'], url: 'https://www.w3schools.com/whatis/whatis_http.asp' },
+  { tech: 'cybersecurity', keywords: ['web', 'security', 'owasp'], url: 'https://tryhackme.com/' }
 ]
 
 const FALLBACK_DOCS = {
-  'html': 'https://developer.mozilla.org/en-US/docs/Web/HTML',
-  'css': 'https://developer.mozilla.org/en-US/docs/Web/CSS',
-  'javascript': 'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
+  'html': 'https://www.w3schools.com/html/',
+  'css': 'https://www.w3schools.com/css/',
+  'javascript': 'https://www.w3schools.com/js/',
   'typescript': 'https://www.typescriptlang.org/docs/',
   'react': 'https://react.dev/',
   'next.js': 'https://nextjs.org/docs',
@@ -193,7 +193,7 @@ function getCuratedDocUrl(task, field) {
   } else {
     // Field-aware fallback
     const fieldFallbackKeys = [
-      { key: 'web', url: 'https://developer.mozilla.org/en-US/docs/Web' },
+      { key: 'web', url: 'https://www.w3schools.com/where_to_start.asp' },
       { key: 'ai', url: 'https://developers.google.com/machine-learning/crash-course' },
       { key: 'machine learning', url: 'https://developers.google.com/machine-learning/crash-course' },
       { key: 'data', url: 'https://www.kaggle.com/learn' },
@@ -207,7 +207,7 @@ function getCuratedDocUrl(task, field) {
       { key: 'cs', url: 'https://cs50.harvard.edu/' }
     ]
     const matchedField = fieldFallbackKeys.find(f => fieldText.includes(f.key))
-    finalUrl = matchedField ? matchedField.url : 'https://developer.mozilla.org/en-US/docs/Learn'
+    finalUrl = matchedField ? matchedField.url : 'https://www.w3schools.com/where_to_start.asp'
   }
   
   const displayTitle = (technology && technology !== fieldText) ? `${technology} (${fieldText})` : fieldText;
@@ -259,4 +259,3 @@ export async function resolveTaskResource({ task, field, level = 'beginner', res
   writeCache(cache)
   return data.resource
 }
-
