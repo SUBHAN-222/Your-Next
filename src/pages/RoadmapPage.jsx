@@ -192,7 +192,10 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
   useEffect(() => {
     const storedPreference = getStoredResourcePreference()
     const hasRoadmap = Boolean(activePlan?.steps?.length)
-    console.log('[LearningStyleModal] trigger check', { hasRoadmap, storedPreference })
+    console.log('[LearningStyleModal] trigger check:', { hasRoadmap, storedPreference, activePlanId: activePlan?.field })
+    if (storedPreference) {
+      setResourceType(storedPreference)
+    }
     setShowLearningStyleModal(hasRoadmap && !storedPreference)
   }, [activePlan])
 
