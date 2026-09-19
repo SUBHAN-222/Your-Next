@@ -184,18 +184,38 @@ function getCuratedDocUrl(task, field) {
     }
   }
 
-  let finalUrl = 'https://developer.mozilla.org/en-US/docs/Learn' // Ultimate fallback
+  let finalUrl = null
   
   if (bestMatch && maxScore > 0) {
     finalUrl = bestMatch.url
   } else if (FALLBACK_DOCS[technology]) {
     finalUrl = FALLBACK_DOCS[technology]
+  } else {
+    // Field-aware fallback
+    const fieldFallbackKeys = [
+      { key: 'web', url: 'https://developer.mozilla.org/en-US/docs/Web' },
+      { key: 'ai', url: 'https://developers.google.com/machine-learning/crash-course' },
+      { key: 'machine learning', url: 'https://developers.google.com/machine-learning/crash-course' },
+      { key: 'data', url: 'https://www.kaggle.com/learn' },
+      { key: 'cyber', url: 'https://tryhackme.com/' },
+      { key: 'security', url: 'https://tryhackme.com/' },
+      { key: 'mobile', url: 'https://reactnative.dev/docs/getting-started' },
+      { key: 'design', url: 'https://www.interaction-design.org/literature' },
+      { key: 'ui', url: 'https://www.interaction-design.org/literature' },
+      { key: 'ux', url: 'https://www.interaction-design.org/literature' },
+      { key: 'university', url: 'https://cs50.harvard.edu/' },
+      { key: 'cs', url: 'https://cs50.harvard.edu/' }
+    ]
+    const matchedField = fieldFallbackKeys.find(f => fieldText.includes(f.key))
+    finalUrl = matchedField ? matchedField.url : 'https://developer.mozilla.org/en-US/docs/Learn'
   }
   
+  const displayTitle = (technology && technology !== fieldText) ? `${technology} (${fieldText})` : fieldText;
+  
   return {
-    title: `${technology} official documentation`.replace(/^\w/, c => c.toUpperCase()),
+    title: `${displayTitle} documentation`.replace(/^\w/, c => c.toUpperCase()),
     url: finalUrl,
-    provider: 'Official Documentation',
+    provider: 'Official Resources',
     type: 'documentation',
     isFree: true,
     lastValidatedAt: new Date().toISOString(),

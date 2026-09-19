@@ -32,9 +32,9 @@ function learningObjective(body) {
   const objective = cleanText(`${technology} ${topic || 'fundamentals'} ${task}`, 200)
   const version = cleanText(body?.task?.version || body?.version, 20)
   const queries = [...new Set([
-    `${technology} ${topic} ${level} free course`,
-    `${technology} ${topic} ${level} tutorial ${version}`,
-    `${technology} ${topic || 'fundamentals'} current tutorial`,
+    `${field} ${technology} ${topic} ${level} free course -shorts`,
+    `${field} ${technology} ${topic} ${level} tutorial ${version} -shorts`,
+    `${field} ${technology} ${topic || 'fundamentals'} tutorial -shorts`,
   ].map((query) => cleanText(query, 260)).filter(Boolean))]
   return { name, task, field, level, technology, topic, objective, version, queries }
 }
@@ -51,7 +51,7 @@ function score(candidate, context) {
 }
 
 async function apiYoutubeCandidates(context, apiKey) {
-  const searchParams = new URLSearchParams({ key: apiKey, part: 'snippet', type: 'video', q: context.queries[0], maxResults: '12', videoEmbeddable: 'true', videoSyndicated: 'true', order: 'relevance' })
+  const searchParams = new URLSearchParams({ key: apiKey, part: 'snippet', type: 'video', q: context.queries[0], maxResults: '12', videoEmbeddable: 'true', videoSyndicated: 'true', order: 'relevance', videoDuration: 'medium', regionCode: 'US' })
   const search = await fetch(`${YOUTUBE_SEARCH}?${searchParams}`, { signal: AbortSignal.timeout(8000) })
   if (!search.ok) throw new Error(`YouTube API search returned ${search.status}`)
   const ids = ((await search.json()).items || []).map((item) => item.id?.videoId).filter(Boolean)
