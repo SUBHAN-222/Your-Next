@@ -1,12 +1,163 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useRoadmap } from '@hooks/useRoadmap'
-// DO NOT REMOVE: LearningStyleModal — required first-run popup, see 2026-09-19
-import LearningStyleModal from '@components/LearningStyleModal'
+// DO NOT REMOVE: LearningStyleModal — required first-run popup
+import LearningStyleModal from '../components/LearningStyleModal'
 import ProgressToast from '@components/ProgressToast'
 import { CAREER_PATHS, getDontLearnYet } from '@data/careerPaths'
 import { getResourcePreference, getStoredResourcePreference, saveLearningHistory, saveResourcePreference } from '@utils/progressStorage'
 import posthog from '@lib/posthog'
 import { resolveTaskResource } from '@services/taskResourceResolver'
+
+const PATH_AVOID_ITEMS = {
+  data: [
+    "Don't start Machine Learning yet",
+    "Don't learn Deep Learning first",
+    "Don't memorize libraries",
+    "Don't jump into Kaggle competitions",
+  ],
+  web: [
+    "Don't learn React immediately",
+    "Don't start backend yet",
+    "Don't watch advanced system design videos",
+  ],
+  ai: [
+    "Don't train your own models yet",
+    "Don't learn every AI framework",
+    "Don't start with advanced math",
+  ],
+}
+
+const STEPS_PER_DAY = 3
+
+const getCareerIdFromPlan = (field) => (
+  Object.keys(CAREER_PATHS).find(
+    key => CAREER_PATHS[key].name === field
+  ) || 'web'
+)
+
+const cleanAvoidItem = (item) => String(item).replace(/\s*\([^)]*\)/g, '')
+
+const Accordion = ({ title, subtitle, icon, badgeText, theme = 'default', children, defaultOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+  return (
+    <div className={`premium-accordion theme-${theme} ${isOpen ? 'open' : ''}`}>
+      <button type="button" className="p-accordion-header" onClick={() => setIsOpen(!isOpen)}>
+        <div className="p-accordion-left">
+          {icon && <span className="p-accordion-icon-box">{icon}</span>}
+          <div className="p-accordion-texts">
+            <span className="p-accordion-title">{title}</span>
+            {subtitle && <span className="p-accordion-subtitle">{subtitle}</span>}
+          </div>
+        </div>
+        <div className="p-accordion-right">
+          {badgeText && <span className="p-accordion-badge">{badgeText}</span>}
+          <span className="p-accordion-chevron">
+             <svg width="14" height="8" viewBox="0 0 14 8" fill="none" style={{transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s'}}>
+               <path d="M1 1L7 7L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+             </svg>
+          </span>
+        </div>
+      </button>
+      <div className="p-accordion-content-wrapper" style={{ height: isOpen ? 'auto' : 0, overflow: 'hidden' }}>
+        <div className="p-accordion-content">{children}</div>
+      </div>
+    </div>
+  )
+}
+
+function getAINextLevelRecommendation(field) {
+  const f = String(field || '').toLowerCase()
+  if (f.includes('web')) {
+    return {
+      title: 'Build an Independent Full-Stack Capstone',
+      description: 'Now that you understand frontend basics and APIs, build a full-stack SaaS app with React, Supabase, and User Authentication.',
+      nextTier: 'Advanced React & Full-Stack Engineering'
+    }
+  }
+  if (f.includes('ai') || f.includes('machine')) {
+    return {
+      title: 'Fine-Tune & Deploy an Autonomous AI Agent',
+      description: 'Take your API knowledge further by building an autonomous RAG (Retrieval-Augmented Generation) agent that reads custom PDFs.',
+      nextTier: 'Autonomous AI Agents & PyTorch'
+    }
+  }
+  if (f.includes('data')) {
+    return {
+      title: 'Publish an Interactive End-to-End Data Dashboard',
+      description: 'Clean a messy 10,000-row real dataset from Kaggle and deploy a live Streamlit dashboard with predictive insights.',
+      nextTier: 'Machine Learning & Predictive Modeling'
+    }
+  }
+  if (f.includes('cyber') || f.includes('security')) {
+    return {
+      title: 'Tackle Real-World Bug Bounties & CTFs',
+      description: 'Apply your networking and Linux skills to complete 5 intermediate rooms on TryHackMe and write formal pentest audit reports.',
+      nextTier: 'Offensive Security & Web App Pentesting'
+    }
+  }
+  if (f.includes('mobile')) {
+    return {
+      title: 'Publish a Cross-Platform Mobile App to Stores',
+      description: 'Connect your React Native app to a live Supabase backend, set up push notifications, and build a standalone APK.',
+      nextTier: 'Full Mobile App Architecture & Expo Deployment'
+    }
+  }
+  if (f.includes('design') || f.includes('ui')) {
+    return {
+      title: 'Publish an Interactive 3-Case-Study Figma Portfolio',
+      description: 'Design a scalable design system with Auto Layout and component variants, then document your full UX process in a Behance case study.',
+      nextTier: 'Design Systems & Product Strategy'
+    }
+  }
+  if (f.includes('freelance')) {
+    return {
+      title: 'Land Your First Paid Retainer Client',
+      description: 'Optimize your Upwork/LinkedIn profiles, reach out to 10 prospective businesses with personalized video audits, and close a monthly retainer.',
+      nextTier: 'High-Ticket Client Acquisition & Agency Scaling'
+    }
+  }
+  return {
+    title: 'Build a Real Capstone Project',
+    description: 'Combine all your new skills into one portfolio-grade project that solves a real problem for real users.',
+    nextTier: 'Advanced Specialization & Portfolio Showcase'
+  }
+}
+
+function getNextRoadmapSuggestions(currentField) {
+  const all = [
+    { field: 'web', icon: '🌐', label: 'Go deeper into React & Full Stack' },
+    { field: 'ai', icon: '🤖', label: 'Explore AI & Machine Learning' },
+    { field: 'data', icon: '📊', label: 'Level up with Data Science' },
+    { field: 'cyber', icon: '🔒', label: 'Try Cyber Security' },
+    { field: 'freelance', icon: '💸', label: 'Start Freelancing with your skills' },
+  ]
+  return all.filter(s => s.field !== currentField).slice(0, 3)
+}
+
+function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHome, onRestart, onUpdateStep }) {
+  const handleRestartWithField = useCallback((targetField) => {
+    onRestart?.()
+  }, [onRestart])
+
+  const {
+    roadmapData,
+    currentStep,
+    currentStepIndex,
+    isComplete,
+    currentDay,
+    totalDays,
+    dayCompleted,
+    todaySteps,
+    tomorrowTeaser,
+    completedTodayCount,
+    totalCompleted,
+    streak,
+    momentumMessage,
+    showMomentum,
+    completeCurrentStep,
+    deferCurrentStep,
+    startNextDay,
+    hideMomentum,
 
 const PATH_AVOID_ITEMS = {
   data: [
@@ -167,7 +318,9 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
   const [startedStepIndex, setStartedStepIndex] = useState(null)
   const [showAllAvoids, setShowAllAvoids] = useState(false)
   const [resourceType, setResourceType] = useState(() => getResourcePreference())
-  const [showLearningStyleModal, setShowLearningStyleModal] = useState(false)
+  const [showStyleModal, setShowStyleModal] = useState(
+    () => !localStorage.getItem('yn_resource_preference')
+  )
   const [resourceState, setResourceState] = useState({ loading: false, error: '', resource: null })
 
   const handleShareStreak = useCallback(() => {
@@ -191,18 +344,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
   })
 
   useEffect(() => {
-    const storedPreference = getStoredResourcePreference()
-    const hasRoadmap = Boolean(activePlan?.steps?.length)
-    console.log('[LearningStyleModal] trigger check:', { hasRoadmap, storedPreference, activePlanId: activePlan?.field })
-    if (storedPreference) {
-      setResourceType(storedPreference)
-    }
-    setShowLearningStyleModal(hasRoadmap && !storedPreference)
-  }, [activePlan])
-
-  useEffect(() => {
-    setExpandedDays((prev) => {
-      if (!prev[currentDay]) {
         return { ...prev, [currentDay]: true }
       }
       return prev
@@ -245,10 +386,6 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
     setResourceType(saveResourcePreference(preference))
   }, [])
 
-  const handleLearningStyleConfirmed = useCallback((preference) => {
-    setResourceType(saveResourcePreference(preference))
-    setShowLearningStyleModal(false)
-  }, [])
 
   useEffect(() => {
     if (!showMomentum) return
@@ -319,8 +456,16 @@ function RoadmapPage({ activePlan, initialStepIndex = 0, durationMonths, onGoHom
 
   return (
     <section className="screen active roadmap-screen" id="s-res">
-      {/* DO NOT REMOVE: LearningStyleModal — required first-run popup, see 2026-09-19 */}
-      {showLearningStyleModal && <LearningStyleModal onConfirmed={handleLearningStyleConfirmed} />}
+      {/* DO NOT REMOVE: LearningStyleModal — required first-run popup */}
+      {showStyleModal && (
+        <LearningStyleModal
+          onSelect={(choice) => {
+            localStorage.setItem('yn_resource_preference', choice)
+            setShowStyleModal(false)
+            setResourceType(choice)
+          }}
+        />
+      )}
       <nav className="res-nav">
         <button className="nav-logo" onClick={onGoHome} type="button" aria-label="Go home">
           Your<b>Next</b>
